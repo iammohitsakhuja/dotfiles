@@ -1,0 +1,8 @@
+BasedOnStyle: WebKit
+PointerAlignment: Right
+ColumnLimit: 79
+AlignConsecutiveAssignments: true
+AlignTrailingComments: true
+AllowShortFunctionsOnASingleLine: Empty
+IndentCaseLabels: true
+
