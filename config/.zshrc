@@ -1,10 +1,11 @@
-# Add the directory '/usr/local/opt/coreutils/libexec/gnubin' to the PATH
-# variable so that macOS recognises utilities like sha256sum and sha512sum.
+# Add 'coreutils' to PATH variable so macOS recognises utilities like
+# sha256sum and sha512sum.
+# Add SDL2 to PATH variable in order to use SDL2 library for game development.
 PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
 PATH="$PATH:/usr/local/opt/coreutils/libexec/gnubin"
 PATH="/usr/local/Cellar/sdl2:/usr/local/bin:/usr/local/include/SDL2:$PATH"
 
-# Settings for React-Native.
+# Android development settings for React-Native.
 export ANDROID_HOME=$HOME/Library/Android/sdk
 PATH="$PATH:$ANDROID_HOME/emulator"
 PATH="$PATH:$ANDROID_HOME/tools"
@@ -14,21 +15,17 @@ export PATH
 
 # Default editor.
 export EDITOR="vim"
-# alias emulator="cd /Users/mohitsakhuja/Library/Android/sdk/emulator && emulator"
 
-# Path to your oh-my-zsh installation.
-export ZSH=/Users/mohitsakhuja/.oh-my-zsh
+# Path to oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
 
-# Set name of the theme to load. Optionally, if you set this to "random"
-# it'll load a random theme each time that oh-my-zsh is loaded.
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+# Set to "random" to load a random theme each time oh-my-zsh is loaded.
 ZSH_THEME="robbyrussell"
 
-# Set list of themes to load
-# Setting this variable when ZSH_THEME=random
-# cause zsh load theme from this variable instead of
-# looking in ~/.oh-my-zsh/themes/
-# An empty array have no effect
+# Set list of themes to load.
+# Setting this variable when ZSH_THEME=random causes zsh to load theme from
+# this variable instead of looking in ~/.oh-my-zsh/themes/.
+# An empty array has no effect.
 # ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
 # Uncomment the following line to use hyphen-insensitive completion. Case
@@ -48,36 +45,40 @@ ZSH_THEME="robbyrussell"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  git
+    git
 )
 
+# Load oh-my-zsh.
 source $ZSH/oh-my-zsh.sh
 
-############################# User configuration #############################
-# Syntax Highlighting for zsh
+############################# Zsh configuration #############################
+
+# Syntax Highlighting for zsh.
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# Completions for zsh
+# Completions for zsh.
 fpath=(/usr/local/share/zsh-completions $fpath)
+
+############################# Useful aliases #############################
 
 # Show files/folders vertically and produce a colored output.
 alias ls="ls -Gp"
 
-# Always show files when switching directories.
-cd() { builtin cd "$@" && ls; }
-
 # Alias for Vim tabs.
 alias vim="vim -p"
 
-# start python3 and pip3 by default
+# Start python3 and pip3 by default.
 alias python=python3
 alias pip=pip3
 
-# alias for AWS cli
-alias aws="/Users/mohitsakhuja/Library/Python/3.6/bin/aws"
+# Alias for AWS cli.
+alias aws="$HOME/Library/Python/3.6/bin/aws"
 
-# Run greeting script on startup
-source ~/good_morning.sh | lolcat
+# Always show files when switching directories via cd.
+cd() { builtin cd "$@" && ls; }
+
+# Run greeting script on startup.
+source ~/greeting.sh | lolcat
 
 # Configure the 'remove' command
 alias rm="rm -i"
