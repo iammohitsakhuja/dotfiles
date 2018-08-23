@@ -33,9 +33,9 @@ else
     done
 fi
 
-# echo -e "\nRunning install scripts..."
-# for script in $DIR/scripts/*
-# do
-#     bash $script
-# done
+echo -e "\nRunning install scripts..."
+for script in $DIR/scripts/*
+do
+    bash $script
+done
 
