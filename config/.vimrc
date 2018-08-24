@@ -148,9 +148,9 @@ set tabstop=4
 " However, use 2 spaces for JavaScript files.
 autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 
-" Linebreak on 200 characters.
+" Linebreak on 120 characters.
 set lbr
-set tw=200
+set tw=120
 
 " Set autoindent, smartindent and wrap lines.
 set ai
@@ -165,11 +165,11 @@ set laststatus=2
 
 " Settings for 'lightline' plugin.
 let g:lightline = {
-  \     'active': {
-  \         'left': [['mode', 'paste' ], ['readonly', 'filename', 'modified']],
-  \         'right': [['lineinfo'], ['percent'], ['fileformat', 'fileencoding']]
-  \     }
-  \ }
+            \     'active': {
+            \         'left': [['mode', 'paste' ], ['readonly', 'filename', 'modified']],
+            \         'right': [['lineinfo'], ['percent'], ['fileformat', 'fileencoding']]
+            \     }
+            \ }
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
@@ -193,17 +193,17 @@ vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 if has("mac") || has("macunix")
-  nmap <D-j> <M-j>
-  nmap <D-k> <M-k>
-  vmap <D-j> <M-j>
-  vmap <D-k> <M-k>
+    nmap <D-j> <M-j>
+    nmap <D-k> <M-k>
+    vmap <D-j> <M-j>
+    vmap <D-k> <M-k>
 endif
 
 " Delete trailing white space on save.
 func! DeleteTrailingWS()
-  exe "normal mz"
-  %s/\s\+$//ge
-  exe "normal `z"
+    exe "normal mz"
+    %s/\s\+$//ge
+    exe "normal `z"
 endfunc
 
 autocmd BufWrite * :call DeleteTrailingWS()
@@ -216,15 +216,39 @@ Glaive codefmt plugin[mappings]
 Glaive codefmt google_java_executable="java -jar /Users/mohitsakhuja/google-java-format-1.6-all-deps.jar"
 
 augroup autoformat_settings
-  autocmd FileType bzl AutoFormatBuffer buildifier
-  autocmd FileType c,cpp,proto,javascript AutoFormatBuffer clang-format
-  autocmd FileType dart AutoFormatBuffer dartfmt
-  autocmd FileType go AutoFormatBuffer gofmt
-  autocmd FileType gn AutoFormatBuffer gn
-  autocmd FileType html,css,json AutoFormatBuffer js-beautify
-  autocmd FileType java AutoFormatBuffer google-java-format
-  autocmd FileType python AutoFormatBuffer autopep8
+    autocmd FileType bzl AutoFormatBuffer buildifier
+    autocmd FileType c,cpp,proto AutoFormatBuffer clang-format
+    autocmd FileType dart AutoFormatBuffer dartfmt
+    autocmd FileType go AutoFormatBuffer gofmt
+    autocmd FileType gn AutoFormatBuffer gn
+    autocmd FileType html,css,json AutoFormatBuffer js-beautify
+    autocmd FileType java AutoFormatBuffer google-java-format
+    autocmd FileType python AutoFormatBuffer autopep8
 augroup END
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => ALE settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Use ESLint for linting js and jsx files.
+let g:ale_linters = {
+            \  'javascript': ['eslint'],
+            \  'jsx': ['eslint']
+            \}
+
+" Use ESLint for fixing js and jsx files.
+let g:ale_fixers = {
+            \  'javascript': ['eslint'],
+            \  'jsx': ['eslint']
+            \}
+
+" Enable completion where available.
+let g:ale_completion_enabled = 1
+
+" Display errors.
+let g:ale_sign_column_always = 1
+
+" Fix errors on saving.
+let g:ale_fix_on_save = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => NERD Commenter settings
@@ -272,7 +296,7 @@ let g:ycm_path_to_python_interpreter="/usr/local/bin/python3"
 
 " Silence the warning displayed due to difference in python versions.
 if has('python3')
-  silent! python3 1
+    silent! python3 1
 endif
 
 " Settings for C/C++ semantic completion.
