@@ -36,6 +36,8 @@ ZSH_THEME="robbyrussell"
 # Plugins for ZSH. Warning: Too many plugins slow down shell startup.
 plugins=(
     git
+    vi-mode
+    zsh-autosuggestions
 )
 
 # Load oh-my-zsh.
