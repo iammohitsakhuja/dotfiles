@@ -15,7 +15,7 @@ module.exports = {
         // fontFamily: 'Menlo, "DejaVu Sans Mono", Consolas, "Lucida Console",
         // monospace',
         fontFamily :
-            '"Operator Mono", "Fira Code", "Inconsolata for Powerline"',
+            '"Operator Mono", "Fira Code", "Inconsolata for Powerline", Menlo',
 
         // default font weight: 'normal' or 'bold'
         fontWeight : 'normal',
@@ -125,11 +125,11 @@ module.exports = {
 
         // for advanced config flags please refer to https://hyper.is/#cfg
 
-        // for 'hyperterm-cobalt2-theme'
-        // omit or set true to show. set false to remove it
-        // wickedBorder: true,
-        // change the colour here
-        // wickedBorderColor: '#193549',
+        // For 'hyperterm-cobalt2-theme'.
+        // Omit or set true to show. Set false to remove it.
+        wickedBorder: true,
+        // Change the colour here.
+        wickedBorderColor: '#193549',
     },
 
     // a list of plugins to fetch and install from npm
@@ -139,7 +139,7 @@ module.exports = {
     //   `@company/project`
     //   `project#1.0.1`
     plugins : [
-        //'hyperterm-cobalt2-theme',
+        'hyperterm-cobalt2-theme',
     ],
 
     // in development, you can create a directory under
