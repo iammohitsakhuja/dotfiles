@@ -1,0 +1,56 @@
+#!/usr/bin/env zsh
+
+# Add 'coreutils' to PATH variable so macOS recognises utilities like
+# sha256sum and sha512sum.
+PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
+PATH="$PATH:/usr/local/opt/coreutils/libexec/gnubin"
+
+# Android development settings for React-Native.
+export ANDROID_HOME=$HOME/Library/Android/sdk
+PATH="$PATH:$ANDROID_HOME/emulator"
+PATH="$PATH:$ANDROID_HOME/tools"
+PATH="$PATH:$ANDROID_HOME/tools/bin"
+PATH="$PATH:$ANDROID_HOME/platform-tools"
+export PATH
+
+# Make vim the default editor.
+export EDITOR="vim"
+
+# Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
+export PYTHONIOENCODING="UTF-8"
+
+# Flags for C++ compilation.
+export CXXFLAGS="-std=c++17"
+
+# Add, path to custom manpages to the MANPATH variable.
+# Also, update MANPATH so that there is no need to prefix 'g' for utilities
+# like sha256sum and sha512sum.
+MANPATH="/usr/local/man:/usr/local/share/man:/usr/share/man:/usr/man"
+export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+
+############################# Colors for Manpages #############################
+
+# Colors.
+default=$(tput sgr0)
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+purple=$(tput setaf 5)
+orange=$(tput setaf 9)
+
+# Less colors for man pages.
+export PAGER=less
+# Begin blinking.
+export LESS_TERMCAP_mb=$red
+# Begin bold.
+export LESS_TERMCAP_md=$orange
+# End mode.
+export LESS_TERMCAP_me=$default
+# End standout-mode.
+export LESS_TERMCAP_se=$default
+# Begin standout-mode - info box.
+export LESS_TERMCAP_so=$purple
+# End underline.
+export LESS_TERMCAP_ue=$default
+# Begin underline.
+export LESS_TERMCAP_us=$green
+

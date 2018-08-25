@@ -17,7 +17,7 @@ fi
 # Update Homebrew.
 brew update
 
-# Upgrade any previously installed packages
+# Upgrade any previously installed packages.
 brew upgrade
 
 # Install GNU core utilities (those that come with macOS are outdated).

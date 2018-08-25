@@ -1,29 +1,6 @@
 ############################# Exports #############################
 
-# Add 'coreutils' to PATH variable so macOS recognises utilities like
-# sha256sum and sha512sum.
-PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
-PATH="$PATH:/usr/local/opt/coreutils/libexec/gnubin"
-
-# Android development settings for React-Native.
-export ANDROID_HOME=$HOME/Library/Android/sdk
-PATH="$PATH:$ANDROID_HOME/emulator"
-PATH="$PATH:$ANDROID_HOME/tools"
-PATH="$PATH:$ANDROID_HOME/tools/bin"
-PATH="$PATH:$ANDROID_HOME/platform-tools"
-export PATH
-
-# Default editor.
-export EDITOR="vim"
-
-# Flags for C++ compilation.
-export CXXFLAGS="-std=c++17"
-
-# Add, path to custom manpages to the MANPATH variable.
-# Also, update MANPATH so that there is no need to prefix 'g' for utilities
-# like sha256sum and sha512sum.
-MANPATH="/usr/local/man:/usr/local/share/man:/usr/share/man:/usr/man"
-export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+source ~/.exports
 
 ############################# Zsh configuration #############################
 
@@ -37,7 +14,6 @@ ZSH_THEME="robbyrussell"
 plugins=(
     git
     vi-mode
-    zsh-autosuggestions
 )
 
 # Load oh-my-zsh.
@@ -49,62 +25,12 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # Completions for zsh.
 fpath=(/usr/local/share/zsh-completions $fpath)
 
+# Auto-suggestions for zsh.
+source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
 ############################# Useful aliases #############################
 
-# Show files/folders vertically and produce a colored output.
-alias ls="ls -Gp"
-
-# Alias for Vim tabs.
-alias vim="vim -p"
-
-# Start python3 and pip3 by default.
-alias python=python3
-alias pip=pip3
-
-# Configure the 'remove' command.
-alias rm="rm -i"
-
-# Open vagrant.
-alias vu="vagrant up && vagrant ssh"
-alias vh="vagrant halt"
-
-# Create aliases for showing and hiding hidden files on macOS.
-alias showFiles="defaults write com.apple.finder AppleShowAllFiles YES; \
-    killall Finder /System/Library/CoreServices/Finder.app"
-alias hideFiles="defaults write com.apple.finder AppleShowAllFiles NO; \
-    killall Finder /System/Library/CoreServices/Finder.app"
-
-# Alias to LOVE2D.
-alias love="/Applications/love.app/Contents/MacOS/love"
-
-# Alias for sqlite.
-alias sqlite=sqlite3
-
-############################# Colors for Manpages #############################
-
-# Colors.
-default=$(tput sgr0)
-red=$(tput setaf 1)
-green=$(tput setaf 2)
-purple=$(tput setaf 5)
-orange=$(tput setaf 9)
-
-# Less colors for man pages.
-export PAGER=less
-# Begin blinking.
-export LESS_TERMCAP_mb=$red
-# Begin bold.
-export LESS_TERMCAP_md=$orange
-# End mode.
-export LESS_TERMCAP_me=$default
-# End standout-mode.
-export LESS_TERMCAP_se=$default
-# Begin standout-mode - info box.
-export LESS_TERMCAP_so=$purple
-# End underline.
-export LESS_TERMCAP_ue=$default
-# Begin underline.
-export LESS_TERMCAP_us=$green
+source ~/.aliases
 
 ############################# Utility functions #############################
 

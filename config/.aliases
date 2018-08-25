@@ -1,0 +1,31 @@
+#!/usr/bin/env zsh
+
+# Show files/folders vertically and produce a colored output.
+alias ls="ls -Gp"
+
+# Alias for Vim tabs.
+alias vim="vim -p"
+
+# Start python3 and pip3 by default.
+alias python=python3
+alias pip=pip3
+
+# Configure the 'remove' command.
+alias rm="rm -i"
+
+# Open vagrant.
+alias vu="vagrant up && vagrant ssh"
+alias vh="vagrant halt"
+
+# Create aliases for showing and hiding hidden files on macOS.
+alias showFiles="defaults write com.apple.finder AppleShowAllFiles YES; \
+    killall Finder /System/Library/CoreServices/Finder.app"
+alias hideFiles="defaults write com.apple.finder AppleShowAllFiles NO; \
+    killall Finder /System/Library/CoreServices/Finder.app"
+
+# Alias to LOVE2D.
+alias love="/Applications/love.app/Contents/MacOS/love"
+
+# Alias for sqlite.
+alias sqlite=sqlite3
+
