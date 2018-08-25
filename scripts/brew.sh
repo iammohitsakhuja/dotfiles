@@ -4,7 +4,7 @@
 # https://github.com/mathiasbynens/dotfiles/blob/master/brew.sh
 
 # Check if Homebrew can be installed.
-if [[ $OSTYPE != "darwin"* ]] ; then
+if [[ $OSTYPE != "darwin"* ]]; then
     echo -e "Environment not recognized as macOS.\nQuitting..."
     exit 1
 fi
@@ -32,20 +32,21 @@ brew install gnu-sed --with-default-names
 # Then add `/usr/local/bin/bash` to `/etc/shells`.
 brew install bash
 if ! fgrep -q '/usr/local/bin/bash' /etc/shells; then
-    echo '/usr/local/bin/bash' | sudo tee -a /etc/shells;
-fi;
+    echo '/usr/local/bin/bash' | sudo tee -a /etc/shells
+fi
 
 # Install ZSH - our primary shell.
 # Then add `/usr/local/bin/zsh` to `/etc/shells`.
 brew install zsh
 if ! fgrep -q '/usr/local/bin/zsh' /etc/shells; then
-    echo '/usr/local/bin/zsh' | sudo tee -a /etc/shells;
-    chsh -s /usr/local/bin/zsh;
-fi;
+    echo '/usr/local/bin/zsh' | sudo tee -a /etc/shells
+    chsh -s /usr/local/bin/zsh
+fi
 
 # Install plugins for ZSH.
 brew install zsh-completions
 brew install zsh-syntax-highlighting
+brew install zsh-autosuggestions
 
 # Install `wget`.
 brew install wget
