@@ -54,8 +54,8 @@ brew install wget
 # Install `tmux`.
 brew install tmux
 
-# Install `yarn` for managing packages.
-brew install yarn
+# Install `yarn` for managing packages. Use 'nvm' for installing Node.
+brew install yarn --without-node
 
 # Install more recent versions of some macOS tools.
 brew install vim --with-override-system-vi
@@ -67,14 +67,17 @@ brew install clang-format
 brew install cmake
 brew install lua
 brew install mongodb
-brew install python
 brew install perl
+brew install python
 brew install sqlite
 
 # Install other useful binaries.
 brew install ack
 brew install git
 brew install tree
+
+# Install some fun packages.
+brew install lolcat
 
 # Remove outdated versions from the cellar.
 brew cleanup
