@@ -2,7 +2,7 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-if [[ $* == "--help" ]] || [[ $* == "-h" ]] ; then
+if [[ $* == "--help" ]] || [[ $* == "-h" ]]; then
     echo -n "Usage: ./install.sh "
     echo -n "[ -h | --help ] [ -c | --copy] [ -cr | --copy-rc ] [ -lr | --link-rc ] "
     echo "[ -cs | --copy-scripts ] [ -ls | --link-scripts ] [ -a | --all ]"
@@ -63,10 +63,31 @@ case $* in
         ;;
 esac
 
+# Ask for administrator password.
+echo -e "\nInstallation requires administrator authentication..."
+sudo -v
 
-echo -e "\nRunning install scripts..."
-for script in $DIR/scripts/*
-do
-    bash $script
-done
+# Keep `sudo` alive i.e. update exisiting time stamp until `./install.sh` has
+# finished.
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+# Run installation scripts.
+echo -e "\nRunning installation scripts..."
+
+PWD=$(pwd)
+echo "Installing Homebrew, if necessary."
+bash $PWD/scripts/brew.sh
+echo -e "Homebrew installation successful!\n"
+
+echo "Installing Casks, if necessary."
+bash $PWD/scripts/cask.sh
+echo -e "Homebrew casks installation successful!\n"
+
+echo "Installing Manpages."
+bash $PWD/scripts/man.sh
+echo -e "Manpages installation successful!\n"
+
+echo "Installing Zsh and Oh-my-zsh."
+bash $PWD/scripts/zsh.sh
+echo -e "Zsh and Oh-my-zsh installation successful!\n"
 
