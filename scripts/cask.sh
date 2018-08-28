@@ -27,6 +27,7 @@ echo -e "\nInstalling taps..."
 brew tap caskroom/cask
 brew tap caskroom/versions
 brew tap homebrew/cask-drivers
+brew tap zegervdv/zathura # Required for installing Zathura (PDF viewer)
 echo -e "Taps installed successfully\n"
 
 # Install GUI Applications.
@@ -42,6 +43,7 @@ brew cask install logitech-options
 brew cask install microsoft-office
 brew cask install opera
 brew cask install slack
+brew cask install spectacle
 brew cask install spotify
 brew cask install the-unarchiver
 brew cask install vlc
@@ -57,6 +59,13 @@ brew cask install qlstephen
 brew cask install quicklook-json
 brew cask install quicklook-csv
 echo -e "Quick-look plugins installed successfully\n"
+
+# Utilites required for PDF viewing/conversion through CLI.
+echo -e "\nInstalling PDF utilities..."
+brew cask install mactex
+brew cask install xquartz
+brew install zathura # Zathura can only be installed after installing `xquartz`.
+echo -e "PDF utilities installed successfully\n"
 
 # Development utilties.
 echo -e "\nInstalling Development utilities..."

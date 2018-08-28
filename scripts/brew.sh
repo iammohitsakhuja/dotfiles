@@ -75,6 +75,9 @@ brew install tmux
 # Install `yarn` for managing packages. Use 'nvm' for installing Node.
 brew install yarn --without-node
 
+# Install pandoc for converting Markdown to PDF.
+brew install pandoc
+
 # Install more recent versions of some macOS tools.
 brew install vim --with-override-system-vi
 brew install grep --with-default-names

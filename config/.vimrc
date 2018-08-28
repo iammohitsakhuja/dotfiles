@@ -22,6 +22,7 @@ Plugin 'google/vim-glaive'
 Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'jistr/vim-nerdtree-tabs'
+Plugin 'tpope/vim-surround'
 call vundle#end()
 
 call glaive#Install()
@@ -33,8 +34,16 @@ call glaive#Install()
 syntax on
 
 " Sets the theme for the editor.
-colorscheme desert
-set background=dark
+if $TERM_PROGRAM == "iTerm.app"
+    colorscheme peachpuff
+    set background=light
+
+    " Fix Bad Spelling highlight color. Default bg is white - hard to read.
+    highlight SpellBad ctermbg=196
+else
+    colorscheme desert
+    set background=dark
+endif
 
 " Italicize comments.
 let &t_ZH="\e[3m"
@@ -64,7 +73,7 @@ set autoread
 let mapleader = ","
 let g:mapleader = ","
 
-" Fast saving
+" Fast saving.
 nmap <leader>w :w!<cr>
 
 " Fast switching between windows.
@@ -73,6 +82,9 @@ nmap <leader>t <C-w>w
 " :W sudo saves the file.
 " (useful for handling the permission-denied error)
 command W w !sudo tee % > /dev/null
+
+" <leader>l redraws the screen and removes any search highlighting.
+nnoremap <leader>l :nohl<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -96,6 +108,17 @@ set ruler
 
 " Always show the line numbers.
 set nu
+
+" Toggle relative numbers.
+function! NumberToggle()
+  if(&relativenumber == 1)
+    set norelativenumber
+  else
+    set relativenumber
+  endif
+endfunc
+
+nnoremap <leader>nt :call NumberToggle()<cr>
 
 " Set column width to be 80 characters and highlight it.
 highlight ColorColumn ctermbg=235 guibg=#2c2d27
@@ -266,7 +289,7 @@ let g:NERDDefaultAlign = 'left'
 let g:NERDAltDelims_java = 1
 
 " Add your own custom formats or override the defaults
-let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
+let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' }, 'java' : { 'left': '//', 'right': '' } }
 
 " Allow commenting and inverting empty lines (useful when commenting a region)
 let g:NERDCommentEmptyLines = 1

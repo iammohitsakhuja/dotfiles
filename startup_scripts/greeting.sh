@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Script to show 'Good morning', 'Good afternoon', 'Good evening' or
 # 'Goodnight' on the basis of system time.
