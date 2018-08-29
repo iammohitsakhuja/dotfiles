@@ -232,6 +232,15 @@ endfunc
 autocmd BufWrite * :call DeleteTrailingWS()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Linting Markdown settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Treat `.md` as Markdown.
+autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+
+" Enable fenced code block syntax highlighting in Markdown.
+let g:markdown_fenced_languages = ['c', 'cpp', 'python', 'java', 'bash=sh']
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vim/codefmt settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable codefmt's default mappings on the <Leader>= prefix.
@@ -247,6 +256,7 @@ augroup autoformat_settings
     autocmd FileType html,css,json AutoFormatBuffer js-beautify
     autocmd FileType java AutoFormatBuffer google-java-format
     autocmd FileType python AutoFormatBuffer autopep8
+    autocmd FileType markdown AutoFormatBuffer mdl
 augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

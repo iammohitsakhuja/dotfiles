@@ -19,6 +19,9 @@ export EDITOR="vim"
 # Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
 export PYTHONIOENCODING="UTF-8"
 
+# You may need to manually set your Locale.
+export LC_ALL="en_US.UTF-8"
+
 # Flags for C++ compilation.
 export CXXFLAGS="-std=c++17"
 
