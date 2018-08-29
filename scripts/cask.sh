@@ -64,7 +64,17 @@ echo -e "Quick-look plugins installed successfully\n"
 echo -e "\nInstalling PDF utilities..."
 brew cask install mactex
 brew cask install xquartz
-brew install zathura # Zathura can only be installed after installing `xquartz`.
+
+# Zathura can only be installed after installing `xquartz`.
+# To install Zathura, you need to install `girara`, `zathura` and
+# `zathura-pdf-poppler`. For that, download these packages from the `Releases`
+# section on `pwmt` GitHub site and calculate their sha sums that are mentioned
+# in `/usr/local/Homebrew/Library/Taps/zegervdv/homebrew-zathura/package-name`.
+# And make appropriate changes to those files. Then run the following:
+# brew install girara
+# brew install zathura
+# brew install zathura-pdf-poppler
+echo "Please install Zathura as mentioned in the script"
 echo -e "PDF utilities installed successfully\n"
 
 # Development utilties.
