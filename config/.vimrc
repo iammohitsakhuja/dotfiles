@@ -171,6 +171,9 @@ set tabstop=4
 " However, use 2 spaces for JavaScript files.
 autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 
+" Use 2 spaces for Java files (Formatting according to Google-Java-Format).
+autocmd Filetype java setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2 colorcolumn=100
+
 " Linebreak on 120 characters.
 set lbr
 set tw=120
@@ -238,7 +241,7 @@ autocmd BufWrite * :call DeleteTrailingWS()
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
 " Enable fenced code block syntax highlighting in Markdown.
-let g:markdown_fenced_languages = ['c', 'cpp', 'python', 'java', 'bash=sh']
+let g:markdown_fenced_languages = ['c', 'cpp', 'python', 'java', 'bash=sh', 'sql']
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vim/codefmt settings
@@ -296,10 +299,10 @@ let g:NERDCompactSexyComs = 1
 let g:NERDDefaultAlign = 'left'
 
 " Set a language to use its alternate delimiters by default
-let g:NERDAltDelims_java = 1
+let g:NERDAltDelims_python = 1
 
 " Add your own custom formats or override the defaults
-let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' }, 'java' : { 'left': '//', 'right': '' } }
+let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
 
 " Allow commenting and inverting empty lines (useful when commenting a region)
 let g:NERDCommentEmptyLines = 1

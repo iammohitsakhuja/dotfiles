@@ -19,6 +19,8 @@
         "semi": [ "error", "never" ],
         "no-unused-vars": [ "warn", { "argsIgnorePattern": "res|next|^err" } ],
         "arrow-body-style": [ "error", "as-needed" ],
+        "arrow-parens": [ "error", "as-needed" ],
+        "no-shadow": "off",
         "no-param-reassign": [ "error", { "props": false } ],
         "no-console": "off",
         "func-names": "off",
