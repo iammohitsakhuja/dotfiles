@@ -14,16 +14,8 @@
         "node": true
     },
     "rules": {
-        "indent": [ "error", 2 ],
-        "max-len": [ "error", { "code": 80 } ],
-        "semi": [ "error", "never" ],
-        "no-unused-vars": [ "warn", { "argsIgnorePattern": "res|next|^err" } ],
         "arrow-body-style": [ "error", "as-needed" ],
         "arrow-parens": [ "error", "as-needed" ],
-        "no-shadow": "off",
-        "no-param-reassign": [ "error", { "props": false } ],
-        "no-console": "off",
-        "func-names": "off",
         "comma-dangle": [
             "error",
             {
@@ -34,7 +26,13 @@
                 "functions": "ignore"
             }
         ],
-        "radix": [ "error", "as-needed" ],
+        "func-names": "off",
+        "indent": [ "error", 2 ],
+        "max-len": [ "error", { "code": 120 } ],
+        "no-console": "off",
+        "no-param-reassign": [ "error", { "props": false } ],
+        "no-shadow": "off",
+        "no-unused-vars": [ "warn", { "argsIgnorePattern": "res|next|^err" } ],
         "quotes": [
             "error",
             "single",
@@ -42,6 +40,8 @@
                 "avoidEscape": true,
                 "allowTemplateLiterals": true
             }
-        ]
+        ],
+        "radix": [ "error", "as-needed" ],
+        "semi": [ "error", "never" ]
     }
 }

@@ -23,6 +23,8 @@ Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'tpope/vim-surround'
+Plugin 'pangloss/vim-javascript'
+Plugin 'mxw/vim-jsx'
 call vundle#end()
 
 call glaive#Install()
@@ -172,7 +174,7 @@ set tabstop=4
 autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 
 " Use 2 spaces for Java files (Formatting according to Google-Java-Format).
-autocmd Filetype java setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2 colorcolumn=100
+autocmd Filetype java setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2 colorcolumn=101
 
 " Linebreak on 120 characters.
 set lbr
@@ -285,6 +287,16 @@ let g:ale_sign_column_always = 1
 
 " Fix errors on saving.
 let g:ale_fix_on_save = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Emmet settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:user_emmet_leader_key='<Tab>'
+let g:user_emmet_settings = {
+  \  'javascript.jsx' : {
+    \      'extends' : 'jsx',
+    \  },
+  \}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => NERD Commenter settings
