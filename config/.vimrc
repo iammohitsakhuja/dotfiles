@@ -6,15 +6,13 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'tpope/vim-fugitive'
-Plugin 'junegunn/fzf'
-Plugin 'junegunn/fzf.vim'
 Plugin 'mattn/emmet-vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'itchyny/lightline.vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'terryma/vim-multiple-cursors'
-Plugin 'scrooloose/nerdcommenter'
+Plugin 'tpope/vim-commentary'
 Plugin 'w0rp/ale'
 Plugin 'google/vim-maktaba'
 Plugin 'google/vim-codefmt'
@@ -23,8 +21,7 @@ Plugin 'artur-shaik/vim-javacomplete2'
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'tpope/vim-surround'
-Plugin 'pangloss/vim-javascript'
-Plugin 'mxw/vim-jsx'
+Plugin 'sheerun/vim-polyglot'
 call vundle#end()
 
 call glaive#Install()
@@ -205,9 +202,6 @@ let g:lightline = {
 " Remap VIM 0 to first non-blank character.
 map 0 ^
 
-" Map ':Files' command to ';'
-map ; :Files<CR>
-
 " Map 'Ctrl-O' to ':NerdTreeToggle'
 map <C-o> :NERDTreeToggle<CR>
 
@@ -291,39 +285,11 @@ let g:ale_fix_on_save = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Emmet settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:user_emmet_leader_key='<Tab>'
 let g:user_emmet_settings = {
   \  'javascript.jsx' : {
     \      'extends' : 'jsx',
     \  },
   \}
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => NERD Commenter settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Add spaces after comment delimiters by default
-let g:NERDSpaceDelims = 1
-
-" Use compact syntax for prettified multi-line comments
-let g:NERDCompactSexyComs = 1
-
-" Align line-wise comment delimiters flush left instead of following code indentation
-let g:NERDDefaultAlign = 'left'
-
-" Set a language to use its alternate delimiters by default
-let g:NERDAltDelims_python = 1
-
-" Add your own custom formats or override the defaults
-let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
-
-" Allow commenting and inverting empty lines (useful when commenting a region)
-let g:NERDCommentEmptyLines = 1
-
-" Enable trimming of trailing whitespace when uncommenting
-let g:NERDTrimTrailingWhitespace = 1
-
-" Enable NERDCommenterToggle to check all selected lines is commented or not
-let g:NERDToggleCheckAllLines = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
