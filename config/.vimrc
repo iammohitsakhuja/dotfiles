@@ -168,7 +168,7 @@ set shiftwidth=4
 set tabstop=4
 
 " However, use 2 spaces for JavaScript files.
-autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2 colorcolumn=120
 
 " Use 2 spaces for Java files (Formatting according to Google-Java-Format).
 autocmd Filetype java setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2 colorcolumn=101
@@ -261,20 +261,19 @@ augroup END
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => ALE settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Use ESLint for linting js and jsx files.
+" Use ESLint for linting graphql, js and jsx files.
 let g:ale_linters = {
+            \  'graphql': ['eslint'],
             \  'javascript': ['eslint'],
             \  'jsx': ['eslint']
             \}
 
-" Use ESLint for fixing js and jsx files.
+" Use ESLint for fixing graphql, js and jsx files.
 let g:ale_fixers = {
+            \  'graphql': ['eslint'],
             \  'javascript': ['eslint'],
             \  'jsx': ['eslint']
             \}
-
-" Enable completion where available.
-let g:ale_completion_enabled = 1
 
 " Display errors.
 let g:ale_sign_column_always = 1

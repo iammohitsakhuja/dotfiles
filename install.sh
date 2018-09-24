@@ -91,3 +91,9 @@ echo "Installing Zsh and Oh-my-zsh."
 bash $PWD/scripts/zsh.sh
 echo -e "Zsh and Oh-my-zsh installation successful!\n"
 
+# Configure Tmux colors.
+echo "Configuring Tmux colors."
+tic -x xterm-256color-italic.terminfo
+tic -x tmux-256color.terminfo
+echo -e "Tmux colors configured successfully!\n"
+
