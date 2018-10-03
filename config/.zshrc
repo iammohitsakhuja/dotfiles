@@ -9,6 +9,10 @@ export ZSH=$HOME/.oh-my-zsh
 
 # Set to "random" to load a random theme each time oh-my-zsh is loaded.
 ZSH_THEME="robbyrussell"
+if [[ $TERM_PROGRAM == 'Hyper' ]]; then
+    ZSH_THEME="agnoster"
+    DEFAULT_USER=$USER
+fi
 
 # Plugins for ZSH. Warning: Too many plugins slow down shell startup.
 plugins=(
@@ -71,4 +75,3 @@ source ~/.api_keys
 
 # Required by Homebrew.
 eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
-

@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 # Show files/folders vertically and produce a colored output.
 alias ls="ls -Gp"

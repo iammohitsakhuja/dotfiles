@@ -6,12 +6,13 @@ if [[ $OSTYPE != "darwin"* ]] ; then
     exit 1
 fi
 
-# Install manpages for C++.
-# See https://github.com/jeaye/stdman
+# Install Git.
 if ! [ `which git` ]; then
-    bash brew.sh
+    brew install git
 fi
 
+# Install manpages for C++.
+# See https://github.com/jeaye/stdman
 # Clone the repository containing the manpages.
 REPO="https://github.com/jeaye/stdman"
 git clone $REPO stdman

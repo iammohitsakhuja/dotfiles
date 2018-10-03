@@ -110,11 +110,11 @@ set nu
 
 " Toggle relative numbers.
 function! NumberToggle()
-  if(&relativenumber == 1)
-    set norelativenumber
-  else
-    set relativenumber
-  endif
+    if(&relativenumber == 1)
+        set norelativenumber
+    else
+        set relativenumber
+    endif
 endfunc
 
 nnoremap <leader>nt :call NumberToggle()<cr>
@@ -318,9 +318,18 @@ let g:ycm_global_ycm_extra_conf = "~/.vim/bundle/YouCompleteMe/third_party/ycmd/
 " Required by vim-javacomplete2.
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
 
+" Settings for vim-commentary.
+autocmd FileType javascript.jsx setlocal commentstring={/*\ %s\ */}
+
 " Open NERDTree by default.
 let g:nerdtree_tabs_open_on_console_startup = 1
 
 " Show hidden files in NERDTree by default.
 let NERDTreeShowHidden=1
+
+" Hide byte files.
+let NERDTreeIgnore = ['\.pyc$', '\.class$', '\.o$', '\.swp$']
+
+" Sort files.
+let NERDTreeSortOrder=['\.c$']
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 # Add 'coreutils' to PATH variable so macOS recognises utilities like
 # sha256sum and sha512sum.

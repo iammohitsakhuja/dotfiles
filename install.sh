@@ -1,64 +1,74 @@
 #!/usr/bin/env bash
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
+# Ensure proper usage.
 if [[ $* == "--help" ]] || [[ $* == "-h" ]]; then
-    echo -n "Usage: ./install.sh "
-    echo -n "[ -h | --help ] [ -c | --copy] [ -cr | --copy-rc ] [ -lr | --link-rc ] "
-    echo "[ -cs | --copy-scripts ] [ -ls | --link-scripts ] [ -a | --all ]"
-    echo "-h, --help          | Show this help"
-    echo "-c, --copy          | Copy rc files and startup scripts rather than linking"
-    echo "-cr, --copy-rc      | Copy just the rc files"
-    echo "-lr, --link-rc      | Link just the rc files"
-    echo "-cs, --copy-scripts | Copy just the startup scripts"
-    echo "-ls, --link-scripts | Link just the startup scripts"
-    echo "-a, --all           | Link rc files and startup scripts (default)"
+    echo    "Usage: ./install.sh [ -h | --help ] [ -c | --copy ] [ -l | --link ]"
+    echo    "       -h, --help  | Show this help"
+    echo    "       -l, --link  | Link config files and startup scripts rather than copying (default)"
+    echo -e "       -c, --copy  | Copy config files and startup scripts rather than linking\n"
+    echo    "To remove the files that you don't need, simply open this installation script and delete their names."
     exit 0
 fi
 
+# Get the current working directory.
+PWD=$(pwd)
+
+# Config files. Remove the files that you don't need.
+CONFIG_FILES=(
+    ".aliases"
+    ".clang-format"
+    ".eslintrc.json"
+    ".exports"
+    ".hyper.js"
+    ".mongorc.js"
+    ".sqliterc"
+    ".tmux.conf"
+    ".vimrc"
+    ".zshrc"
+    "tmux-256color.terminfo"
+    "xterm-256color-italic.terminfo"
+)
+
+# Scripts that will run on the start of each session. Remove the ones that you
+# don't need.
+STARTUP_SCRIPTS=(
+    "greeting.sh"
+)
+
 case $* in
+    # Copy the files.
     --copy|-c)
         echo "Copying config files into $HOME/ ..."
-        cp -r $(pwd)/config/ $HOME/
-        echo -e "\nCopying startup scripts into $HOME/ ..."
-        cp -r $(pwd)/startup_scripts/ $HOME/
-        ;;
-    --copy-rc|-cr)
-        echo "Copying config files into $HOME/ ..."
-        cp -r $(pwd)/config/ $HOME/
-        ;;
-    --link-rc|-lr)
-        echo "Linking config files into $HOME/ ..."
-        for file in $DIR/config/.??*
+        for file in ${CONFIG_FILES[@]}
         do
-            echo "Symlinking $file into $HOME/"
-            ln -s $file $HOME/
+            echo "Copying $PWD/config/$file into $HOME/"
+            cp $PWD/config/$file $HOME
         done
-        ;;
-    --copy-scripts|-cs)
+        echo ""
+
         echo "Copying startup scripts into $HOME/ ..."
-        cp -r $(pwd)/startup_scripts/ $HOME/
-        ;;
-    --link-scripts|-ls)
-        echo "Linking startup scripts into $HOME/ ..."
-        for file in $DIR/startup_scripts/*
+        for file in ${STARTUP_SCRIPTS[@]}
         do
-            echo "Symlinking $file into $HOME/"
-            ln -s $file $HOME/
+            echo "Copying $PWD/startup_scripts/$file into $HOME/"
+            cp $PWD/startup_scripts/$file $HOME
         done
         ;;
+
+    # Symlink the files.
     *)
         echo "Linking config files into $HOME/ ..."
-        for file in $DIR/config/.??*
+        for file in ${CONFIG_FILES[@]}
         do
-            echo "Symlinking $file into $HOME/"
-            ln -s $file $HOME/
+            echo "Symlinking $PWD/config/$file into $HOME/"
+            ln -s $PWD/config/$file $HOME
         done
-        echo -e "\nLinking startup scripts into $HOME/ ..."
-        for file in $DIR/startup_scripts/*
+        echo ""
+
+        echo "Linking startup scripts into $HOME/ ..."
+        for file in ${STARTUP_SCRIPTS[@]}
         do
-            echo "Symlinking $file into $HOME/"
-            ln -s $file $HOME/
+            echo "Symlinking $PWD/startup_scripts/$file into $HOME/"
+            ln -s $PWD/startup_scripts/$file $HOME
         done
         ;;
 esac
@@ -74,26 +84,32 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # Run installation scripts.
 echo -e "\nRunning installation scripts..."
 
-PWD=$(pwd)
-echo "Installing Homebrew, if necessary."
-bash $PWD/scripts/brew.sh
-echo -e "Homebrew installation successful!\n"
+echo "Installing packages..."
+bash $PWD/scripts/packages.sh
+echo -e "Packages installed successfully!\n"
 
-echo "Installing Casks, if necessary."
-bash $PWD/scripts/cask.sh
-echo -e "Homebrew casks installation successful!\n"
-
-echo "Installing Manpages."
-bash $PWD/scripts/man.sh
+echo "Installing Manpages..."
+bash $PWD/scripts/manpages.sh
 echo -e "Manpages installation successful!\n"
 
-echo "Installing Zsh and Oh-my-zsh."
-bash $PWD/scripts/zsh.sh
-echo -e "Zsh and Oh-my-zsh installation successful!\n"
+echo "Installing Oh-my-zsh..."
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+echo -e "Oh-my-zsh installation successful!\n"
 
 # Configure Tmux colors.
-echo "Configuring Tmux colors."
-tic -x xterm-256color-italic.terminfo
-tic -x tmux-256color.terminfo
+echo "Configuring Tmux colors..."
+tic -x $PWD/config/xterm-256color-italic.terminfo
+tic -x $PWD/config/tmux-256color.terminfo
 echo -e "Tmux colors configured successfully!\n"
+
+# Zathura can only be installed after installing `xquartz`.
+# To install Zathura, you need to install `girara`, `zathura` and
+# `zathura-pdf-poppler`. For that, download these packages from the `Releases`
+# section on `pwmt` GitHub site and calculate their sha sums that are mentioned
+# in `/usr/local/Homebrew/Library/Taps/zegervdv/homebrew-zathura/package-name`.
+# And make appropriate changes to those files. Then run the following:
+# brew install girara
+# brew install zathura
+# brew install zathura-pdf-poppler
+echo "Please install Zathura as mentioned in the script"
 
