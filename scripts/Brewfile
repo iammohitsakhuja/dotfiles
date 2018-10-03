@@ -1,0 +1,86 @@
+# Taps.
+tap "caskroom/cask"
+tap "caskroom/versions"
+tap "homebrew/cask-drivers"
+tap "zegervdv/zathura" # Required for installing Zathura (PDF viewer)
+
+# Install GNU core utilities (those that come with macOS are outdated).
+# Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
+brew "coreutils"
+
+# Install GNU `sed`, overwriting the built-in `sed`.
+brew "gnu-sed", args: ["with-default-names"]
+
+# Plugins for ZSH.
+brew "zsh-completions"
+brew "zsh-syntax-highlighting"
+brew "zsh-autosuggestions"
+
+# Utilities.
+brew "wget"
+brew "tmux"
+brew "yarn", args: ["without-node"]
+brew "pandoc"
+brew "vim", args: ["with-overrride-system-vi"]
+brew "grep:, args: ["with-default-names"]
+brew "screen"
+
+# Programming related packages.
+brew "clang-format"
+brew "cmake"
+brew "lua"
+brew "mongodb"
+brew "perl"
+brew "python"
+brew "sqlite"
+
+# Install other useful binaries.
+brew "ack"
+brew "git"
+brew "tree"
+
+# Fun packages.
+brew "lolcat"
+
+# GUI applications.
+cask "android-file-transfer"
+cask "appcleaner"
+cask "dashlane"
+cask "dropbox"
+cask "firefox"
+cask "firefox-developer-edition"
+cask "google-chrome"
+cask "logitech-options"
+cask "microsoft-office"
+cask "opera"
+cask "slack"
+cask "spectacle"
+cask "spotify"
+cask "the-unarchiver"
+cask "vlc"
+cask "webtorrent"
+cask "whatsapp"
+
+# Quick-look plugins.
+cask "qlcolorcode"
+cask "qlmarkdown"
+cask "qlstephen"
+cask "quicklook-json"
+cask "quicklook-csv"
+
+# Utilities required for PDF viewing/conversion through CLI.
+cask "mactex"
+cask "xquartz"
+
+# Development utilities.
+cask "docker"
+cask "hyper"
+cask "insomnia"
+cask "iterm2"
+cask "java8"
+cask "love"
+cask "vagrant"
+cask "virtualbox"
+cask "virtualbox-extension-pack"
+cask "visual-studio-code"
+
