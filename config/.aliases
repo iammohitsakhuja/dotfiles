@@ -3,8 +3,14 @@
 # Show files/folders vertically and produce a colored output.
 alias ls="ls -Gp"
 
-# Alias for Vim tabs.
-alias vim="vim -p"
+# Prevent opening Vi accidentally.
+alias vi="nvim"
+
+# Use Neovim instead of Vim.
+alias vim="nvim"
+
+# Alias for Neovim tabs.
+alias nvim="nvim -p"
 
 # Start python3 and pip3 by default.
 alias python=python3

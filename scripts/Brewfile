@@ -2,7 +2,6 @@
 tap "caskroom/cask"
 tap "caskroom/versions"
 tap "homebrew/cask-drivers"
-tap "zegervdv/zathura" # Required for installing Zathura (PDF viewer)
 
 # Install GNU core utilities (those that come with macOS are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
@@ -19,10 +18,9 @@ brew "zsh-autosuggestions"
 # Utilities.
 brew "wget"
 brew "tmux"
-brew "yarn", args: ["without-node"]
-brew "pandoc"
 brew "vim", args: ["with-overrride-system-vi"]
-brew "grep:, args: ["with-default-names"]
+brew "neovim"
+brew "grep", args: ["with-default-names"]
 brew "screen"
 
 # Programming related packages.
@@ -49,7 +47,9 @@ cask "dashlane"
 cask "dropbox"
 cask "firefox"
 cask "firefox-developer-edition"
+cask "gitter"
 cask "google-chrome"
+cask "komanda"
 cask "logitech-options"
 cask "microsoft-office"
 cask "opera"
@@ -68,14 +68,13 @@ cask "qlstephen"
 cask "quicklook-json"
 cask "quicklook-csv"
 
-# Utilities required for PDF viewing/conversion through CLI.
-cask "mactex"
-cask "xquartz"
-
 # Development utilities.
+cask "dash"
 cask "docker"
+cask "github"
 cask "hyper"
 cask "insomnia"
+cask "intellij-idea"
 cask "iterm2"
 cask "java8"
 cask "love"

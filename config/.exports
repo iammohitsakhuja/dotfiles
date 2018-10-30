@@ -30,13 +30,13 @@ export LC_ALL="en_US.UTF-8"
 export CFLAGS="-std=c11"
 
 # Flags for C++ compilation.
-export CXXFLAGS="-std=c++17"
+export CXXFLAGS="-std=c++14 -Wall -Werror"
 
 # Add, path to custom manpages to the MANPATH variable.
 # Also, update MANPATH so that there is no need to prefix 'g' for utilities
 # like sha256sum and sha512sum.
-MANPATH="/usr/local/man:/usr/local/share/man:/usr/share/man:/usr/man"
-export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+MANPATH="$MANPATH:/usr/local/man:/usr/local/share/man:/usr/share/man:/usr/man"
+export MANPATH="$MANPATH:/usr/local/opt/coreutils/libexec/gnuman"
 
 ############################# Colors for Manpages #############################
 
@@ -63,4 +63,3 @@ export LESS_TERMCAP_so=$purple
 export LESS_TERMCAP_ue=$default
 # Begin underline.
 export LESS_TERMCAP_us=$green
-

@@ -1,6 +1,6 @@
 BasedOnStyle: WebKit
 PointerAlignment: Right
-ColumnLimit: 79
+ColumnLimit: 119
 AlignConsecutiveAssignments: true
 AlignConsecutiveDeclarations: true
 AlignTrailingComments: true

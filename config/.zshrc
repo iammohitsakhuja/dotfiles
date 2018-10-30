@@ -41,11 +41,6 @@ source ~/.aliases
 # Always show files when switching directories via cd.
 cd() { builtin cd "$@" && ls; }
 
-# For converting Markdown files to PDFs
-function makepdf() {
-    pandoc -s -f markdown -t latex -V geometry:margin=1in -o ${1%.*}.pdf $1
-}
-
 # NVM
 # Defer initialization of NVM until NVM, node or a node-dependent command is
 # run. Ensure this block is only run once if .bashrc gets sourced multiple
