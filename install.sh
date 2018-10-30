@@ -147,3 +147,8 @@ tic -x $PWD/config/xterm-256color-italic.terminfo
 tic -x $PWD/config/tmux-256color.terminfo
 echo -e "Tmux colors configured successfully!\n"
 
+# Configure MacOS settings.
+echo "Configuring MacOS settings..."
+bash $PWD/scripts/macos.sh
+echo -e "MacOS settings configured successfully!\n"
+
