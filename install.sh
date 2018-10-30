@@ -29,6 +29,9 @@ CONFIG_FILES=(
     "xterm-256color-italic.terminfo"
 )
 
+NVIM_DIR="$HOME/.config/nvim"
+NVIM_FILE="nvim/init.vim"
+
 # Scripts that will run on the start of each session. Remove the ones that you
 # don't need.
 STARTUP_SCRIPTS=(
@@ -44,6 +47,10 @@ case $* in
             echo "Copying $PWD/config/$file into $HOME/"
             cp $PWD/config/$file $HOME
         done
+        if ! [[ -d $NVIM_DIR ]]; then
+            mkdir -p $NVIM_DIR
+        fi
+        cp $PWD/config/$NVIM_FILE $NVIM_DIR
         echo ""
 
         echo "Copying startup scripts into $HOME/ ..."
@@ -62,6 +69,10 @@ case $* in
             echo "Symlinking $PWD/config/$file into $HOME/"
             ln -s $PWD/config/$file $HOME
         done
+        if ! [[ -d $NVIM_DIR ]]; then
+            mkdir -p $NVIM_DIR
+        fi
+        ln -s $PWD/config/$NVIM_FILE $NVIM_DIR
         echo ""
 
         echo "Linking startup scripts into $HOME/ ..."
@@ -88,6 +99,30 @@ echo "Installing packages..."
 bash $PWD/scripts/packages.sh
 echo -e "Packages installed successfully!\n"
 
+# Install NVM and Yarn.
+echo "Installing NVM..."
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+echo -e "NVM installation successful!\n"
+
+echo "Installing Yarn..."
+brew install yarn --without-node
+echo -e "Yarn installation successful!\n"
+
+# Install ESLint.
+echo "Installing ESLint..."
+if [[ `which npm` ]]; then
+    npm install -g eslint babel-eslint eslint-config-airbnb
+fi
+echo -e "ESLint installation successful!\n"
+
+# Install Pip packages.
+echo "Installing Pip packages..."
+if [[ `which pip3` ]]; then
+    pip3 install autopep8 neovim pycodestyle
+fi
+echo -e "Pip packages installed successfully!\n"
+
+# Install manpages.
 echo "Installing Manpages..."
 bash $PWD/scripts/manpages.sh
 echo -e "Manpages installation successful!\n"
@@ -101,15 +136,4 @@ echo "Configuring Tmux colors..."
 tic -x $PWD/config/xterm-256color-italic.terminfo
 tic -x $PWD/config/tmux-256color.terminfo
 echo -e "Tmux colors configured successfully!\n"
-
-# Zathura can only be installed after installing `xquartz`.
-# To install Zathura, you need to install `girara`, `zathura` and
-# `zathura-pdf-poppler`. For that, download these packages from the `Releases`
-# section on `pwmt` GitHub site and calculate their sha sums that are mentioned
-# in `/usr/local/Homebrew/Library/Taps/zegervdv/homebrew-zathura/package-name`.
-# And make appropriate changes to those files. Then run the following:
-# brew install girara
-# brew install zathura
-# brew install zathura-pdf-poppler
-echo "Please install Zathura as mentioned in the script"
 
