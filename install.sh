@@ -20,15 +20,15 @@ CONFIG_FILES=(
     ".eslintrc.json"
     ".exports"
     ".hyper.js"
+    ".ideavimrc"
     ".mongorc.js"
     ".sqliterc"
     ".tmux.conf"
     ".vimrc"
     ".zshrc"
-    "tmux-256color.terminfo"
-    "xterm-256color-italic.terminfo"
 )
 
+# Path to Neovim config file.
 NVIM_DIR="$HOME/.config/nvim"
 NVIM_FILE="nvim/init.vim"
 
@@ -100,9 +100,10 @@ bash $PWD/scripts/packages.sh
 echo -e "Packages installed successfully!\n"
 
 # Install NVM and Yarn.
-echo "Installing NVM..."
+echo "Installing NVM and Node..."
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-echo -e "NVM installation successful!\n"
+nvm install --lts
+echo -e "NVM and Node installation successful!\n"
 
 echo "Installing Yarn..."
 brew install yarn --without-node
@@ -130,6 +131,15 @@ echo -e "Manpages installation successful!\n"
 echo "Installing Oh-my-zsh..."
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 echo -e "Oh-my-zsh installation successful!\n"
+
+# Install Vim Plug for managing plugins in Vim, both for Neovim and Vim.
+# Vim.
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+# Neovim.
+curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+echo -e "Vim-Plug has been installed. You can install Vim plugins from within (Neo) Vim now.\n"
 
 # Configure Tmux colors.
 echo "Configuring Tmux colors..."
