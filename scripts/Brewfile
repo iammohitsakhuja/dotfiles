@@ -23,6 +23,10 @@ brew "neovim"
 brew "grep", args: ["with-default-names"]
 brew "screen"
 
+# Faster and easier finding.
+brew "fd" # Faster alternative to `find` command.
+brew "the_silver_searcher" # Provides the `ag` command.
+
 # Programming related packages.
 brew "clang-format"
 brew "cmake"

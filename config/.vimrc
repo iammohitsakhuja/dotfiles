@@ -5,6 +5,9 @@ call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
+Plug 'junegunn/fzf', { 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/goyo.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'airblade/vim-gitgutter'
@@ -79,7 +82,13 @@ nmap <leader>t <C-w>w
 command W w !sudo tee % > /dev/null
 
 " <leader>l redraws the screen and removes any search highlighting.
-nnoremap <leader>l :nohl<CR>
+nnoremap <leader>l :nohl<cr>
+
+" <leader>F shortcut for :Files command of Fzf.
+nnoremap <leader>F :Files<cr>
+
+" Toggle relative numbers.
+nnoremap <leader>nt :call NumberToggle()<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -103,9 +112,6 @@ set ruler
 
 " Always show the line numbers.
 set nu
-
-" Toggle relative numbers.
-nnoremap <leader>nt :call NumberToggle()<cr>
 
 " Set column width to be 120 characters and highlight it.
 highlight ColorColumn ctermbg=235 guibg=#464b59

@@ -68,5 +68,8 @@ source ~/.api_keys
 
 ############################# Miscellaneous #############################
 
+# For fuzzy-file finding with fzf.
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 # Required by Homebrew.
 eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"

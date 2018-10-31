@@ -26,6 +26,9 @@ export PYTHONIOENCODING="UTF-8"
 # You may need to manually set your Locale.
 export LC_ALL="en_US.UTF-8"
 
+# Find hidden files with FZF.
+export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
+
 # Flags for C compilation.
 export CFLAGS="-std=c11"
 
