@@ -2,11 +2,11 @@
 
 # Ensure proper usage.
 if [[ $* == "--help" ]] || [[ $* == "-h" ]]; then
-    echo    "Usage: ./install.sh [ -h | --help ] [ -c | --copy ] [ -l | --link ]"
-    echo    "       -h, --help  | Show this help"
-    echo    "       -l, --link  | Link config files and startup scripts rather than copying (default)"
+    echo "Usage: ./install.sh [ -h | --help ] [ -c | --copy ] [ -l | --link ]"
+    echo "       -h, --help  | Show this help"
+    echo "       -l, --link  | Link config files and startup scripts rather than copying (default)"
     echo -e "       -c, --copy  | Copy config files and startup scripts rather than linking\n"
-    echo    "To remove the files that you don't need, simply open this installation script and delete their names."
+    echo "To remove the files that you don't need, simply open this installation script and delete their names."
     exit 0
 fi
 
@@ -39,49 +39,45 @@ STARTUP_SCRIPTS=(
 )
 
 case $* in
-    # Copy the files.
-    --copy|-c)
-        echo "Copying config files into $HOME/ ..."
-        for file in ${CONFIG_FILES[@]}
-        do
-            echo "Copying $PWD/config/$file into $HOME/"
-            cp $PWD/config/$file $HOME
-        done
-        if ! [[ -d $NVIM_DIR ]]; then
-            mkdir -p $NVIM_DIR
-        fi
-        cp $PWD/config/$NVIM_FILE $NVIM_DIR
-        echo ""
+# Copy the files.
+--copy | -c)
+    echo "Copying config files into $HOME/ ..."
+    for file in ${CONFIG_FILES[@]}; do
+        echo "Copying $PWD/config/$file into $HOME/"
+        cp $PWD/config/$file $HOME
+    done
+    if ! [[ -d $NVIM_DIR ]]; then
+        mkdir -p $NVIM_DIR
+    fi
+    cp $PWD/config/$NVIM_FILE $NVIM_DIR
+    echo ""
 
-        echo "Copying startup scripts into $HOME/ ..."
-        for file in ${STARTUP_SCRIPTS[@]}
-        do
-            echo "Copying $PWD/startup_scripts/$file into $HOME/"
-            cp $PWD/startup_scripts/$file $HOME
-        done
-        ;;
+    echo "Copying startup scripts into $HOME/ ..."
+    for file in ${STARTUP_SCRIPTS[@]}; do
+        echo "Copying $PWD/startup_scripts/$file into $HOME/"
+        cp $PWD/startup_scripts/$file $HOME
+    done
+    ;;
 
-    # Symlink the files.
-    *)
-        echo "Linking config files into $HOME/ ..."
-        for file in ${CONFIG_FILES[@]}
-        do
-            echo "Symlinking $PWD/config/$file into $HOME/"
-            ln -s $PWD/config/$file $HOME
-        done
-        if ! [[ -d $NVIM_DIR ]]; then
-            mkdir -p $NVIM_DIR
-        fi
-        ln -s $PWD/config/$NVIM_FILE $NVIM_DIR
-        echo ""
+# Symlink the files.
+*)
+    echo "Linking config files into $HOME/ ..."
+    for file in ${CONFIG_FILES[@]}; do
+        echo "Symlinking $PWD/config/$file into $HOME/"
+        ln -s $PWD/config/$file $HOME
+    done
+    if ! [[ -d $NVIM_DIR ]]; then
+        mkdir -p $NVIM_DIR
+    fi
+    ln -s $PWD/config/$NVIM_FILE $NVIM_DIR
+    echo ""
 
-        echo "Linking startup scripts into $HOME/ ..."
-        for file in ${STARTUP_SCRIPTS[@]}
-        do
-            echo "Symlinking $PWD/startup_scripts/$file into $HOME/"
-            ln -s $PWD/startup_scripts/$file $HOME
-        done
-        ;;
+    echo "Linking startup scripts into $HOME/ ..."
+    for file in ${STARTUP_SCRIPTS[@]}; do
+        echo "Symlinking $PWD/startup_scripts/$file into $HOME/"
+        ln -s $PWD/startup_scripts/$file $HOME
+    done
+    ;;
 esac
 
 # Ask for administrator password.
@@ -90,7 +86,11 @@ sudo -v
 
 # Keep `sudo` alive i.e. update existing time stamp until `./install.sh` has
 # finished.
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+while true; do
+    sudo -n true
+    sleep 60
+    kill -0 "$$" || exit
+done 2>/dev/null &
 
 # Run installation scripts.
 echo -e "\nRunning installation scripts..."
@@ -110,16 +110,20 @@ brew install yarn --without-node
 echo -e "Yarn installation successful!\n"
 
 # Install ESLint.
-echo "Installing ESLint..."
-if [[ `which npm` ]]; then
+echo "Installing NPM packages..."
+if [[ $(which npm) ]]; then
     npm install -g eslint babel-eslint eslint-config-airbnb
+    npm install -g express-generator
+    npm install -g fixjson
+    npm install -g prettier
+    npm install -g stylelint stylelint-scss stylelint-config-standard stylelint-config-recommended-scss
 fi
-echo -e "ESLint installation successful!\n"
+echo -e "NPM packages installed successfully!\n"
 
 # Install Pip packages.
 echo "Installing Pip packages..."
-if [[ `which pip3` ]]; then
-    pip3 install autopep8 neovim pycodestyle
+if [[ $(which pip3) ]]; then
+    pip3 install black gitlint neovim virtualenv
 fi
 echo -e "Pip packages installed successfully!\n"
 
@@ -151,4 +155,3 @@ echo -e "Tmux colors configured successfully!\n"
 echo "Configuring MacOS settings..."
 bash $PWD/scripts/macos.sh
 echo -e "MacOS settings configured successfully!\n"
-

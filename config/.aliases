@@ -3,6 +3,10 @@
 # Show files/folders vertically and produce a colored output.
 alias ls="ls -Gp"
 
+# Use colorls for better colored output.
+alias lc="colorls -A"
+alias ll="colorls -lA --sd"
+
 # Prevent opening Vi accidentally.
 alias vi="nvim"
 
@@ -37,4 +41,3 @@ alias sqlite=sqlite3
 
 # Avoid SSH issues with Tmux.
 alias ssh='TERM=xterm-256color ssh'
-

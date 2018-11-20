@@ -1,6 +1,7 @@
 # Taps.
 tap "caskroom/cask"
 tap "caskroom/versions"
+tap "caskroom/fonts"
 tap "homebrew/cask-drivers"
 
 # Install GNU core utilities (those that come with macOS are outdated).
@@ -22,6 +23,8 @@ brew "vim", args: ["with-overrride-system-vi"]
 brew "neovim"
 brew "grep", args: ["with-default-names"]
 brew "screen"
+brew "highlight"
+brew "ranger"
 
 # Faster and easier finding.
 brew "fd" # Faster alternative to `find` command.
@@ -30,10 +33,15 @@ brew "the_silver_searcher" # Provides the `ag` command.
 # Programming related packages.
 brew "clang-format"
 brew "cmake"
+brew "google-java-format"
 brew "lua"
 brew "mongodb"
 brew "perl"
+brew "postgresql"
 brew "python"
+brew "redis"
+brew "ruby"
+brew "shfmt"
 brew "sqlite"
 
 # Install other useful binaries.
@@ -87,3 +95,5 @@ cask "virtualbox"
 cask "virtualbox-extension-pack"
 cask "visual-studio-code"
 
+# Fonts.
+cask "font-hack-nerd-font"

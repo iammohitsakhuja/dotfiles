@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# This file is a slightly modified version of Mathias' Homebrew script.
-# https://github.com/mathiasbynens/dotfiles/blob/master/brew.sh
-
 # Check if Homebrew can be installed.
 if [[ $OSTYPE != "darwin"* ]]; then
     echo -e "Environment not recognized as macOS.\nQuitting..."
@@ -10,7 +7,7 @@ if [[ $OSTYPE != "darwin"* ]]; then
 fi
 
 # Install Homebrew if it isn't installed already.
-if ! [[ `which brew` ]]; then
+if ! [[ $(which brew) ]]; then
     echo "Installing Homebrew..."
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     echo -e "Installation successful!\n"
@@ -46,11 +43,21 @@ fi
 # Install Homebrew bundle.
 brew tap Homebrew/bundle
 
-# Install all packages.
+# Install all packages specified in Brewfile.
 brew bundle
 echo -e "Packages installed successfully\n"
 
 # Remove outdated versions from the cellar.
 echo "Doing some cleanup..."
 brew cleanup
+echo -e "Done\n"
 
+# Install Bundler for Ruby packages.
+echo "Installing Bundler for Ruby packages..."
+gem install bundler
+echo -e "Done\n"
+
+# Install all packages specified in Gemfile.
+echo "Installing Gems..."
+bundle install --system
+echo -e "Gems installed successfully\n"

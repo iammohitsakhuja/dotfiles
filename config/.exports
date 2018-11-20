@@ -3,7 +3,7 @@
 # Add 'coreutils' to PATH variable so macOS recognises utilities like
 # sha256sum and sha512sum.
 PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
-PATH="$PATH:/usr/local/opt/coreutils/libexec/gnubin"
+PATH="$PATH:/usr/local/opt/coreutils/libexec/gnubin" # Coreutils.
 
 # Android development settings for React-Native.
 export ANDROID_HOME=$HOME/Library/Android/sdk

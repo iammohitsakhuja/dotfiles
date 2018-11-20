@@ -9,7 +9,6 @@ Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'scrooloose/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
 Plug 'airblade/vim-gitgutter'
 Plug 'itchyny/lightline.vim'
 Plug 'terryma/vim-multiple-cursors'
@@ -17,16 +16,12 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'mattn/emmet-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'Valloric/YouCompleteMe'
-Plug 'artur-shaik/vim-javacomplete2'
+Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
+Plug 'ap/vim-css-color', { 'for': ['css', 'scss'] }
 Plug 'w0rp/ale'
-Plug 'google/vim-maktaba'
-Plug 'google/vim-codefmt'
-Plug 'google/vim-glaive'
 Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
 Plug 'joshdick/onedark.vim', { 'as': 'onedark' }
 call plug#end()
-
-call glaive#Install()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
@@ -40,9 +35,6 @@ if $TERM_PROGRAM != "Apple_Terminal"
     if has('nvim') || has('termguicolors')
         set termguicolors
     endif
-
-    " Fix Bad Spelling highlight color. Default bg is white - hard to read.
-    " highlight SpellBad ctermbg=196
 endif
 
 " Italicize comments.
@@ -167,9 +159,6 @@ set tabstop=4
 " Use 2 spaces for JavaScript files.
 autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 
-" Use 2 spaces for Java files (Formatting according to Google-Java-Format).
-autocmd Filetype java setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2 colorcolumn=101
-
 " Set colorcolumn to be at 81 characters for Markdown files.
 autocmd Filetype markdown setlocal colorcolumn=81
 
@@ -203,7 +192,7 @@ let g:lightline = {
 " Remap VIM 0 to first non-blank character.
 map 0 ^
 
-" Map 'Ctrl-O' to ':NerdTreeToggle'
+" Map 'Ctrl-O' to ':NERDTreeToggle'
 map <C-o> :NERDTreeToggle<CR>
 
 " Remap 'Esc' key.
@@ -215,9 +204,6 @@ nmap <C-k> mz:m-2<cr>`z
 vmap <C-j> :m'>+<cr>`<my`>mzgv`yo`z
 vmap <C-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
-" Delete trailing whitespace on save.
-autocmd BufWrite * :call DeleteTrailingWS()
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Linting Markdown settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -228,40 +214,43 @@ autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 let g:markdown_fenced_languages = ['c', 'cpp', 'python', 'java', 'bash=sh', 'sql']
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vim/codefmt settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Enable codefmt's default mappings on the <Leader>= prefix.
-Glaive codefmt plugin[mappings]
-Glaive codefmt google_java_executable="java -jar /Users/mohitsakhuja/google-java-format-1.6-all-deps.jar"
-
-augroup autoformat_settings
-    autocmd FileType bzl AutoFormatBuffer buildifier
-    autocmd FileType c,cpp,proto AutoFormatBuffer clang-format
-    autocmd FileType dart AutoFormatBuffer dartfmt
-    autocmd FileType go AutoFormatBuffer gofmt
-    autocmd FileType gn AutoFormatBuffer gn
-    autocmd FileType html,css,json AutoFormatBuffer js-beautify
-    autocmd FileType java AutoFormatBuffer google-java-format
-    autocmd FileType python AutoFormatBuffer autopep8
-    autocmd FileType markdown AutoFormatBuffer mdl
-augroup END
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => ALE settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Use ESLint for linting graphql, js and jsx files.
-let g:ale_linters = {
-            \  'graphql': ['eslint'],
-            \  'javascript': ['eslint'],
-            \  'jsx': ['eslint']
+let g:ale_linter_aliases = {
+            \   'bash': 'sh',
+            \   'csh': 'sh',
+            \   'zsh': 'sh',
             \}
 
-" Use ESLint for fixing graphql, js and jsx files.
-let g:ale_fixers = {
-            \  'graphql': ['eslint'],
-            \  'javascript': ['eslint'],
-            \  'jsx': ['eslint']
+let g:ale_linters = {
+            \   'sh': ['shell'],
+            \   'c': ['clang'],
+            \   'cpp': ['clang'],
+            \   'css': ['stylelint'],
+            \   'html': ['stylelint'],
+            \   'java': ['javac'],
+            \   'javascript': ['eslint'],
+            \   'json': [],
+            \   'markdown': ['mdl'],
+            \   'python': [],
+            \   'scss': ['stylelint'],
             \}
+
+let g:ale_fixers = {
+            \   '*': ['remove_trailing_lines', 'trim_whitespace'],
+            \   'sh': ['shfmt'],
+            \   'c': ['clang-format'],
+            \   'cpp': ['clang-format'],
+            \   'css': ['prettier', 'remove_trailing_lines', 'stylelint', 'trim_whitespace'],
+            \   'java': ['google_java_format'],
+            \   'javascript': ['eslint', 'prettier', 'remove_trailing_lines', 'trim_whitespace'],
+            \   'json': ['fixjson', 'prettier', 'remove_trailing_lines', 'trim_whitespace'],
+            \   'markdown': ['prettier', 'remove_trailing_lines', 'trim_whitespace'],
+            \   'python': ['black'],
+            \   'scss': ['prettier', 'remove_trailing_lines', 'stylelint', 'trim_whitespace'],
+            \}
+
+let g:ale_java_google_java_format_options = '--aosp'
 
 " Display errors.
 let g:ale_sign_column_always = 1
@@ -273,10 +262,10 @@ let g:ale_fix_on_save = 1
 " => Emmet settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:user_emmet_settings = {
-  \  'javascript.jsx' : {
-    \      'extends' : 'jsx',
-    \  },
-  \}
+            \   'javascript.jsx' : {
+            \       'extends' : 'jsx',
+            \   },
+            \}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Auto-completion settings
@@ -287,31 +276,32 @@ let g:ycm_global_ycm_extra_conf = "~/.vim/plugged/YouCompleteMe/third_party/ycmd
 " Required by vim-javacomplete2.
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
 
+" Enable CSS autocompletion.
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Vim-commentary settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Change default comment style for JSX files.
-autocmd FileType javascript.jsx setlocal commentstring={/*\ %s\ */}
+" autocmd FileType javascript.jsx setlocal commentstring={/*\ %s\ */}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => NERDTree settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Open NERDTree by default.
-let g:nerdtree_tabs_open_on_console_startup = 1
-
 " Show hidden files in NERDTree by default.
 let NERDTreeShowHidden = 1
 
 " Hide these files/folders.
 let NERDTreeIgnore = [
-      \ '\.pyc$',
-      \ '\.class$',
-      \ '\.o$',
-      \ '\.swp$',
-      \ '\.git$[[dir]]',
-      \ 'node_modules[[dir]]',
-      \ 'build[[dir]]'
-    \ ]
+            \   '\.DS_Store$',
+            \   '\.pyc$',
+            \   '\.class$',
+            \   '\.o$',
+            \   '\.swp$',
+            \   '\.git$[[dir]]',
+            \   'node_modules[[dir]]',
+            \   'build[[dir]]'
+            \]
 
 " Sort files/folders.
 let NERDTreeSortOrder = ['\/$', '\.c$', '\.java$', '\~$']
@@ -330,11 +320,3 @@ function! NumberToggle()
         set relativenumber
     endif
 endfunction
-
-" Delete trailing white space on save.
-function! DeleteTrailingWS()
-    exe "normal mz"
-    %s/\s\+$//ge
-    exe "normal `z"
-endfunction
-

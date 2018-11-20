@@ -2,13 +2,19 @@
 
 source ~/.exports
 
+############################# Powerline setup #############################
+
+POWERLEVEL9K_MODE='nerdfont-complete'
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
+
 ############################# Zsh configuration #############################
 
 # Path to oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
 # Set to "random" to load a random theme each time oh-my-zsh is loaded.
-ZSH_THEME="robbyrussell"
+ZSH_THEME="powerlevel9k/powerlevel9k"
 if [[ $TERM_PROGRAM == 'Hyper' ]]; then
     ZSH_THEME="agnoster"
     DEFAULT_USER=$USER
@@ -48,7 +54,21 @@ cd() { builtin cd "$@" && ls; }
 if [ -s "$HOME/.nvm/nvm.sh" ] && [ ! "$(whence -w __init_nvm)" = function ]; then
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-    declare -a __node_commands=('nvm' 'node' 'npm' 'npx' 'yarn' 'gulp' 'grunt' 'webpack' 'eslint')
+    declare -a __node_commands=(
+        'nvm'
+        'node'
+        'npm'
+        'npx'
+        'yarn'
+        'gulp'
+        'grunt'
+        'webpack'
+        'eslint'
+        'express-generator'
+        'fixjson'
+        'prettier'
+        'stylelint'
+    )
     function __init_nvm() {
         for i in "${__node_commands[@]}"; do unalias $i; done
         . "$NVM_DIR"/nvm.sh
