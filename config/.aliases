@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # Show files/folders vertically and produce a colored output.
-alias ls="ls -Gp"
+alias ls="ls -pA --group-directories-first --color=always"
 
 # Use colorls for better colored output.
-alias lc="colorls -A"
+alias lc="colorls -A --sd"
 alias ll="colorls -lA --sd"
 
 # Prevent opening Vi accidentally.

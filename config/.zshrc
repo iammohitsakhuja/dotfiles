@@ -68,6 +68,8 @@ if [ -s "$HOME/.nvm/nvm.sh" ] && [ ! "$(whence -w __init_nvm)" = function ]; the
         'fixjson'
         'prettier'
         'stylelint'
+        'tsc'
+        'tslint'
     )
     function __init_nvm() {
         for i in "${__node_commands[@]}"; do unalias $i; done

@@ -19,6 +19,7 @@ Plug 'Valloric/YouCompleteMe'
 Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 Plug 'ap/vim-css-color', { 'for': ['css', 'scss'] }
 Plug 'w0rp/ale'
+Plug 'rizzatti/dash.vim'
 Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
 Plug 'joshdick/onedark.vim', { 'as': 'onedark' }
 call plug#end()
