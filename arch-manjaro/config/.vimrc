@@ -34,6 +34,7 @@ call plug#end()
 syntax on
 
 " Sets the theme for the editor.
+set background=dark
 let ayucolor="dark"
 colorscheme ayu
 if $TERM_PROGRAM != "Apple_Terminal"
