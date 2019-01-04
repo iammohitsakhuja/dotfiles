@@ -111,3 +111,6 @@ yay python-pip
 sudo pip3 install black gitlint neovim virtualenv
 
 yay taskbook
+
+# Install Fira Code font.
+yay fira-code # Use `otf-nerd-fonts-fira-code`.
