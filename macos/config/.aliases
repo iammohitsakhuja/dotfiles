@@ -34,13 +34,17 @@ alias vu="vagrant up && vagrant ssh"
 alias vh="vagrant halt"
 
 # Create aliases for showing and hiding hidden files on macOS.
-alias showFiles="defaults write com.apple.finder AppleShowAllFiles YES; \
-    killall Finder /System/Library/CoreServices/Finder.app"
-alias hideFiles="defaults write com.apple.finder AppleShowAllFiles NO; \
-    killall Finder /System/Library/CoreServices/Finder.app"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    alias showFiles="defaults write com.apple.finder AppleShowAllFiles YES; \
+        killall Finder /System/Library/CoreServices/Finder.app"
+    alias hideFiles="defaults write com.apple.finder AppleShowAllFiles NO; \
+        killall Finder /System/Library/CoreServices/Finder.app"
+fi
 
 # Alias to LOVE2D.
-alias love="/Applications/love.app/Contents/MacOS/love"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    alias love="/Applications/love.app/Contents/MacOS/love"
+fi
 
 # Alias for sqlite.
 alias sqlite=sqlite3
