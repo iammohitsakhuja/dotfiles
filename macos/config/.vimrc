@@ -20,8 +20,11 @@ Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 Plug 'ap/vim-css-color', { 'for': ['css', 'scss'] }
 Plug 'w0rp/ale'
 Plug 'rizzatti/dash.vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
 Plug 'joshdick/onedark.vim', { 'as': 'onedark' }
+Plug 'drewtempelmeyer/palenight.vim', { 'as': 'palenight' }
+Plug 'ayu-theme/ayu-vim', { 'as': 'ayu' }
 call plug#end()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -31,7 +34,8 @@ call plug#end()
 syntax on
 
 " Sets the theme for the editor.
-colorscheme onedark
+let ayucolor="dark"
+colorscheme ayu
 if $TERM_PROGRAM != "Apple_Terminal"
     if has('nvim') || has('termguicolors')
         set termguicolors
@@ -184,7 +188,7 @@ let g:lightline = {
             \         'left': [['mode', 'paste' ], ['readonly', 'filename', 'modified']],
             \         'right': [['lineinfo'], ['percent'], ['fileformat', 'fileencoding']]
             \     },
-            \     'colorscheme': 'challenger_deep'
+            \     'colorscheme': 'palenight'
             \ }
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

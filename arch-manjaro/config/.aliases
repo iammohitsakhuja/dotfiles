@@ -16,9 +16,10 @@ alias vim="nvim"
 # Alias for Neovim tabs.
 alias nvim="nvim -p"
 
-# Alias for ranger.
+# Alias for Ranger.
 alias r="ranger"
 
+# Alias for Taskbook.
 alias tb="taskbook"
 
 # Start python3 and pip3 by default.
