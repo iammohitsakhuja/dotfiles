@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+# Show files/folders vertically and produce a colored output.
+alias ls="ls -pA --group-directories-first --color=always"
+
+# Use colorls for better colored output.
+alias lc="colorls -A --sd"
+alias ll="colorls -lA --sd"
+
+# Prevent opening Vi accidentally.
+alias vi="nvim"
+
+# Use Neovim instead of Vim.
+alias vim="nvim"
+
+# Alias for Neovim tabs.
+alias nvim="nvim -p"
+
+# Alias for ranger.
+alias r="ranger"
+
+alias tb="taskbook"
+
+# Start python3 and pip3 by default.
+alias python=python3
+alias pip=pip3
+
+# Configure the 'remove' command.
+alias rm="rm -i"
+
+# Open vagrant.
+alias vu="vagrant up && vagrant ssh"
+alias vh="vagrant halt"
+
+# Create aliases for showing and hiding hidden files on macOS.
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    alias showFiles="defaults write com.apple.finder AppleShowAllFiles YES; \
+        killall Finder /System/Library/CoreServices/Finder.app"
+    alias hideFiles="defaults write com.apple.finder AppleShowAllFiles NO; \
+        killall Finder /System/Library/CoreServices/Finder.app"
+fi
+
+# Alias to LOVE2D.
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    alias love="/Applications/love.app/Contents/MacOS/love"
+fi
+
+# Alias for sqlite.
+alias sqlite=sqlite3
+
+# Avoid SSH issues with Tmux.
+alias ssh='TERM=xterm-256color ssh'

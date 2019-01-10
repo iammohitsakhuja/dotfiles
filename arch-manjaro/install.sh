@@ -32,7 +32,12 @@ CONFIG_FILES=(
 NVIM_DIR="$HOME/.config/nvim"
 NVIM_FILE="nvim/init.vim"
 
-# Scripts that will run on the start of each session. Remove the ones that you don't need.
+# Path to Ranger config file.
+RANGER_DIR="$HOME/.config/ranger"
+RANGER_FILE="ranger/scope.sh"
+
+# Scripts that will run on the start of each session. Remove the ones that you
+# don't need.
 STARTUP_SCRIPTS=(
     "greeting.sh"
 )
@@ -49,6 +54,7 @@ case $* in
         mkdir -p $NVIM_DIR
     fi
     cp $PWD/config/$NVIM_FILE $NVIM_DIR
+    cp $PWD/config/$RANGER_FILE $RANGER_DIR
     echo ""
 
     echo "Copying startup scripts into $HOME/ ..."
@@ -69,6 +75,7 @@ case $* in
         mkdir -p $NVIM_DIR
     fi
     ln -s $PWD/config/$NVIM_FILE $NVIM_DIR
+    ln -s $PWD/config/$RANGER_FILE $RANGER_DIR
     echo ""
 
     echo "Linking startup scripts into $HOME/ ..."
@@ -83,7 +90,8 @@ esac
 echo -e "\nInstallation requires administrator authentication..."
 sudo -v
 
-# Keep `sudo` alive i.e. update existing time stamp until `./install.sh` has finished.
+# Keep `sudo` alive i.e. update existing time stamp until `./install.sh` has
+# finished.
 while true; do
     sudo -n true
     sleep 60
