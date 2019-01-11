@@ -79,6 +79,9 @@ case $* in
     ;;
 esac
 
+tic -x $PWD/config/tmux-256color.terminfo
+tic -x $PWD/config/xterm-256color-italic.terminfo
+
 # Ask for administrator password.
 echo -e "\nInstallation requires administrator authentication..."
 sudo -v
