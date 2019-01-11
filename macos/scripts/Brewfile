@@ -11,11 +11,6 @@ brew "coreutils"
 # Install GNU `sed`, overwriting the built-in `sed`.
 brew "gnu-sed", args: ["with-default-names"]
 
-# Plugins for ZSH.
-brew "zsh-completions"
-brew "zsh-syntax-highlighting"
-brew "zsh-autosuggestions"
-
 # Utilities.
 brew "wget"
 brew "tmux"
@@ -49,9 +44,6 @@ brew "ack"
 brew "git"
 brew "tree"
 
-# Fun packages.
-brew "lolcat"
-
 # GUI applications.
 cask "android-file-transfer"
 cask "appcleaner"
@@ -61,6 +53,7 @@ cask "firefox"
 cask "firefox-developer-edition"
 cask "gitter"
 cask "google-chrome"
+cask "grammarly"
 cask "komanda"
 cask "logitech-options"
 cask "microsoft-office"
@@ -72,6 +65,7 @@ cask "the-unarchiver"
 cask "vlc"
 cask "webtorrent"
 cask "whatsapp"
+cask "typora"
 
 # Quick-look plugins.
 cask "qlcolorcode"
@@ -82,7 +76,6 @@ cask "quicklook-csv"
 
 # Development utilities.
 cask "dash"
-cask "docker"
 cask "github"
 cask "hyper"
 cask "insomnia"

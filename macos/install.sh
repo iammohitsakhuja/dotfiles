@@ -90,6 +90,21 @@ while true; do
     kill -0 "$$" || exit
 done 2>/dev/null &
 
+# Install command-line utilities.
+xcode-select --install
+
+# File to store any API keys in.
+touch ~/.api_keys
+
+# Configure git.
+git config --global user.email "sakhuja.mohit@gmail.com"
+git config --global user.name "Mohit Sakhuja"
+git config --global core.editor "nvim"
+git config --global core.filemode false
+
+# Create SSH key pair.
+ssh-keygen -t rsa -C "sakhuja.mohit@gmail.com"
+
 # Run installation scripts.
 echo -e "\nRunning installation scripts..."
 
@@ -115,6 +130,7 @@ if [[ $(which npm) ]]; then
     npm install -g fixjson
     npm install -g prettier
     npm install -g stylelint stylelint-scss stylelint-config-standard stylelint-config-recommended-scss
+    npm install -g taskbook
 fi
 echo -e "NPM packages installed successfully!\n"
 
@@ -129,10 +145,6 @@ echo -e "Pip packages installed successfully!\n"
 echo "Installing Manpages..."
 bash $PWD/scripts/manpages.sh
 echo -e "Manpages installation successful!\n"
-
-echo "Installing Oh-my-zsh..."
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-echo -e "Oh-my-zsh installation successful!\n"
 
 # Install Vim Plug for managing plugins in Vim, both for Neovim and Vim.
 # Vim.

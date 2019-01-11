@@ -24,19 +24,16 @@ fi
 plugins=(
     git
     vi-mode
+    zsh-syntax-highlighting
+    zsh-completions
+    zsh-autosuggestions
 )
 
 # Load oh-my-zsh.
 source $ZSH/oh-my-zsh.sh
 
-# Syntax Highlighting for zsh.
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-# Completions for zsh.
-fpath=(/usr/local/share/zsh-completions $fpath)
-
-# Auto-suggestions for zsh.
-source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# Load completions for zsh.
+autoload -U compinit && compinit
 
 ############################# Useful aliases #############################
 
@@ -70,6 +67,7 @@ if [ -s "$HOME/.nvm/nvm.sh" ] && [ ! "$(whence -w __init_nvm)" = function ]; the
         'stylelint'
         'tsc'
         'tslint'
+        'taskbook'
     )
     function __init_nvm() {
         for i in "${__node_commands[@]}"; do unalias $i; done
