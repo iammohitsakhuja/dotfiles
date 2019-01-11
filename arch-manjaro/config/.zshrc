@@ -32,8 +32,7 @@ plugins=(
 # Load oh-my-zsh.
 source $ZSH/oh-my-zsh.sh
 
-
-# Load auto-suggestions for zsh.
+# Load completions for zsh.
 autoload -U compinit && compinit
 
 ############################# Useful aliases #############################
