@@ -17,6 +17,7 @@ brew "tmux"
 brew "vim", args: ["with-overrride-system-vi"]
 brew "neovim"
 brew "grep", args: ["with-default-names"]
+brew "htop"
 brew "screen"
 brew "highlight"
 brew "ranger"
@@ -48,6 +49,7 @@ brew "tree"
 cask "android-file-transfer"
 cask "appcleaner"
 cask "dashlane"
+cask "downie"
 cask "dropbox"
 cask "firefox"
 cask "firefox-developer-edition"
@@ -93,3 +95,4 @@ cask "zoomus"
 
 # Fonts.
 cask "font-hack-nerd-font"
+cask "font-fira-code"

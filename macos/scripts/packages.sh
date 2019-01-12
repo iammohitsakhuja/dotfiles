@@ -71,6 +71,7 @@ mas install 1153157709 # Speedtest.
 mas install 1160374471 # Pipifier.
 mas install 1385985095 # uBlock.
 mas install 1284863847 # Unsplash wallpapers.
+mas install 409201541  # Pages.
 
 # Remove outdated versions from the cellar.
 echo "Doing some cleanup..."
