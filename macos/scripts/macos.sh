@@ -202,9 +202,9 @@ defaults write com.apple.mail DisableInlineAttachmentViewing -bool true
 defaults write com.apple.terminal StringEncodings -array 4
 
 # Install iTerm themes (Ayu, Material Design and Argonaut).
-open "../config/itermcolors/ayu.itermcolors"
-open "../config/itermcolors/Argonaut.itermcolors"
-open "../config/itermcolors/material-design-colors.itermcolors"
+# open "../config/itermcolors/ayu.itermcolors"
+# open "../config/itermcolors/Argonaut.itermcolors"
+# open "../config/itermcolors/material-design-colors.itermcolors"
 
 # Don’t display the annoying prompt when quitting iTerm.
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
@@ -239,19 +239,4 @@ defaults write com.google.Chrome.canary DisablePrintPreview -bool true
 defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true
 defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool true
 
-###############################################################################
-# Kill affected applications                                                  #
-###############################################################################
-
-for app in "Activity Monitor" \
-    "cfprefsd" \
-    "Dock" \
-    "Finder" \
-    "Google Chrome" \
-    "Mail" \
-    "Safari" \
-    "SystemUIServer" \
-    "Terminal"; do
-    killall "${app}" &>/dev/null
-done
 echo "Done. Note that some of these changes require a logout/restart to take effect."

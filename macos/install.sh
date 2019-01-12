@@ -79,9 +79,6 @@ case $* in
     ;;
 esac
 
-tic -x $PWD/config/tmux-256color.terminfo
-tic -x $PWD/config/xterm-256color-italic.terminfo
-
 # Ask for administrator password.
 echo -e "\nInstallation requires administrator authentication..."
 sudo -v
@@ -92,9 +89,6 @@ while true; do
     sleep 60
     kill -0 "$$" || exit
 done 2>/dev/null &
-
-# Install command-line utilities.
-xcode-select --install
 
 # File to store any API keys in.
 touch ~/.api_keys
@@ -115,12 +109,20 @@ echo "Installing packages..."
 bash $PWD/scripts/packages.sh
 echo -e "Packages installed successfully!\n"
 
-# Install NVM and Yarn.
+# Install NVM.
 echo "Installing NVM and Node..."
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+
+# Do this to be able to use NVM now.
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+# Install node.
 nvm install --lts
 echo -e "NVM and Node installation successful!\n"
 
+# Install yarn.
 echo "Installing Yarn..."
 brew install yarn --without-node
 echo -e "Yarn installation successful!\n"
@@ -140,14 +142,17 @@ echo -e "NPM packages installed successfully!\n"
 # Install Pip packages.
 echo "Installing Pip packages..."
 if [[ $(which pip3) ]]; then
-    pip3 install black gitlint neovim virtualenv
+    pip3 install black
+    pip3 install gitlint
+    pip3 install neovim
+    pip3 install virtualenv
 fi
 echo -e "Pip packages installed successfully!\n"
 
 # Install manpages.
-echo "Installing Manpages..."
-bash $PWD/scripts/manpages.sh
-echo -e "Manpages installation successful!\n"
+# echo "Installing Manpages..."
+# bash $PWD/scripts/manpages.sh
+# echo -e "Manpages installation successful!\n"
 
 # Install Vim Plug for managing plugins in Vim, both for Neovim and Vim.
 # Vim.

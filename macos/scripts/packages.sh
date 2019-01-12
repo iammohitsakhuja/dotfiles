@@ -59,6 +59,10 @@ brew tap Homebrew/bundle
 brew bundle
 echo -e "Packages installed successfully\n"
 
+# Set up Perl correctly. Any other changes are in `.zshrc`.
+PERL_MM_OPT="INSTALL_BASE=$HOME/perl5" cpan local::lib
+
+# Install mas-cli for Mac App Store applications.
 brew tap mas-cli/tap
 brew tap-pin mas-cli/tap
 brew install mas
@@ -73,12 +77,14 @@ echo "Doing some cleanup..."
 brew cleanup
 echo -e "Done\n"
 
-# Install Bundler for Ruby packages.
-echo "Installing Bundler for Ruby packages..."
-gem install bundler
-echo -e "Done\n"
+# Update path for Ruby in order to install gems to Ruby provided by Homebrew rather than system Ruby.
+export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.6.0/bin:$PATH"
 
-# Install all packages specified in Gemfile.
+# Install Ruby gems.
 echo "Installing Gems..."
-bundle install --system
+gem install lolcat
+gem install colorls
+gem install mdl
 echo -e "Gems installed successfully\n"
+
+# TODO: Do something about adding manpages for gems to the path.
