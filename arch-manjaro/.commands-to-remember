@@ -58,6 +58,9 @@ yay ruby
 yay rdoc
 gem install colorls lolcat
 
+yay clang-format
+yay shfmt
+
 yay silver_searcher
 yay fd
 yay tmux

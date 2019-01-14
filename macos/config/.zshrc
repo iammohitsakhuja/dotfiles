@@ -92,6 +92,4 @@ source ~/.api_keys
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Required by Homebrew.
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
-fi
+eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
