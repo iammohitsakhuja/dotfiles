@@ -93,7 +93,7 @@ module.exports = {
             lightWhite : '#FFFFFF',
         },
 
-        shell : '/usr/local/bin/zsh',
+        shell : '/bin/zsh',
 
         // for setting shell arguments (i.e. for using interactive shellArgs:
         // `['-i']`)

@@ -7,6 +7,9 @@ alias ls="ls -pA --group-directories-first --color=always"
 alias lc="colorls -A --sd"
 alias ll="colorls -lA --sd"
 
+# Use ccat for colorizing cat output.
+alias cat="ccat"
+
 # Prevent opening Vi accidentally.
 alias vi="nvim"
 

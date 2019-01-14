@@ -53,6 +53,7 @@ yay nerd-fonts-complete
 # Use emoji-one font to be the default for displaying emojis.
 sudo ln -sf ../conf.avail/75-emojione.conf /etc/fonts/conf.d/75-emojione.conf
 
+yay terminal st # Might be 31st one on the list.
 yay ruby
 yay rdoc
 gem install colorls lolcat
@@ -62,6 +63,7 @@ yay fd
 yay tmux
 yay ranger
 yay highlight # Might be the 17th one on the list.
+yay ccat      # Might be 30th one on the list.
 yay w3m
 yay transmission-cli
 
@@ -111,3 +113,4 @@ yay python-pip
 sudo pip3 install black gitlint neovim virtualenv
 
 yay taskbook
+yay typora
