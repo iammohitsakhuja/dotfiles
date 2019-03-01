@@ -23,6 +23,7 @@ CONFIG_FILES=(
     ".ideavimrc"
     ".mongorc.js"
     ".sqliterc"
+    ".taskbook.json"
     ".tmux.conf"
     ".vimrc"
     ".zshrc"
@@ -135,6 +136,7 @@ if [[ $(which npm) ]]; then
     npm install -g fixjson
     npm install -g prettier
     npm install -g stylelint stylelint-scss stylelint-config-standard stylelint-config-recommended-scss
+    npm install -g typescript tslint
     npm install -g taskbook
 fi
 echo -e "NPM packages installed successfully!\n"

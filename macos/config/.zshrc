@@ -42,7 +42,7 @@ source ~/.aliases
 ############################# Utility functions #############################
 
 # Always show files when switching directories via cd.
-cd() { builtin cd "$@" && ls; }
+cd() { builtin cd "$@" && lc; }
 
 # NVM
 # Defer initialization of NVM until NVM, node or a node-dependent command is
@@ -57,17 +57,15 @@ if [ -s "$HOME/.nvm/nvm.sh" ] && [ ! "$(whence -w __init_nvm)" = function ]; the
         'npm'
         'npx'
         'yarn'
-        'gulp'
-        'grunt'
-        'webpack'
         'eslint'
-        'express-generator'
+        'express'
         'fixjson'
+        'ng'
         'prettier'
         'stylelint'
         'tsc'
         'tslint'
-        'taskbook'
+        'tb'
     )
     function __init_nvm() {
         for i in "${__node_commands[@]}"; do unalias $i; done

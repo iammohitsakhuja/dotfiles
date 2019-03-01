@@ -3,6 +3,7 @@
 # Add 'coreutils' to PATH variable so macOS recognises utilities like
 # sha256sum and sha512sum.
 PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.6.0/bin:$PATH" # Ruby and gems.
+PATH="/usr/local/opt/sqlite/bin:$PATH"                                  # Sqlite 3.
 PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"                    # Coreutils.
 PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
 
