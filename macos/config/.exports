@@ -5,14 +5,16 @@
 PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.6.0/bin:$PATH" # Ruby and gems.
 PATH="/usr/local/opt/sqlite/bin:$PATH"                                  # Sqlite 3.
 PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"                    # Coreutils.
+PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"                      # GNU Sed.
+PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"                         # Grep.
 PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
 
 # Android development settings for React-Native.
-# export ANDROID_HOME=$HOME/Library/Android/sdk
-# PATH="$PATH:$ANDROID_HOME/emulator"
-# PATH="$PATH:$ANDROID_HOME/tools"
-# PATH="$PATH:$ANDROID_HOME/tools/bin"
-# PATH="$PATH:$ANDROID_HOME/platform-tools"
+export ANDROID_HOME=$HOME/Library/Android/sdk
+PATH="$PATH:$ANDROID_HOME/emulator"
+PATH="$PATH:$ANDROID_HOME/tools"
+PATH="$PATH:$ANDROID_HOME/tools/bin"
+PATH="$PATH:$ANDROID_HOME/platform-tools"
 export PATH
 
 # Make Neovim the default editor.
