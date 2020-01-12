@@ -40,6 +40,11 @@ echo "Installing Python and its packages..."
 bash $(pwd)/scripts/python-packages.sh
 echo -e "Done\n\n"
 
+# Install Ruby gems.
+echo "Installing Ruby gems..."
+bash $(pwd)/scripts/ruby-gems.sh
+echo -e "Done\n\n"
+
 echo "Installing packages via Yay..."
 
 # Install utilities.

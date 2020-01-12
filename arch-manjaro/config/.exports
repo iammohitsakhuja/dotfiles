@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PATH="$PATH:$HOME/.gem/ruby/2.5.0/bin" # Ruby Gems.
+PATH="$PATH:$HOME/.gem/ruby/2.6.0/bin" # Ruby Gems.
 export PATH
 
 # Make Neovim the default editor.

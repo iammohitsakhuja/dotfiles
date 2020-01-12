@@ -23,6 +23,7 @@ CONFIG_FILES=(
     ".ideavimrc"
     ".mongorc.js"
     ".sqliterc"
+    ".taskbook.json"
     ".tmux.conf"
     ".vimrc"
     ".zshrc"
@@ -42,6 +43,8 @@ STARTUP_SCRIPTS=(
     "greeting.sh"
 )
 
+#### TODO: Backup any previously existing files. ####
+
 case $* in
 # Copy the files.
 --copy | -c)
@@ -54,6 +57,9 @@ case $* in
         mkdir -p $NVIM_DIR
     fi
     cp $PWD/config/$NVIM_FILE $NVIM_DIR
+    if ! [[ -d $RANGER_DIR ]]; then
+        mkdir -p $RANGER_DIR
+    fi
     cp $PWD/config/$RANGER_FILE $RANGER_DIR
     echo ""
 
@@ -75,6 +81,9 @@ case $* in
         mkdir -p $NVIM_DIR
     fi
     ln -s $PWD/config/$NVIM_FILE $NVIM_DIR
+    if ! [[ -d $RANGER_DIR ]]; then
+        mkdir -p $RANGER_DIR
+    fi
     ln -s $PWD/config/$RANGER_FILE $RANGER_DIR
     echo ""
 
@@ -98,6 +107,18 @@ while true; do
     kill -0 "$$" || exit
 done 2>/dev/null &
 
+# File to store any API keys in.
+touch ~/.api_keys
+
+# Configure git.
+git config --global user.email "sakhuja.mohit@gmail.com"
+git config --global user.name "Mohit Sakhuja"
+git config --global core.editor "nvim"
+git config --global core.filemode false
+
+# Create SSH key pair.
+ssh-keygen -t rsa -C "sakhuja.mohit@gmail.com"
+
 # Run installation scripts.
 echo -e "\nRunning installation scripts..."
 
@@ -105,59 +126,13 @@ echo "Installing packages..."
 bash $PWD/scripts/packages.sh
 echo -e "Packages installed successfully!\n"
 
-# Install NVM and Yarn.
-echo "Installing NVM and Node..."
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-nvm install --lts
-echo -e "NVM and Node installation successful!\n"
-
-echo "Installing Yarn..."
-brew install yarn --without-node
-echo -e "Yarn installation successful!\n"
-
-# Install ESLint.
-echo "Installing NPM packages..."
-if [[ $(which npm) ]]; then
-    npm install -g eslint babel-eslint eslint-config-airbnb
-    npm install -g express-generator
-    npm install -g fixjson
-    npm install -g prettier
-    npm install -g stylelint stylelint-scss stylelint-config-standard stylelint-config-recommended-scss
-fi
-echo -e "NPM packages installed successfully!\n"
-
-# Install Pip packages.
-echo "Installing Pip packages..."
-if [[ $(which pip3) ]]; then
-    pip3 install black gitlint neovim virtualenv
-fi
-echo -e "Pip packages installed successfully!\n"
-
 # Install manpages.
-echo "Installing Manpages..."
-bash $PWD/scripts/manpages.sh
-echo -e "Manpages installation successful!\n"
-
-echo "Installing Oh-my-zsh..."
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-echo -e "Oh-my-zsh installation successful!\n"
-
-# Install Vim Plug for managing plugins in Vim, both for Neovim and Vim.
-# Vim.
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-# Neovim.
-curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-echo -e "Vim-Plug has been installed. You can install Vim plugins from within (Neo) Vim now.\n"
-
-# Configure Tmux colors.
-echo "Configuring Tmux colors..."
-tic -x $PWD/config/xterm-256color-italic.terminfo
-tic -x $PWD/config/tmux-256color.terminfo
-echo -e "Tmux colors configured successfully!\n"
-
-# Configure MacOS settings.
-echo "Configuring MacOS settings..."
-bash $PWD/scripts/macos.sh
-echo -e "MacOS settings configured successfully!\n"
+# echo "Installing Manpages..."
+# bash $PWD/scripts/manpages.sh
+# echo -e "Manpages installation successful!\n"
+#
+# # Configure Tmux colors.
+# echo "Configuring Tmux colors..."
+# tic -x $PWD/config/xterm-256color-italic.terminfo
+# tic -x $PWD/config/tmux-256color.terminfo
+# echo -e "Tmux colors configured successfully!\n"
