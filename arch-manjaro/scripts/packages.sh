@@ -26,8 +26,18 @@ bash $(pwd)/scripts/system-packages.sh
 echo -e "Done\n\n"
 
 # Install Vim & Neovim via Yay.
-echo -e "Installing Vim and its packages..."
+echo "Installing Vim and its packages..."
 bash $(pwd)/scripts/vim-packages.sh
+echo -e "Done\n\n"
+
+# Install Node and its packages.
+echo "Installing Node and its packages..."
+bash $(pwd)/scripts/node-packages.sh
+echo -e "Done\n\n"
+
+# Install Python and its packages.
+echo "Installing Python and its packages..."
+bash $(pwd)/scripts/python-packages.sh
 echo -e "Done\n\n"
 
 echo "Installing packages via Yay..."
