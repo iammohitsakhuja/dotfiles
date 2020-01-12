@@ -1,63 +1,80 @@
 #!/usr/bin/env bash
 
-# Check if Homebrew can be installed.
-if [[ $OSTYPE != "darwin"* ]]; then
-    echo -e "Environment not recognized as macOS.\nQuitting..."
-    exit 1
+# Check if Yay is installed. If not, then install it.
+if ! [[ $(which yay); ]]; then
+    git clone https://aur.archlinux.org/yay.git
+    cd yay
+    makepkg -si
 fi
 
-# Install Homebrew if it isn't installed already.
-if ! [[ $(which brew) ]]; then
-    echo "Installing Homebrew..."
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    echo -e "Installation successful!\n"
-fi
+# Set yay config.
+yay --save --answerclean All --answerdiff None
 
-# Update Homebrew.
-brew update
+# Update everything on the machine.
+echo "Updating everything on the machine..."
+yay
+echo -e "Update finished.\n"
 
-# Upgrade any previously installed packages.
-brew upgrade
+# Install/update ZSH and its packages.
+echo "Installing/updating ZSH and its packages..."
+bash $(pwd)/scripts/zsh-packages.sh
+echo -e "Done\n\n"
 
-# Install Bash 4. MacOS' Bash is severely outdated.
-# Install this because Bash is needed once in a while.
-# Then add `/usr/local/bin/bash` to `/etc/shells`.
-brew install bash
-if ! fgrep -q '/usr/local/bin/bash' /etc/shells; then
-    echo "Adding Bash to /etc/shells... "
-    echo '/usr/local/bin/bash' | sudo tee -a /etc/shells
-    echo "Done"
-fi
+# Install system packages.
+echo -e "Installing system packages...\n"
+bash $(pwd)/scripts/system-packages.sh
+echo -e "Done\n\n"
 
-# Install ZSH - our primary shell.
-# Then add `/usr/local/bin/zsh` to `/etc/shells`.
-brew install zsh
-if ! fgrep -q '/usr/local/bin/zsh' /etc/shells; then
-    echo "Adding Zsh to /etc/shells... "
-    echo '/usr/local/bin/zsh' | sudo tee -a /etc/shells
-    echo -e "Done\nChanging default shell to Zsh... "
-    chsh -s /usr/local/bin/zsh
-    echo "Done"
-fi
+# Install Vim & Neovim via Yay.
+echo -e "Installing Vim and its packages..."
+bash $(pwd)/scripts/vim-packages.sh
+echo -e "Done\n\n"
 
-# Install Homebrew bundle.
-brew tap Homebrew/bundle
+echo "Installing packages via Yay..."
 
-# Install all packages specified in Brewfile.
-brew bundle
-echo -e "Packages installed successfully\n"
+# Install utilities.
+yay -S tmux
+yay -S highlight
+yay -S ranger
 
-# Remove outdated versions from the cellar.
-echo "Doing some cleanup..."
-brew cleanup
-echo -e "Done\n"
+# Faster and easier finding.
+yay -S fd # Faster alternative to `find` command.
+yay -S the_silver_searcher # Provides the `ag` command.
 
-# Install Bundler for Ruby packages.
-echo "Installing Bundler for Ruby packages..."
-gem install bundler
-echo -e "Done\n"
+# Programming related packages.
+# yay -S clang-format ### TODO: Find the correct package for this.
+yay -S google-java-format
+# yay -S mongodb ### TODO: Make sure this works.
+yay -S lua
+yay -S jdk8-openjdk # Required for any packages that depend on JDK.
+yay -S postgresql
+yay -S ruby # This will also install the `gem` command.
+yay -S shfmt
 
-# Install all packages specified in Gemfile.
-echo "Installing Gems..."
-bundle install --system
-echo -e "Gems installed successfully\n"
+# Install other useful binaries.
+yay -S ack
+yay -S tree
+
+# Install GUI applications.
+yay -S mailspring
+yay -S dropbox
+yay -S firefox-developer-edition
+yay -S chromium
+yay -S solaar
+yay -S opera
+yay -S slack-desktop
+yay -S spotify
+yay -S webtorrent-desktop
+
+# Install development utilities.
+yay -S zeal
+yay -S docker
+yay -S gitkraken
+yay -S hyper
+yay -S postman
+yay -S intellij-idea-ultimate-edition
+yay -S webstorm
+yay -S love
+yay -S visual-studio-code-bin
+
+echo -e "Packages installed successfully via Yay\n"
