@@ -51,6 +51,7 @@ echo "Installing packages via Yay..."
 yay -S tmux
 yay -S highlight
 yay -S ranger
+yay -S ccat
 
 # Faster and easier finding.
 yay -S fd # Faster alternative to `find` command.
