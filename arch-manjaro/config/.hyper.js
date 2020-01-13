@@ -15,7 +15,7 @@ module.exports = {
         // fontFamily: 'Menlo, "DejaVu Sans Mono", Consolas, "Lucida Console",
         // monospace',
         fontFamily :
-            '"Operator Mono", "Fira Code", "Inconsolata for Powerline", Menlo',
+            '"Operator Mono Lig", "Hack Nerd Font Mono", "Inconsolata for Powerline", Menlo',
 
         // default font weight: 'normal' or 'bold'
         fontWeight : 'normal',

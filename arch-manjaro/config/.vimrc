@@ -15,7 +15,7 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mattn/emmet-vim'
 Plug 'sheerun/vim-polyglot'
-Plug 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 Plug 'ap/vim-css-color', { 'for': ['css', 'scss'] }
 Plug 'w0rp/ale'

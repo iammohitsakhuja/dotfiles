@@ -1,119 +1,11 @@
 #!/usr/bin/env bash
 
-# Install oh-my-zsh.
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-
-# Install oh-my-zsh plugins.
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
-
-# Install powerlevel9k theme for Zsh.
-git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
-
-# File to store any API keys in.
-touch ~/.api_keys
-
-# Configure git.
-git config --global user.email "sakhuja.mohit@gmail.com"
-git config --global user.name "Mohit Sakhuja"
-
-# Create SSH key pair.
-ssh-keygen -t rsa -C "sakhuja.mohit@gmail.com"
-
-# Install vim and neovim via 'yay'.
-yay vim
-yay neovim
-yay python-neovim
-
-# Install Vim plug (for Neovim).
-curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-# Install cmake for building `YouCompleteMe`.
-yay cmake
-
-# Build YouCompleteMe.
-cd ~/.vim/plugged/YouCompleteMe
-python3 install.py --clang-completer
-
-# To get the terminal right.
-tic -o $HOME/.terminfo xterm-256color-italic.terminfo
-
-# At this point, download and extract Operator font, then execute.
-sudo cp -r "Path/to/font" /usr/share/fonts/
-
-# Rebuild the font cache.
-fc-cache
-
-# Install emoji-one font. No need to install anything else.
-yay ttf-emojione
-yay nerd-fonts-complete
-
-# Use emoji-one font to be the default for displaying emojis.
-sudo ln -sf ../conf.avail/75-emojione.conf /etc/fonts/conf.d/75-emojione.conf
-
 yay terminal st # Might be 31st one on the list.
-yay ruby
 yay rdoc
-gem install colorls lolcat
 
-yay clang-format
-yay shfmt
-
-yay silver_searcher
-yay fd
-yay tmux
-yay ranger
-yay highlight # Might be the 17th one on the list.
-yay ccat      # Might be 30th one on the list.
 yay w3m
 yay transmission-cli
 
-yay gitter
-yay chromium
-yay opera # Might be 36th on the list.
-yay slack
-yay spotify
 yay vlc
 
-yay zeal
-yay hyper
-yay insomnia
-yay vscode
-
 yay seahorse # For managing keyring.
-yay mailspring
-
-# Setup Imwheel for faster scrolling.
-yay imwheel
-ln -s $(pwd)/arch-manjaro/config/.imwheelrc $HOME/.imwheelrc
-mkdir -p $HOME/.config/systemd/user
-ln -s $(pwd)/arch-manjaro/config/systemd/user/imwheel.service $HOME/.config/systemd/user/imwheel.service
-systemctl --user daemon-reload
-systemctl --user enable --now imwheel
-journalctl --user --unit imwheel
-
-# Also add the following to the startup script.
-# imwheel -b "45"
-
-# Install NVM.
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-
-# Install node.
-nvm install --lts
-
-# Install NPM packages.
-npm install -g eslint express-generator fixjson prettier stylelint typescript tslint
-
-# Install yarn.
-yay yarn
-
-# Install pip.
-yay python-pip
-
-# Install pip packages.
-sudo pip3 install black gitlint neovim virtualenv
-
-yay taskbook
-yay typora
