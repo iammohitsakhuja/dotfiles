@@ -1,25 +1,8 @@
 #!/usr/bin/env bash
 
-# To get the terminal right.
-tic -o $HOME/.terminfo xterm-256color-italic.terminfo
-
-# At this point, download and extract Operator font, then execute.
-sudo cp -r "Path/to/font" /usr/share/fonts/
-
-# Rebuild the font cache.
-fc-cache
-
-# Install emoji-one font. No need to install anything else.
-yay ttf-emojione
-yay nerd-fonts-complete
-
-# Use emoji-one font to be the default for displaying emojis.
-sudo ln -sf ../conf.avail/75-emojione.conf /etc/fonts/conf.d/75-emojione.conf
-
 yay terminal st # Might be 31st one on the list.
 yay rdoc
 
-yay ccat # Might be 30th one on the list.
 yay w3m
 yay transmission-cli
 

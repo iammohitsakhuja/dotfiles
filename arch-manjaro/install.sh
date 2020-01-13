@@ -126,6 +126,10 @@ echo "Installing packages..."
 bash $PWD/scripts/packages.sh
 echo -e "Packages installed successfully!\n"
 
+echo "Setting up terminal and fonts..."
+bash $PWD/scripts/fonts.sh
+echo -e "Terminal and fonts have been setup!\n"
+
 # Install manpages.
 # echo "Installing Manpages..."
 # bash $PWD/scripts/manpages.sh
