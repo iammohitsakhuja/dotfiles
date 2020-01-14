@@ -21,8 +21,14 @@ fi
 
 # Plugins for ZSH. Warning: Too many plugins slow down shell startup.
 plugins=(
+    brew
+    docker
     git
+    kubectl
+    mvn
+    npm
     vi-mode
+    yarn
     zsh-syntax-highlighting
     zsh-completions
     zsh-autosuggestions
@@ -74,3 +80,6 @@ source ~/.api_keys
 
 # Required by Homebrew.
 eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+

@@ -7,6 +7,9 @@ alias ls="ls -pA --group-directories-first --color=always"
 alias lc="colorls -A --sd"
 alias ll="colorls -lA --sd"
 
+# Use colorized cat.
+alias cat="ccat"
+
 # Prevent opening Vi accidentally.
 alias vi="nvim"
 
@@ -55,3 +58,4 @@ alias shake="adb shell input keyevent 82"
 # Aliases for switching between multiple git profiles.
 alias gspers="git config --global user.email sakhuja.mohit@gmail.com"
 alias gswork="git config --global user.email mohit.sakhuja@oyorooms.com"
+alias gstraum="git config --global user.email m.sakhuja@traumfewo.me"

@@ -7,6 +7,7 @@ PATH="/usr/local/opt/sqlite/bin:$PATH"                                  # Sqlite
 PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"                    # Coreutils.
 PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"                      # GNU Sed.
 PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"                         # Grep.
+PATH="/usr/local/opt/openssl/bin:$PATH"                                 # OpenSSL.
 PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
 
 # Android development settings for React-Native.
