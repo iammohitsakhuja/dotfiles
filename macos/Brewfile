@@ -39,6 +39,8 @@ brew "redis"
 brew "ruby"
 brew "shfmt"
 brew "sqlite"
+brew "php"
+brew "composer"
 
 # Install other useful binaries.
 brew "ack"
