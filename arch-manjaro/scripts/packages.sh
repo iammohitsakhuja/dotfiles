@@ -81,6 +81,7 @@ yay -S opera
 yay -S slack-desktop
 yay -S spotify
 yay -S webtorrent-desktop
+yay -S xdman
 
 # Install development utilities.
 yay -S zeal
@@ -88,7 +89,11 @@ yay -S docker
 yay -S gitkraken
 yay -S hyper
 yay -S postman
-yay -S intellij-idea-ultimate-edition
+
+## Check if JRE version needs to be installed. intellij-idea-ultimate-edition-jre
+# yay -S intellij-idea-ultimate-edition
+# yay -S datagrip  ### Or `yay -S datagrip-jre`
+
 yay -S webstorm
 yay -S love
 yay -S visual-studio-code-bin
