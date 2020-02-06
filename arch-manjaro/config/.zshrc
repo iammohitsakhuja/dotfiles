@@ -22,8 +22,12 @@ fi
 
 # Plugins for ZSH. Warning: Too many plugins slow down shell startup.
 plugins=(
+    docker
     git
+    mvn
+    npm
     vi-mode
+    yarn
     zsh-syntax-highlighting
     zsh-completions
     zsh-autosuggestions
@@ -45,37 +49,20 @@ source ~/.aliases
 cd() { builtin cd "$@" && ls; }
 
 # NVM
-# Defer initialization of NVM until NVM, node or a node-dependent command is
-# run. Ensure this block is only run once if .bashrc gets sourced multiple
-# times by checking whether __init_nvm is a function.
-if [ -s "$HOME/.nvm/nvm.sh" ] && [ ! "$(whence -w __init_nvm)" = function ]; then
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-    declare -a __node_commands=(
-        'nvm'
-        'node'
-        'npm'
-        'npx'
-        'yarn'
-        'gulp'
-        'grunt'
-        'webpack'
-        'eslint'
-        'express-generator'
-        'fixjson'
-        'prettier'
-        'stylelint'
-        'tsc'
-        'tslint'
-    )
-    function __init_nvm() {
-        for i in "${__node_commands[@]}"; do unalias $i; done
-        . "$NVM_DIR"/nvm.sh
-        unset __node_commands
-        unset -f __init_nvm
-    }
-    for i in "${__node_commands[@]}"; do alias $i='__init_nvm && '$i; done
-fi
+# Defer initialization of NVM until NVM, node or a node-dependent command is run.
+declare -a NODE_GLOBALS=(`find ~/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
+
+NODE_GLOBALS+=("node")
+NODE_GLOBALS+=("nvm")
+
+load_nvm () {
+    export NVM_DIR=~/.nvm
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+}
+
+for cmd in "${NODE_GLOBALS[@]}"; do
+    eval "${cmd}(){ unset -f ${NODE_GLOBALS}; load_nvm; ${cmd} \$@ }"
+done
 
 ############################# Sourcing scripts #############################
 
