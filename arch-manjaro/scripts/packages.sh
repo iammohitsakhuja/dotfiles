@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Check if Yay is installed. If not, then install it.
-if ! [[ $(which yay); ]]; then
+if ! [[ $(which yay) ]]; then
     git clone https://aur.archlinux.org/yay.git
     cd yay
     makepkg -si
