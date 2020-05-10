@@ -301,6 +301,9 @@ let NERDTreeSortOrder = ['\/$', '\.c$', '\.java$', '\~$']
 " Sort items naturally.
 let NERDTreeNaturalSort = 1
 
+" Set the default width of NERDTree windows.
+let NERDTreeWinSize = 60
+
 " Open NERDTree on console vim startup.
 let g:nerdtree_tabs_open_on_console_startup=1
 

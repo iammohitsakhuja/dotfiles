@@ -24,14 +24,15 @@ fi
 plugins=(
     docker
     git
+    git-flow
     kubectl
     mvn
     npm
     vi-mode
     yarn
-    zsh-syntax-highlighting
-    zsh-completions
     zsh-autosuggestions
+    zsh-completions
+    zsh-syntax-highlighting
 )
 
 # Load oh-my-zsh.
@@ -78,4 +79,5 @@ source ~/.api_keys
 # For fuzzy-file finding with fzf.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Hook Direnv into shell.
 eval "$(direnv hook zsh)"
