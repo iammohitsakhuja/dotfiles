@@ -304,11 +304,22 @@ let NERDTreeNaturalSort = 1
 " Set the default width of NERDTree windows.
 let NERDTreeWinSize = 60
 
-" Open NERDTree on console vim startup.
-let g:nerdtree_tabs_open_on_console_startup=1
-
 " When switching into a tab, make sure that focus is on the file window, not in the NERDTree window.
 let g:nerdtree_tabs_focus_on_files=1
+
+" Open Startify & NERDTree on Vim startup.
+autocmd VimEnter *
+        \   if !argc()
+        \ |   Startify
+        \ |   execute 'NERDTreeTabsToggle'
+        \ |   wincmd w
+    \ | endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => FZF settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Search for hidden files as well.
+let $FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => IndentLine settings
