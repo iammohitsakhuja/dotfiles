@@ -58,3 +58,8 @@ export LESS_TERMCAP_so=$purple
 export LESS_TERMCAP_ue=$default
 # Begin underline.
 export LESS_TERMCAP_us=$green
+
+############################# Miscellaneous #############################
+
+# Disable Virtualenv's prompt.
+export VIRTUAL_ENV_DISABLE_PROMPT=1

@@ -5,7 +5,7 @@ source ~/.exports
 ############################# Powerline setup #############################
 
 POWERLEVEL9K_MODE='nerdfont-complete'
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs)
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs virtualenv)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
 
 ############################# Zsh configuration #############################
@@ -24,6 +24,7 @@ fi
 plugins=(
     docker
     git
+    kubectl
     mvn
     npm
     vi-mode
@@ -76,3 +77,5 @@ source ~/.api_keys
 
 # For fuzzy-file finding with fzf.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+eval "$(direnv hook zsh)"
