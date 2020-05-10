@@ -52,6 +52,7 @@ yay -S tmux
 yay -S highlight
 yay -S ranger
 yay -S ccat
+yay -S neofetch
 
 # Faster and easier finding.
 yay -S fd # Faster alternative to `find` command.
@@ -62,10 +63,12 @@ yay -S the_silver_searcher # Provides the `ag` command.
 yay -S google-java-format
 # yay -S mongodb ### TODO: Make sure this works.
 yay -S lua
-yay -S jdk8-openjdk # Required for any packages that depend on JDK.
+yay -S jre11-openjdk # Required for any packages that depend on JDK.
+yay -S jdk11-openjdk # Required for any packages that depend on JDK.
 yay -S postgresql
 yay -S ruby # This will also install the `gem` command.
 yay -S shfmt
+yay -S redis-cli
 
 # Install other useful binaries.
 yay -S ack
@@ -82,19 +85,29 @@ yay -S slack-desktop
 yay -S spotify
 yay -S webtorrent-desktop
 yay -S xdman
+yay -S ticktick
+yay -S minetime
+yay -S deluge
 
 # Install development utilities.
+yay -S go programming
 yay -S zeal
 yay -S docker
+yay -S docker-compose
 yay -S gitkraken
 yay -S hyper
 yay -S postman
+yay -S node
+yay -S npm
+yay -S kubectl
+yay -S kubectx
+yay -S google-cloud-sdk
+yay -S direnv
+yay -S slack-desktop
 
-## Check if JRE version needs to be installed. intellij-idea-ultimate-edition-jre
-# yay -S intellij-idea-ultimate-edition
-# yay -S datagrip  ### Or `yay -S datagrip-jre`
+# Install the actual package as well as the custom JRE for font anti-aliasing.
+yay -S intellij-idea-ultimate-edition
 
-yay -S webstorm
 yay -S love
 yay -S visual-studio-code-bin
 
