@@ -131,12 +131,12 @@ bash $PWD/scripts/fonts.sh
 echo -e "Terminal and fonts have been setup!\n"
 
 # Install manpages.
-# echo "Installing Manpages..."
-# bash $PWD/scripts/manpages.sh
-# echo -e "Manpages installation successful!\n"
-#
-# # Configure Tmux colors.
-# echo "Configuring Tmux colors..."
-# tic -x $PWD/config/xterm-256color-italic.terminfo
-# tic -x $PWD/config/tmux-256color.terminfo
-# echo -e "Tmux colors configured successfully!\n"
+echo "Installing Manpages..."
+bash $PWD/scripts/manpages.sh
+echo -e "Manpages installation successful!\n"
+
+# Configure Tmux colors.
+echo "Configuring Tmux colors..."
+tic -x $PWD/config/xterm-256color-italic.terminfo
+tic -x $PWD/config/tmux-256color.terminfo
+echo -e "Tmux colors configured successfully!\n"

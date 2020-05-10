@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Check if Environment is macOS.
-if [[ $OSTYPE != "darwin"* ]] ; then
-    echo -e "Environment not recognized as macOS.\nQuitting..."
+if [[ $OSTYPE != "darwin"* && $OSTYPE != "linux-gnu"* ]] ; then
+    echo -e "Environment not recognized as macOS or Linux.\nQuitting..."
     exit 1
 fi
 
@@ -23,9 +23,9 @@ cd stdman
 
 # Install the manpages.
 ./configure
-make install
+sudo make install
+sudo mandb
 
 # Cleanup.
 cd $DIR
 rm -rf stdman
-
