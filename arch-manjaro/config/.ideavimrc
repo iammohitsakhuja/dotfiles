@@ -4,6 +4,8 @@ set surround
 
 set multiple-cursors
 
+set commentary
+
 " Idea turns relative numbering on by default for some reason. Hence, turn it off.
 set nornu
 
