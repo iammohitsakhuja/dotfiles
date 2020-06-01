@@ -17,7 +17,6 @@ PWD=$(pwd)
 CONFIG_FILES=(
     ".aliases"
     ".clang-format"
-    ".eslintrc.json"
     ".exports"
     ".hyper.js"
     ".ideavimrc"
