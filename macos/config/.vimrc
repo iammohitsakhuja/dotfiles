@@ -15,7 +15,7 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mattn/emmet-vim'
 Plug 'sheerun/vim-polyglot'
-Plug 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe', { 'do': 'python3 install.py --go-completer --ts-completer --clangd-completer' }
 Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 Plug 'ap/vim-css-color', { 'for': ['css', 'scss'] }
 Plug 'w0rp/ale'
@@ -25,6 +25,8 @@ Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
 Plug 'joshdick/onedark.vim', { 'as': 'onedark' }
 Plug 'drewtempelmeyer/palenight.vim', { 'as': 'palenight' }
 Plug 'ayu-theme/ayu-vim', { 'as': 'ayu' }
+Plug 'tomasr/molokai', { 'as': 'molokai' }
+Plug 'ryanoasis/vim-devicons'
 call plug#end()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -34,8 +36,8 @@ call plug#end()
 syntax on
 
 " Sets the theme for the editor.
-let ayucolor="dark"
-colorscheme ayu
+" let ayucolor="dark"
+colorscheme molokai
 if $TERM_PROGRAM != "Apple_Terminal"
     if has('nvim') || has('termguicolors')
         set termguicolors
@@ -115,7 +117,7 @@ highlight ColorColumn ctermbg=235 guibg=#464b59
 set colorcolumn=120
 
 " Height of the command bar.
-set cmdheight=2
+set cmdheight=3
 
 " A buffer becomes hidden when it is abandoned.
 set hid
@@ -162,10 +164,13 @@ set shiftwidth=4
 set tabstop=4
 
 " Use 2 spaces for JavaScript files.
-autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+" autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 
 " Set colorcolumn to be at 81 characters for Markdown files.
 autocmd Filetype markdown setlocal colorcolumn=81
+
+" Set colorcolumn to be at 101 characters for Java files.
+autocmd Filetype java setlocal colorcolumn=101
 
 " Linebreak on 150 characters.
 set lbr
@@ -185,8 +190,11 @@ set laststatus=2
 " Settings for 'lightline' plugin.
 let g:lightline = {
             \     'active': {
-            \         'left': [['mode', 'paste' ], ['readonly', 'filename', 'modified']],
+            \         'left': [['mode', 'paste' ], ['readonly', 'filename', 'fileicon', 'modified']],
             \         'right': [['lineinfo'], ['percent'], ['fileformat', 'fileencoding']]
+            \     },
+            \     'component_function': {
+            \         'fileicon': 'WebDevIconsGetFileTypeSymbol',
             \     },
             \     'colorscheme': 'palenight'
             \ }
@@ -239,6 +247,8 @@ let g:ale_linters = {
             \   'markdown': ['mdl'],
             \   'python': [],
             \   'scss': ['stylelint'],
+            \   'typescript': ['tsserver', 'eslint'],
+            \   'vue': ['eslint'],
             \}
 
 let g:ale_fixers = {
@@ -253,15 +263,22 @@ let g:ale_fixers = {
             \   'markdown': ['prettier', 'remove_trailing_lines', 'trim_whitespace'],
             \   'python': ['black'],
             \   'scss': ['prettier', 'remove_trailing_lines', 'stylelint', 'trim_whitespace'],
+            \   'typescript': ['eslint', 'prettier', 'remove_trailing_lines', 'trim_whitespace'],
+            \   'vue': ['eslint', 'remove_trailing_lines', 'trim_whitespace'],
             \}
 
 let g:ale_java_google_java_format_options = '--aosp'
+
+let g:ale_json_fixjson_options = '-i 4'
 
 " Display errors.
 let g:ale_sign_column_always = 1
 
 " Fix errors on saving.
 let g:ale_fix_on_save = 1
+
+" Use Prettier for formatting TypeScript files.
+autocmd FileType typescript setlocal formatprg=prettier\ --parser\ typescript
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Emmet settings
@@ -305,6 +322,7 @@ let NERDTreeIgnore = [
             \   '\.swp$',
             \   '\.git$[[dir]]',
             \   'node_modules[[dir]]',
+            \   'vendor[[dir]]',
             \   'build[[dir]]'
             \]
 
@@ -313,6 +331,14 @@ let NERDTreeSortOrder = ['\/$', '\.c$', '\.java$', '\~$']
 
 " Sort items naturally.
 let NERDTreeNaturalSort = 1
+
+" Set the default width of Nerd Tree windows.
+let NERDTreeWinSize = 50
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => FZF settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let $FZF_DEFAULT_COMMAND = 'ag --hidden -g ""'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
