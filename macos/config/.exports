@@ -2,13 +2,15 @@
 
 # Add 'coreutils' to PATH variable so macOS recognises utilities like
 # sha256sum and sha512sum.
-PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.6.0/bin:$PATH" # Ruby and gems.
+PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.7.0/bin:$PATH" # Ruby and gems.
 PATH="/usr/local/opt/sqlite/bin:$PATH"                                  # Sqlite 3.
 PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"                    # Coreutils.
 PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"                      # GNU Sed.
 PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"                         # Grep.
 PATH="/usr/local/opt/openssl/bin:$PATH"                                 # OpenSSL.
 PATH="/usr/local/opt/php/bin:$PATH"                                     # PHP.
+PATH="/usr/local/sbin:$PATH"                                            # Homebrew formulae.
+PATH="$HOME/.composer/vendor/bin:$PATH"                                 # Composer.
 PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
 
 # Android development settings for React-Native.
@@ -34,6 +36,7 @@ export LC_ALL="en_US.UTF-8"
 
 # Find hidden files with FZF.
 export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
+export FZF_CTRL_T_COMMAND='ag --hidden --ignore .git -g ""'
 
 # Flags for C compilation.
 export CFLAGS="-std=c11"
@@ -72,3 +75,8 @@ export LESS_TERMCAP_so=$purple
 export LESS_TERMCAP_ue=$default
 # Begin underline.
 export LESS_TERMCAP_us=$green
+
+############################# Miscellaneous #############################
+
+# Disable Virtualenv's prompt.
+export VIRTUAL_ENV_DISABLE_PROMPT=1

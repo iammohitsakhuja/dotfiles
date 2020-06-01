@@ -5,26 +5,37 @@ call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
-Plug 'junegunn/fzf', { 'do': './install --all' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
-Plug 'scrooloose/nerdtree'
+Plug 'preservim/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
+" TODO: Check why the colors from the following aren't working.
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'airblade/vim-gitgutter'
 Plug 'itchyny/lightline.vim'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'jiangmiao/auto-pairs'
 Plug 'mattn/emmet-vim'
 Plug 'sheerun/vim-polyglot'
-Plug 'Valloric/YouCompleteMe'
-Plug 'artur-shaik/vim-javacomplete2', { 'for': 'java' }
 Plug 'ap/vim-css-color', { 'for': ['css', 'scss'] }
-Plug 'w0rp/ale'
-Plug 'rizzatti/dash.vim'
+Plug 'psliwka/vim-smoothie'
+Plug 'Yggdroot/indentLine'
+Plug 'itchyny/vim-gitbranch'
+Plug 'mhinz/vim-startify'
+Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+Plug 'uiiaoo/java-syntax.vim'
+
+" Colors & themes.
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
 Plug 'joshdick/onedark.vim', { 'as': 'onedark' }
 Plug 'drewtempelmeyer/palenight.vim', { 'as': 'palenight' }
 Plug 'ayu-theme/ayu-vim', { 'as': 'ayu' }
+Plug 'tomasr/molokai', { 'as': 'molokai' }
+
+" Has to be loaded as the last one.
+Plug 'ryanoasis/vim-devicons'
 call plug#end()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -87,6 +98,10 @@ nnoremap <leader>F :Files<cr>
 " Toggle relative numbers.
 nnoremap <leader>nt :call NumberToggle()<cr>
 
+" Shortcuts for switching between buffers.
+map <leader>n :bn<cr>
+map <leader>p :bp<cr>
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -115,7 +130,7 @@ highlight ColorColumn ctermbg=235 guibg=#464b59
 set colorcolumn=120
 
 " Height of the command bar.
-set cmdheight=2
+set cmdheight=3
 
 " A buffer becomes hidden when it is abandoned.
 set hid
@@ -161,11 +176,11 @@ set smarttab
 set shiftwidth=4
 set tabstop=4
 
-" Use 2 spaces for JavaScript files.
-autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
-
 " Set colorcolumn to be at 81 characters for Markdown files.
 autocmd Filetype markdown setlocal colorcolumn=81
+
+" Set colorcolumn to be at 101 characters for Java files.
+autocmd Filetype java setlocal colorcolumn=101
 
 " Linebreak on 150 characters.
 set lbr
@@ -182,14 +197,43 @@ set wrap
 " Always show the status line.
 set laststatus=2
 
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
+
+function! GetFileType()
+    return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
+endfunction
+
+function! GetFileFormat()
+    return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
+endfunction
+
+" Settings for 'lightline' plugin.
 " Settings for 'lightline' plugin.
 let g:lightline = {
-            \     'active': {
-            \         'left': [['mode', 'paste' ], ['readonly', 'filename', 'modified']],
-            \         'right': [['lineinfo'], ['percent'], ['fileformat', 'fileencoding']]
-            \     },
-            \     'colorscheme': 'palenight'
-            \ }
+    \   'active': {
+    \       'left': [
+    \           ['mode', 'paste'],
+    \           ['gitbranch', 'readonly', 'filename', 'fileicon', 'modified'],
+    \           ['cocstatus', 'currentfunction'],
+    \       ],
+    \       'right': [
+    \           ['lineinfo'],
+    \           ['percent'],
+    \           ['filetype', 'fileformat', 'fileencoding']
+    \       ]
+    \   },
+    \   'colorscheme': 'palenight',
+    \   'component_function': {
+    \       'cocstatus': 'coc#status',
+    \       'currentfunction': 'CocCurrentFunction',
+    \       'gitbranch': 'gitbranch#name',
+    \       'filetype': 'GetFileType',
+    \       'fileformat': 'GetFileFormat',
+    \       'fileicon': 'WebDevIconsGetFileTypeSymbol',
+    \   },
+    \ }
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
@@ -198,7 +242,7 @@ let g:lightline = {
 map 0 ^
 
 " Map 'Ctrl-O' to ':NERDTreeToggle'
-map <C-o> :NERDTreeToggle<CR>
+map <C-o> :NERDTreeTabsToggle<CR>
 
 " Remap 'Esc' key.
 :imap jk <Esc>
@@ -219,51 +263,6 @@ autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 let g:markdown_fenced_languages = ['c', 'cpp', 'python', 'java', 'bash=sh', 'sql']
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => ALE settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ale_linter_aliases = {
-            \   'bash': 'sh',
-            \   'csh': 'sh',
-            \   'zsh': 'sh',
-            \}
-
-let g:ale_linters = {
-            \   'sh': ['shell'],
-            \   'c': ['clang'],
-            \   'cpp': ['clang'],
-            \   'css': ['stylelint'],
-            \   'html': ['stylelint'],
-            \   'java': ['javac'],
-            \   'javascript': ['eslint'],
-            \   'json': [],
-            \   'markdown': ['mdl'],
-            \   'python': [],
-            \   'scss': ['stylelint'],
-            \}
-
-let g:ale_fixers = {
-            \   '*': ['remove_trailing_lines', 'trim_whitespace'],
-            \   'sh': ['shfmt'],
-            \   'c': ['clang-format'],
-            \   'cpp': ['clang-format'],
-            \   'css': ['prettier', 'remove_trailing_lines', 'stylelint', 'trim_whitespace'],
-            \   'java': ['google_java_format'],
-            \   'javascript': ['eslint', 'prettier', 'remove_trailing_lines', 'trim_whitespace'],
-            \   'json': ['fixjson', 'prettier', 'remove_trailing_lines', 'trim_whitespace'],
-            \   'markdown': ['prettier', 'remove_trailing_lines', 'trim_whitespace'],
-            \   'python': ['black'],
-            \   'scss': ['prettier', 'remove_trailing_lines', 'stylelint', 'trim_whitespace'],
-            \}
-
-let g:ale_java_google_java_format_options = '--aosp'
-
-" Display errors.
-let g:ale_sign_column_always = 1
-
-" Fix errors on saving.
-let g:ale_fix_on_save = 1
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Emmet settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:user_emmet_settings = {
@@ -275,12 +274,6 @@ let g:user_emmet_settings = {
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Auto-completion settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Settings for C/C++ semantic completion with YouCompleteMe.
-let g:ycm_global_ycm_extra_conf = "~/.vim/plugged/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py"
-
-" Required by vim-javacomplete2.
-autocmd FileType java setlocal omnifunc=javacomplete#Complete
-
 " Enable CSS autocompletion.
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 
@@ -305,6 +298,7 @@ let NERDTreeIgnore = [
             \   '\.swp$',
             \   '\.git$[[dir]]',
             \   'node_modules[[dir]]',
+            \   'vendor[[dir]]',
             \   'build[[dir]]'
             \]
 
@@ -313,6 +307,34 @@ let NERDTreeSortOrder = ['\/$', '\.c$', '\.java$', '\~$']
 
 " Sort items naturally.
 let NERDTreeNaturalSort = 1
+
+" Set the default width of Nerd Tree windows.
+let NERDTreeWinSize = 50
+
+" When switching into a tab, make sure that focus is on the file window, not in the NERDTree window.
+let g:nerdtree_tabs_focus_on_files=1
+
+" Open Startify & NERDTree on Vim startup.
+autocmd VimEnter *
+        \   if !argc()
+        \ |   Startify
+        \ |   execute 'NERDTreeTabsToggle'
+        \ |   wincmd w
+    \ | endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => FZF settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let $FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => IndentLine settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:indentLine_setColors = 0
+let g:indentLine_leadingSpaceEnabled = 1
+let g:indentLine_leadingSpaceChar = '∙'
+let g:indentLine_char = '∙'
+let g:indentLine_bufNameExclude = ['NERD_tree.*']
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
@@ -325,3 +347,155 @@ function! NumberToggle()
         set relativenumber
     endif
 endfunction
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Coc.nvim Config
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Some servers have issues with backup files, see #649.
+set nobackup
+set nowritebackup
+
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+set signcolumn=yes
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current line.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Use <TAB> for selections ranges.
+" NOTE: Requires 'textDocument/selectionRange' support from the language server.
+" coc-tsserver, coc-python are the examples of servers that support it.
+nmap <silent> <TAB> <Plug>(coc-range-select)
+xmap <silent> <TAB> <Plug>(coc-range-select)
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+" Mappings using CoCList:
+" Show all diagnostics.
+nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list.
+nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+let g:coc_global_extensions = [
+    \   'coc-actions',
+    \   'coc-css',
+    \   'coc-eslint',
+    \   'coc-html',
+    \   'coc-java',
+    \   'coc-json',
+    \   'coc-pairs',
+    \   'coc-prettier',
+    \   'coc-snippets',
+    \   'coc-tsserver',
+    \   'coc-vimlsp',
+    \   'coc-yaml',
+    \   ]
