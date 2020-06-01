@@ -28,6 +28,7 @@ plugins=(
     kubectl
     mvn
     npm
+    tmux
     vi-mode
     yarn
     zsh-autosuggestions
@@ -48,7 +49,7 @@ source ~/.aliases
 ############################# Utility functions #############################
 
 # Always show files when switching directories via cd.
-cd() { builtin cd "$@" && ls; }
+cd() { builtin cd "$@" && lc; }
 
 # NVM
 # Defer initialization of NVM until NVM, node or a node-dependent command is run.
@@ -81,3 +82,6 @@ source ~/.api_keys
 
 # Hook Direnv into shell.
 eval "$(direnv hook zsh)"
+
+# Hook Pyenv into shell.
+eval "$(pyenv init -)"

@@ -42,3 +42,9 @@ alias ssh='TERM=xterm-256color ssh'
 # Use a similar copying pattern as MacOS.
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
+
+# Use aliases for Python projects.
+alias pbs="project -b -s"
+
+# Unset GhostScript.
+alias gs=""
