@@ -98,6 +98,7 @@ git config --global user.email "sakhuja.mohit@gmail.com"
 git config --global user.name "Mohit Sakhuja"
 git config --global core.editor "nvim"
 git config --global core.filemode false
+git config --global status.showuntrackedfiles all
 
 # Create SSH key pair.
 ssh-keygen -t rsa -C "sakhuja.mohit@gmail.com"

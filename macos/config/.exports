@@ -38,11 +38,11 @@ export LC_ALL="en_US.UTF-8"
 export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
 export FZF_CTRL_T_COMMAND='ag --hidden --ignore .git -g ""'
 
-# Flags for C compilation.
-export CFLAGS="-std=c11"
+# Currently disabled flags for C compilation. Enable during development, if needed.
+# export CFLAGS="-std=c11"
 
-# Flags for C++ compilation.
-export CXXFLAGS="-std=c++14 -Wall -Werror"
+# Currently disabled flags for C++ compilation. Enable during development, if needed.
+# export CXXFLAGS="-std=c++14 -Wall -Werror"
 
 # Add, path to custom manpages to the MANPATH variable.
 # Also, update MANPATH so that there is no need to prefix 'g' for utilities

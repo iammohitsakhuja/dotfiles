@@ -4,6 +4,7 @@ tap "caskroom/versions"
 tap "caskroom/fonts"
 tap "homebrew/cask-drivers"
 tap "homebrew/cask-versions" # Required to find alternate versions of Casks.
+tap "facebook/fb"
 
 # Install GNU core utilities (those that come with macOS are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
@@ -42,6 +43,7 @@ brew "shfmt"
 brew "sqlite"
 brew "php"
 brew "composer"
+brew "idb-companion" # To automate iOS simulators and devices for development.
 
 # Install other useful binaries.
 brew "ack"

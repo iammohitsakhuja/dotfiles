@@ -54,3 +54,6 @@ alias ssh="TERM=xterm-256color ssh"
 # Reload a React-Native app on Android.
 alias rr="adb shell input text 'RR'"
 alias shake="adb shell input keyevent 82"
+
+# Stop GhostScript from opening up on mistyped git aliases.
+alias gs=""
