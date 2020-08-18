@@ -41,7 +41,7 @@ if ! fgrep -q '/usr/local/bin/zsh' /etc/shells; then
 fi
 
 echo "Installing Oh-my-zsh..."
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" "" --unattended
 echo -e "Oh-my-zsh installation successful!\n"
 
 # Install oh-my-zsh plugins.
@@ -63,15 +63,25 @@ echo -e "Packages installed successfully\n"
 PERL_MM_OPT="INSTALL_BASE=$HOME/perl5" cpan local::lib
 
 # Install mas-cli for Mac App Store applications.
-brew tap mas-cli/tap
-brew tap-pin mas-cli/tap
 brew install mas
 
-mas install 1153157709 # Speedtest.
-mas install 1160374471 # Pipifier.
-mas install 1385985095 # uBlock.
-mas install 1284863847 # Unsplash wallpapers.
+mas signin
+
+mas install 937984704  # Amphetamine.
+mas install 595191960  # CopyClip.
+# mas install 1475897096 # JIRA Cloud by Atlassian.
+mas install 409183694  # Keynote.
+mas install 926036361  # LastPass Password Manager.
 mas install 409201541  # Pages.
+mas install 1160374471 # Pipifier.
+mas install 823766827  # OneDrive.
+mas install 803453959  # Slack.
+mas install 1153157709 # Speedtest.
+mas install 425424353  # The Unarchiver.
+# mas install 966085870  # TickTick.
+mas install 1284863847 # Unsplash Wallpapers.
+mas install 1385985095 # uBlock.
+mas install 1147396723 # WhatsApp Desktop.
 
 # Remove outdated versions from the cellar.
 echo "Doing some cleanup..."
@@ -79,7 +89,7 @@ brew cleanup
 echo -e "Done\n"
 
 # Update path for Ruby in order to install gems to Ruby provided by Homebrew rather than system Ruby.
-export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.6.0/bin:$PATH"
+export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.7.0/bin:$PATH"
 
 # Install Ruby gems.
 echo "Installing Gems..."

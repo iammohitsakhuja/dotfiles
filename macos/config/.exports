@@ -9,6 +9,7 @@ PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"                      # GNU Se
 PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"                         # Grep.
 PATH="/usr/local/opt/openssl/bin:$PATH"                                 # OpenSSL.
 PATH="/usr/local/opt/php/bin:$PATH"                                     # PHP.
+PATH="/usr/local/opt/mongodb-community@4.2/bin:$PATH"                   # MongoDB.
 PATH="/usr/local/sbin:$PATH"                                            # Homebrew formulae.
 PATH="$HOME/.composer/vendor/bin:$PATH"                                 # Composer.
 PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
