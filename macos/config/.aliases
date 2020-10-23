@@ -55,7 +55,5 @@ alias ssh="TERM=xterm-256color ssh"
 alias rr="adb shell input text 'RR'"
 alias shake="adb shell input keyevent 82"
 
-# Aliases for switching between multiple git profiles.
-alias gspers="git config --global user.email sakhuja.mohit@gmail.com"
-alias gswork="git config --global user.email mohit.sakhuja@oyorooms.com"
-alias gstraum="git config --global user.email m.sakhuja@traumfewo.me"
+# Stop GhostScript from opening up on mistyped git aliases.
+alias gs=""

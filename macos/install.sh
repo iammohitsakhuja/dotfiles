@@ -17,7 +17,6 @@ PWD=$(pwd)
 CONFIG_FILES=(
     ".aliases"
     ".clang-format"
-    ".eslintrc.json"
     ".exports"
     ".hyper.js"
     ".ideavimrc"
@@ -84,7 +83,8 @@ esac
 echo -e "\nInstallation requires administrator authentication..."
 sudo -v
 
-# Keep `sudo` alive i.e. update existing time stamp until `./install.sh` has finished.
+# Keep `sudo` alive i.e. update existing time stamp until `./install.sh` has
+# finished.
 while true; do
     sudo -n true
     sleep 60
@@ -99,6 +99,7 @@ git config --global user.email "sakhuja.mohit@gmail.com"
 git config --global user.name "Mohit Sakhuja"
 git config --global core.editor "nvim"
 git config --global core.filemode false
+git config --global status.showuntrackedfiles all
 
 # Create SSH key pair.
 ssh-keygen -t rsa -C "sakhuja.mohit@gmail.com"
@@ -110,9 +111,11 @@ echo "Installing packages..."
 bash $PWD/scripts/packages.sh
 echo -e "Packages installed successfully!\n"
 
+NVM_VERSION="0.35.3"
+
 # Install NVM.
 echo "Installing NVM and Node..."
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v$NVM_VERSION/install.sh | bash
 
 # Do this to be able to use NVM now.
 export NVM_DIR="$HOME/.nvm"
@@ -131,12 +134,9 @@ echo -e "Yarn installation successful!\n"
 # Install ESLint.
 echo "Installing NPM packages..."
 if [[ $(which npm) ]]; then
-    npm install -g eslint babel-eslint eslint-config-airbnb
     npm install -g express-generator
     npm install -g fixjson
     npm install -g prettier
-    npm install -g stylelint stylelint-scss stylelint-config-standard stylelint-config-recommended-scss
-    npm install -g typescript tslint
     npm install -g taskbook
 fi
 echo -e "NPM packages installed successfully!\n"
@@ -161,9 +161,16 @@ echo -e "Pip packages installed successfully!\n"
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 # Neovim.
-curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 echo -e "Vim-Plug has been installed. You can install Vim plugins from within (Neo) Vim now.\n"
+
+# Install Vim plugins.
+# Vim.
+vim -es -u vimrc -i NONE -c "PlugInstall" -c "qa"
+
+# Neovim.
+nvim -es -u init.vim -i NONE -c "PlugInstall" -c "qa"
 
 # Configure Tmux colors.
 echo "Configuring Tmux colors..."

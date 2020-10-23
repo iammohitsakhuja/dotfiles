@@ -1,8 +1,14 @@
+#########################################################
+####### Uncomment to install particular software. #######
+#########################################################
+
 # Taps.
-tap "caskroom/cask"
-tap "caskroom/versions"
-tap "caskroom/fonts"
+tap "homebrew/cask-fonts"
 tap "homebrew/cask-drivers"
+tap "homebrew/cask-versions" # Required to find alternate versions of Casks.
+tap "mongodb/brew"
+tap "AdoptOpenJDK/openjdk"
+# tap "facebook/fb"
 
 # Install GNU core utilities (those that come with macOS are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
@@ -12,6 +18,7 @@ brew "coreutils"
 brew "gnu-sed", args: ["with-default-names"]
 
 # Utilities.
+# brew "watchman"
 brew "wget"
 brew "tmux"
 brew "vim", args: ["with-overrride-system-vi"]
@@ -19,7 +26,13 @@ brew "neovim"
 brew "grep", args: ["with-default-names"]
 brew "htop"
 brew "screen"
+# brew "direnv"
 brew "highlight"
+# brew "jenv"
+# brew "kubernetes-cli"
+# brew "kubectx"
+# brew "helm"
+brew "telnet"
 brew "ranger"
 
 # Faster and easier finding.
@@ -31,68 +44,84 @@ brew "clang-format"
 brew "cmake"
 brew "google-java-format"
 brew "lua"
-brew "mongodb"
+brew "mongodb-community@4.2" # The latest version at the time (4.4) has some issue with trying to connect.
 brew "perl"
 brew "postgresql"
-brew "python"
+brew "python@3.8"
 brew "redis"
 brew "ruby"
 brew "shfmt"
 brew "sqlite"
-brew "php"
-brew "composer"
+# brew "php"
+# brew "composer"
+# brew "idb-companion" # To automate iOS simulators and devices for development.
 
 # Install other useful binaries.
 brew "ack"
+# brew "awscli"
+brew "bash"
+brew "ccat"
+brew "curl"
 brew "git"
+brew "neofetch"
 brew "tree"
 
 # GUI applications.
-cask "android-file-transfer"
 cask "appcleaner"
-cask "dashlane"
+# cask "deepl"
 cask "downie"
 cask "dropbox"
 cask "firefox"
 cask "firefox-developer-edition"
-cask "gitter"
 cask "google-chrome"
-cask "grammarly"
 cask "iina"
+# cask "imageoptim"
 cask "kap"
-cask "komanda"
 cask "logitech-options"
-cask "microsoft-office"
+cask "macmediakeyforwarder"
+# cask "microsoft-office"
 cask "opera"
-cask "slack"
 cask "spectacle"
 cask "spotify"
-cask "the-unarchiver"
+cask "spotmenu"
 cask "vlc"
 cask "webtorrent"
-cask "whatsapp"
-cask "typora"
 
 # Quick-look plugins.
 cask "qlcolorcode"
+cask "qlimagesize"
 cask "qlmarkdown"
 cask "qlstephen"
+cask "qlvideo"
 cask "quicklook-json"
 cask "quicklook-csv"
+cask "suspicious-package"
+cask "webpquicklook"
+
+# For multiversion Java development.
+cask "adoptopenjdk8-jre"
+cask "adoptopenjdk8"
+cask "adoptopenjdk11-jre"
+cask "adoptopenjdk11"
 
 # Development utilities.
-cask "dash"
+# cask "android-studio"
+cask "dash4"
+cask "docker"
 cask "figma"
-cask "github"
-cask "hyper"
-cask "insomnia"
+# cask "google-cloud-sdk"
+# cask "hyper"
+# cask "insomnia"
 cask "intellij-idea"
 cask "iterm2"
-cask "java8"
 cask "love"
 cask "notion"
-cask "vagrant"
+cask "postman"
+cask "tower"
+# cask "tunnelblick"
+# cask "vagrant"
 cask "visual-studio-code"
+cask "zeplin"
 cask "zoomus"
 
 # Fonts.
