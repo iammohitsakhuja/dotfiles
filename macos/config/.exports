@@ -2,11 +2,11 @@
 
 # Add 'coreutils' to PATH variable so macOS recognises utilities like
 # sha256sum and sha512sum.
-PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.7.0/bin:$PATH" # Ruby and gems.
+PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:$PATH" # Ruby and gems.
 PATH="/usr/local/opt/sqlite/bin:$PATH"                                  # Sqlite 3.
-PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"                    # Coreutils.
-PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"                      # GNU Sed.
-PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"                         # Grep.
+PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"              # Coreutils.
+PATH="$(brew --prefix)/opt/gnu-sed/libexec/gnubin:$PATH"                # GNU Sed.
+PATH="$(brew --prefix)/opt/grep/libexec/gnubin:$PATH"                   # Grep.
 PATH="/usr/local/opt/openssl/bin:$PATH"                                 # OpenSSL.
 PATH="/usr/local/opt/php/bin:$PATH"                                     # PHP.
 PATH="/usr/local/opt/mongodb-community@4.2/bin:$PATH"                   # MongoDB.
@@ -81,3 +81,15 @@ export LESS_TERMCAP_us=$green
 
 # Disable Virtualenv's prompt.
 export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+# Disable security audit of folders that `oh-my-zsh` uses for completions.
+# In particular, they are:
+#   /usr/local/share/zsh
+#   /usr/local/share/zsh/site-functions
+# This command can help as well:
+#   compaudit | xargs chmod g-w,o-w
+# export ZSH_DISABLE_COMPFIX=true
+
+# Switch to Python2 for Google Cloud SDK.
+# export CLOUDSDK_PYTHON=python2
+# export CLOUDSDK_PYTHON="/usr/local/opt/python@3.8/libexec/bin/python"
