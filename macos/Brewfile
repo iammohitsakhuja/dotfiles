@@ -15,15 +15,17 @@ tap "AdoptOpenJDK/openjdk"
 brew "coreutils"
 
 # Install GNU `sed`, overwriting the built-in `sed`.
-brew "gnu-sed", args: ["with-default-names"]
+# Don’t forget to add `$(brew --prefix gnu-sed)/libexec/gnubin` to `$PATH`.
+brew "gnu-sed"
 
 # Utilities.
-# brew "watchman"
+brew "fzf"
+brew "watchman"
 brew "wget"
 brew "tmux"
-brew "vim", args: ["with-overrride-system-vi"]
+brew "vim"
 brew "neovim"
-brew "grep", args: ["with-default-names"]
+brew "grep"
 brew "htop"
 brew "screen"
 # brew "direnv"
@@ -67,6 +69,7 @@ brew "neofetch"
 brew "tree"
 
 # GUI applications.
+cask "vanilla"
 cask "appcleaner"
 # cask "deepl"
 cask "downie"
@@ -84,7 +87,6 @@ cask "opera"
 cask "spectacle"
 cask "spotify"
 cask "spotmenu"
-cask "vlc"
 cask "webtorrent"
 
 # Quick-look plugins.
@@ -100,7 +102,7 @@ cask "webpquicklook"
 
 # For multiversion Java development.
 cask "adoptopenjdk8-jre"
-cask "adoptopenjdk8"
+cask "adoptopenjdk/openjdk/adoptopenjdk8" # This particular cask exists in multiple taps.
 cask "adoptopenjdk11-jre"
 cask "adoptopenjdk11"
 

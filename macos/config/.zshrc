@@ -25,14 +25,17 @@ plugins=(
     docker
     git
     git-flow
+    helm
     kubectl
     mvn
     npm
+    tmux
     vi-mode
     yarn
-    zsh-syntax-highlighting
-    zsh-completions
+    zsh_reload
     zsh-autosuggestions
+    zsh-completions
+    zsh-syntax-highlighting
 )
 
 # Load oh-my-zsh.
@@ -73,6 +76,10 @@ source ~/greeting.sh | lolcat
 
 # API keys.
 source ~/.api_keys
+
+# Google Cloud SDK.
+source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
 
 ############################# Miscellaneous #############################
 
