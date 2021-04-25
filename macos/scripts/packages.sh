@@ -65,7 +65,7 @@ PERL_MM_OPT="INSTALL_BASE=$HOME/perl5" cpan local::lib
 # Install mas-cli for Mac App Store applications.
 brew install mas
 
-mas install 1107421413 # 1Blocker for Safari.
+mas install 1365531024 # 1Blocker for Safari.
 mas install 937984704  # Amphetamine.
 mas install 595191960  # CopyClip.
 # mas install 1475897096 # JIRA Cloud by Atlassian.
