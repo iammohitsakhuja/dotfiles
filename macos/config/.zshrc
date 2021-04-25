@@ -77,10 +77,6 @@ source ~/greeting.sh | lolcat
 # API keys.
 source ~/.api_keys
 
-# Google Cloud SDK.
-source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
-source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
-
 ############################# Miscellaneous #############################
 
 # For fuzzy-file finding with fzf.
