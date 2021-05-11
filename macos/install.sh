@@ -174,8 +174,8 @@ nvim -es -u init.vim -i NONE -c "PlugInstall" -c "qa"
 
 # Configure Tmux colors.
 echo "Configuring Tmux colors..."
-tic -x $PWD/config/xterm-256color-italic.terminfo
-tic -x $PWD/config/tmux-256color.terminfo
+tic -x $PWD/config/terminfo/xterm-256color-italic.terminfo
+tic -x $PWD/config/terminfo/tmux-256color.terminfo
 echo -e "Tmux colors configured successfully!\n"
 
 # Configure MacOS settings.
