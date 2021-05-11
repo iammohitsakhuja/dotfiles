@@ -111,11 +111,11 @@ echo "Installing packages..."
 bash $PWD/scripts/packages.sh
 echo -e "Packages installed successfully!\n"
 
-NVM_VERSION="0.35.3"
+NVM_VERSION="0.38.0"
 
 # Install NVM.
 echo "Installing NVM and Node..."
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v$NVM_VERSION/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v$NVM_VERSION/install.sh | bash
 
 # Do this to be able to use NVM now.
 export NVM_DIR="$HOME/.nvm"
@@ -131,7 +131,7 @@ echo "Installing Yarn..."
 brew install yarn --without-node
 echo -e "Yarn installation successful!\n"
 
-# Install ESLint.
+# Install NPM packages.
 echo "Installing NPM packages..."
 if [[ $(which npm) ]]; then
     npm install -g express-generator
