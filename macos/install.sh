@@ -119,16 +119,6 @@ echo "Installing packages..."
 bash $PWD/scripts/packages.sh
 echo -e "Packages installed successfully!\n"
 
-# Install Pip packages.
-echo "Installing Pip packages..."
-if [[ $(which pip3) ]]; then
-    pip3 install black
-    pip3 install gitlint
-    pip3 install neovim
-    pip3 install virtualenv
-fi
-echo -e "Pip packages installed successfully!\n"
-
 # Install manpages.
 echo "Installing Manpages..."
 bash $PWD/scripts/manpages.sh

@@ -63,6 +63,11 @@ echo "Installing Node and its packages..."
 bash $(pwd)/scripts/node-packages.sh
 echo -e "Done\n\n"
 
+# Install Python packages.
+echo "Installing Python packages..."
+bash $(pwd)/scripts/python-packages.sh
+echo -e "Done\n\n"
+
 # Install Ruby gems.
 echo "Installing Ruby gems..."
 bash $(pwd)/scripts/ruby-gems.sh
