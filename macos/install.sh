@@ -119,11 +119,6 @@ echo "Installing packages..."
 bash $PWD/scripts/packages.sh
 echo -e "Packages installed successfully!\n"
 
-# Install manpages.
-echo "Installing Manpages..."
-bash $PWD/scripts/manpages.sh
-echo -e "Manpages installation successful!\n"
-
 # Configure Tmux colors.
 echo "Configuring Tmux colors..."
 tic -x $PWD/config/terminfo/xterm-256color-italic.terminfo
