@@ -72,3 +72,8 @@ echo -e "Done\n\n"
 echo "Installing Ruby gems..."
 bash $(pwd)/scripts/ruby-gems.sh
 echo -e "Done\n\n"
+
+# Install Vim packages.
+echo "Installing Vim and its packages..."
+bash $(pwd)/scripts/vim-packages.sh
+echo -e "Done\n\n"
