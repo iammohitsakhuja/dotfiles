@@ -32,16 +32,23 @@ CONFIG_FILES=(
 NVIM_DIR="$HOME/.config/nvim"
 NVIM_FILE="nvim/init.vim"
 
+#### TODO: Add backup for Ranger. ####
+
 # Scripts that will run on the start of each session. Remove the ones that you don't need.
 STARTUP_SCRIPTS=(
     "greeting.sh"
 )
 
+EMAIL="sakhuja.mohit@gmail.com"
+NAME="Mohit Sakhuja"
+
+#### TODO: Backup any previously existing files. ####
+
 case $* in
 # Copy the files.
 --copy | -c)
     echo "Copying config files into $HOME/ ..."
-    for file in ${CONFIG_FILES[@]}; do
+    for file in "${CONFIG_FILES[@]}"; do
         echo "Copying $PWD/config/$file into $HOME/"
         cp $PWD/config/$file $HOME
     done
@@ -52,7 +59,7 @@ case $* in
     echo ""
 
     echo "Copying startup scripts into $HOME/ ..."
-    for file in ${STARTUP_SCRIPTS[@]}; do
+    for file in "${STARTUP_SCRIPTS[@]}"; do
         echo "Copying $PWD/startup_scripts/$file into $HOME/"
         cp $PWD/startup_scripts/$file $HOME
     done
@@ -61,7 +68,7 @@ case $* in
 # Symlink the files.
 *)
     echo "Linking config files into $HOME/ ..."
-    for file in ${CONFIG_FILES[@]}; do
+    for file in "${CONFIG_FILES[@]}"; do
         echo "Symlinking $PWD/config/$file into $HOME/"
         ln -s $PWD/config/$file $HOME
     done
@@ -72,7 +79,7 @@ case $* in
     echo ""
 
     echo "Linking startup scripts into $HOME/ ..."
-    for file in ${STARTUP_SCRIPTS[@]}; do
+    for file in "${STARTUP_SCRIPTS[@]}"; do
         echo "Symlinking $PWD/startup_scripts/$file into $HOME/"
         ln -s $PWD/startup_scripts/$file $HOME
     done
@@ -95,14 +102,15 @@ done 2>/dev/null &
 touch ~/.api_keys
 
 # Configure git.
-git config --global user.email "sakhuja.mohit@gmail.com"
-git config --global user.name "Mohit Sakhuja"
+git config --global user.email "$EMAIL"
+git config --global user.name "$NAME"
 git config --global core.editor "nvim"
 git config --global core.filemode false
 git config --global status.showuntrackedfiles all
+git config --global pull.rebase false
 
 # Create SSH key pair.
-ssh-keygen -t rsa -C "sakhuja.mohit@gmail.com"
+ssh-keygen -t rsa -C "$EMAIL"
 
 # Run installation scripts.
 echo -e "\nRunning installation scripts..."
@@ -152,25 +160,33 @@ fi
 echo -e "Pip packages installed successfully!\n"
 
 # Install manpages.
-# echo "Installing Manpages..."
-# bash $PWD/scripts/manpages.sh
-# echo -e "Manpages installation successful!\n"
+echo "Installing Manpages..."
+bash $PWD/scripts/manpages.sh
+echo -e "Manpages installation successful!\n"
 
 # Install Vim Plug for managing plugins in Vim, both for Neovim and Vim.
 # Vim.
+echo "Installing VimPlug for Vim..."
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+echo -e "VimPlug for Vim installed successfully!\n"
+
 # Neovim.
+echo "Installing VimPlug for Neovim..."
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-echo -e "Vim-Plug has been installed. You can install Vim plugins from within (Neo) Vim now.\n"
+echo -e "VimPlug for Neovim installed successfully!\n"
 
 # Install Vim plugins.
 # Vim.
+echo "Installing Vim plugins for Vim..."
 vim -es -u vimrc -i NONE -c "PlugInstall" -c "qa"
+echo -e "Vim plugins for Vim installed successfully!\n"
 
 # Neovim.
+echo "Installing Vim plugins for Neovim..."
 nvim -es -u init.vim -i NONE -c "PlugInstall" -c "qa"
+echo -e "Vim plugins for Neovim installed successfully!\n"
 
 # Configure Tmux colors.
 echo "Configuring Tmux colors..."
