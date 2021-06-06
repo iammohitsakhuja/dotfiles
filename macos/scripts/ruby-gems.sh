@@ -5,9 +5,7 @@ export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
 
 # Install Ruby gems.
 echo "Installing Gems..."
-gem install lolcat
-gem install colorls
-gem install mdl
+gem install colorls lolcat mdl
 echo -e "Gems installed successfully\n"
 
 # TODO: Do something about adding manpages for gems to the path.
