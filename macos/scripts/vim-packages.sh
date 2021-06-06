@@ -16,10 +16,10 @@ echo -e "VimPlug for Neovim installed successfully!\n"
 # Install Vim plugins.
 # Vim.
 echo "Installing Vim plugins for Vim..."
-vim -es -u vimrc -i NONE -c "PlugInstall" -c "qa"
+vim -es -u ~/.vimrc -i NONE -c "PlugInstall" -c "qa"
 echo -e "Vim plugins for Vim installed successfully!\n"
 
 # Neovim.
 echo "Installing Vim plugins for Neovim..."
-nvim -es -u init.vim -i NONE -c "PlugInstall" -c "qa"
+nvim -es -u ~/.config/nvim/init.vim -i NONE -c "PlugInstall" -c "qa"
 echo -e "Vim plugins for Neovim installed successfully!\n"
