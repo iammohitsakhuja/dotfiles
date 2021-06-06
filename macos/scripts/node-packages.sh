@@ -16,17 +16,9 @@ export NVM_DIR="$HOME/.nvm"
 nvm install --lts
 echo -e "NVM and Node installation successful!\n"
 
-# Install yarn.
-echo "Installing Yarn..."
-brew install yarn --without-node
-echo -e "Yarn installation successful!\n"
-
-# Install NPM packages.
-echo "Installing NPM packages..."
+# Install global NPM packages.
+echo "Installing global NPM packages..."
 if [[ $(which npm) ]]; then
-    npm install -g express-generator
-    npm install -g fixjson
-    npm install -g prettier
-    npm install -g taskbook
+    npm install -g express-generator fixjson prettier taskbook
 fi
 echo -e "NPM packages installed successfully!\n"
