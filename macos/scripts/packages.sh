@@ -19,38 +19,10 @@ brew update
 # Upgrade any previously installed packages.
 brew upgrade
 
-# Install Bash 4. MacOS' Bash is severely outdated.
-# Install this because Bash is needed once in a while.
-# Then add `/usr/local/bin/bash` to `/etc/shells`.
-brew install bash
-if ! fgrep -q '/usr/local/bin/bash' /etc/shells; then
-    echo "Adding Bash to /etc/shells... "
-    echo '/usr/local/bin/bash' | sudo tee -a /etc/shells
-    echo "Done"
-fi
-
-# Install ZSH - our primary shell.
-# Then add `/usr/local/bin/zsh` to `/etc/shells`.
-brew install zsh
-if ! fgrep -q '/usr/local/bin/zsh' /etc/shells; then
-    echo "Adding Zsh to /etc/shells... "
-    echo '/usr/local/bin/zsh' | sudo tee -a /etc/shells
-    echo -e "Done\nChanging default shell to Zsh... "
-    chsh -s /usr/local/bin/zsh
-    echo "Done"
-fi
-
-echo "Installing Oh-my-zsh..."
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" "" --unattended
-echo -e "Oh-my-zsh installation successful!\n"
-
-# Install oh-my-zsh plugins.
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
-
-# Install powerlevel9k theme for Zsh.
-git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+# Install/update Shell and its packages.
+echo "Installing/updating Shell and its packages..."
+bash $(pwd)/scripts/shell-packages.sh
+echo -e "Done\n\n"
 
 # Install Homebrew bundle.
 brew tap Homebrew/bundle
