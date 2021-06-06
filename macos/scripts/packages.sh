@@ -58,6 +58,11 @@ echo "Doing some cleanup..."
 brew cleanup
 echo -e "Done\n"
 
+# Install Node and its packages.
+echo "Installing Node and its packages..."
+bash $(pwd)/scripts/node-packages.sh
+echo -e "Done\n\n"
+
 # Install Ruby gems.
 echo "Installing Ruby gems..."
 bash $(pwd)/scripts/ruby-gems.sh
