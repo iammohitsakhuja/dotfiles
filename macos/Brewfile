@@ -5,9 +5,10 @@
 # Taps.
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-drivers"
-tap "homebrew/cask-versions" # Required to find alternate versions of Casks.
+tap "homebrew/cask-versions"    # Required to find alternate versions of Casks.
 tap "mongodb/brew"
 tap "AdoptOpenJDK/openjdk"
+# tap "khanhas/tap"               # For spicetify-cli.
 # tap "facebook/fb"
 
 # Install GNU core utilities (those that come with macOS are outdated).
@@ -31,9 +32,9 @@ brew "screen"
 # brew "direnv"
 brew "highlight"
 # brew "jenv"
-# brew "kubernetes-cli"
-# brew "kubectx"
-# brew "helm"
+brew "kubernetes-cli"
+brew "kubectx"
+brew "helm"
 brew "telnet"
 brew "ranger"
 
@@ -49,7 +50,7 @@ brew "lua"
 brew "mongodb-community@4.2" # The latest version at the time (4.4) has some issue with trying to connect.
 brew "perl"
 brew "postgresql"
-brew "python@3.8"
+brew "python"
 brew "redis"
 brew "ruby"
 brew "shfmt"
@@ -67,10 +68,12 @@ brew "curl"
 brew "git"
 brew "neofetch"
 brew "tree"
+# brew "spicetify-cli"        # For customising the look of Spotify.
 
 # GUI applications.
-cask "vanilla"
 cask "appcleaner"
+# cask "chromium"
+# cask "cloudflare-warp"
 # cask "deepl"
 cask "downie"
 cask "dropbox"
@@ -87,6 +90,7 @@ cask "opera"
 cask "spectacle"
 cask "spotify"
 cask "spotmenu"
+cask "vanilla"
 cask "webtorrent"
 
 # Quick-look plugins.
@@ -95,8 +99,8 @@ cask "qlimagesize"
 cask "qlmarkdown"
 cask "qlstephen"
 cask "qlvideo"
-cask "quicklook-json"
 cask "quicklook-csv"
+cask "quicklook-json"
 cask "suspicious-package"
 cask "webpquicklook"
 
@@ -119,12 +123,13 @@ cask "iterm2"
 cask "love"
 cask "notion"
 cask "postman"
+cask "responsively"
 cask "tower"
 # cask "tunnelblick"
 # cask "vagrant"
 cask "visual-studio-code"
 cask "zeplin"
-cask "zoomus"
+cask "zoom"
 
 # Fonts.
 cask "font-hack-nerd-font"
