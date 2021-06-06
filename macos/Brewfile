@@ -8,8 +8,6 @@ tap "homebrew/cask-drivers"
 tap "homebrew/cask-versions"    # Required to find alternate versions of Casks.
 tap "mongodb/brew"
 tap "AdoptOpenJDK/openjdk"
-# tap "khanhas/tap"               # For spicetify-cli.
-# tap "facebook/fb"
 
 # Install GNU core utilities (those that come with macOS are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
@@ -45,19 +43,21 @@ brew "the_silver_searcher" # Provides the `ag` command.
 # Programming related packages.
 brew "clang-format"
 brew "cmake"
+# brew "composer"
 brew "google-java-format"
+# brew "facebook/fb/idb-companion" # To automate iOS simulators and devices for development.
 brew "lua"
 brew "mongodb-community@4.2" # The latest version at the time (4.4) has some issue with trying to connect.
 brew "perl"
+# brew "php"
 brew "postgresql"
 brew "python"
 brew "redis"
 brew "ruby"
 brew "shfmt"
 brew "sqlite"
-# brew "php"
-# brew "composer"
-# brew "idb-companion" # To automate iOS simulators and devices for development.
+brew "stdman"
+brew "yarn"
 
 # Install other useful binaries.
 brew "ack"
@@ -66,9 +66,9 @@ brew "bash"
 brew "ccat"
 brew "curl"
 brew "git"
+# brew "khanhas/tap/spicetify-cli"        # For customising the look of Spotify.
 brew "neofetch"
 brew "tree"
-# brew "spicetify-cli"        # For customising the look of Spotify.
 
 # GUI applications.
 cask "appcleaner"
