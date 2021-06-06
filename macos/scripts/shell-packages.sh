@@ -5,24 +5,24 @@
 # Then add `/usr/local/bin/bash` to `/etc/shells`.
 echo "Installing/updating Bash..."
 brew install bash
-echo -e "Done\n\n"
+echo "Done"
 if ! fgrep -q '/usr/local/bin/bash' /etc/shells; then
     echo "Adding Bash to /etc/shells... "
     echo '/usr/local/bin/bash' | sudo tee -a /etc/shells
-    echo "Done"
+    echo -e "Done\n\n"
 fi
 
 # Install ZSH - our primary shell.
 # Then add `/usr/local/bin/zsh` to `/etc/shells`.
 echo "Installing/updating Zsh..."
 brew install zsh
-echo -e "Done\n\n"
+echo "Done"
 if ! fgrep -q '/usr/local/bin/zsh' /etc/shells; then
     echo "Adding Zsh to /etc/shells... "
     echo '/usr/local/bin/zsh' | sudo tee -a /etc/shells
     echo -e "Done\nChanging default shell to Zsh... "
     chsh -s /usr/local/bin/zsh
-    echo "Done"
+    echo -e "Done\n\n"
 fi
 
 # Install oh-my-zsh.
