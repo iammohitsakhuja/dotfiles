@@ -87,7 +87,7 @@ brew cleanup
 echo -e "Done\n"
 
 # Update path for Ruby in order to install gems to Ruby provided by Homebrew rather than system Ruby.
-export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.7.0/bin:$PATH"
+export PATH="/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/3.0.0/bin:$PATH"
 
 # Install Ruby gems.
 echo "Installing Gems..."
