@@ -10,9 +10,13 @@ osascript -e 'tell application "System Preferences" to quit'
 # General UI/UX                                                               #
 ###############################################################################
 
-# Always show scrollbars.
-defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+# Show scrollbars automatically.
+defaults write NSGlobalDomain AppleShowScrollBars -string "Automatic"
 # Possible values: `WhenScrolling`, `Automatic` and `Always`.
+
+# Jump to the spot that's clicked on the click of the scrollbar.
+defaults write NSGlobalDomain AppleScrollerPagingBehavior -bool true
+# `true` for jumping to the spot that's clicked. `false` for jumping to the next page.
 
 # Expand save panel by default.
 defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
@@ -145,6 +149,13 @@ defaults write com.apple.dock autohide-time-modifier -float 0.5
 
 # Don’t show recent applications in Dock.
 defaults write com.apple.dock show-recents -bool false
+
+###############################################################################
+# QuickLook
+###############################################################################
+
+# Get rid of QuickLook plugin warning that MacOS Catalina (and above) throw.
+xattr -d -r com.apple.quarantine ~/Library/QuickLook
 
 ###############################################################################
 # Safari                                                                      #
