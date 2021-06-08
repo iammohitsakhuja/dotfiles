@@ -89,7 +89,11 @@ eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # Hook Direnv into shell.
-eval "$(direnv hook zsh)"
+if type direnv >> /dev/null; then
+    eval "$(direnv hook zsh)"
+fi
 
 # Hook Jenv into shell.
-eval "$(jenv init -)"
+if type jenv >> /dev/null; then
+    eval "$(jenv init -)"
+fi
