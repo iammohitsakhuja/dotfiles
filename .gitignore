@@ -1,3 +1,6 @@
 # Ignore temporary files.
 *.swp
 .DS_Store
+
+# Ignore lockfile for Brew.
+Brewfile.lock.json
