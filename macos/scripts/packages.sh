@@ -6,11 +6,20 @@ if [[ $OSTYPE != "darwin"* ]]; then
     exit 1
 fi
 
+# Check if Mac is using Apple Silicon.
+if [[ `uname -m` == 'arm64' ]]; then
+    # Install Rosetta 2 for packages required henceforth.
+    sudo softwareupdate --install-rosetta --agree-to-license
+fi
+
 # Install Homebrew if it isn't installed already.
 if ! [[ $(which brew) ]]; then
     echo "Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     echo -e "Installation successful!\n"
+    # TODO: Make this more elegant.
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
 # Update Homebrew.
@@ -48,6 +57,8 @@ mas install 595191960       # CopyClip.
 # mas install 1475897096      # Jira.
 mas install 409183694       # Keynote.
 # mas install 1480068668      # Messenger.
+mas install 462058435       # Microsoft Excel.
+mas install 462054704       # Microsoft Word.
 mas install 409203825       # Numbers.
 mas install 823766827       # OneDrive.
 mas install 409201541       # Pages.
