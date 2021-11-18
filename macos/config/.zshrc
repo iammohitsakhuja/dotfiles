@@ -32,7 +32,6 @@ plugins=(
     tmux
     vi-mode
     yarn
-    zsh_reload
     zsh-autosuggestions
     zsh-completions
     zsh-syntax-highlighting

@@ -34,6 +34,9 @@ echo -e "Packages installed successfully\n"
 # Set up Perl correctly. Any other changes are in `.zshrc`.
 PERL_MM_OPT="INSTALL_BASE=$HOME/perl5" cpan local::lib
 
+# Set up FZF autocompletion and keybindings.
+$(brew --prefix)/opt/fzf/install --key-bindings --completion --no-update-rc
+
 # Install mas-cli for Mac App Store applications.
 brew install mas
 
