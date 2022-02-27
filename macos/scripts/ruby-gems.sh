@@ -10,5 +10,3 @@ echo "Installing Gems..."
 gem install colorls lolcat mdl
 gem manpages --update-all
 echo -e "Gems installed successfully\n"
-
-# TODO: Do something about adding manpages for gems to the path.
