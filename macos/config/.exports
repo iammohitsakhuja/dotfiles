@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 
 BREW_PREFIX="$(brew --prefix)"
+IBREW_PREFIX="$(brew --prefix)"
+
+# For M1 Mac.
+if [[ $(uname -m) == "arm64" ]]; then
+    alias ibrew="arch -x86_64 /usr/local/bin/brew"
+    IBREW_PREFIX="$(ibrew --prefix)"
+fi
 
 # Add 'coreutils' to PATH variable so macOS recognises utilities like
 # sha256sum and sha512sum.
@@ -92,7 +99,3 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 # This command can help as well:
 #   compaudit | xargs chmod g-w,o-w
 # export ZSH_DISABLE_COMPFIX=true
-
-# Switch to Python2 for Google Cloud SDK.
-# export CLOUDSDK_PYTHON=python2
-# export CLOUDSDK_PYTHON="/usr/local/opt/python@3.8/libexec/bin/python"
