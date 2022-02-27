@@ -1,14 +1,91 @@
 #!/usr/bin/env bash
 
-# Ensure proper usage.
-if [[ $* == "--help" ]] || [[ $* == "-h" ]]; then
-    echo "Usage: ./install.sh [ -h | --help ] [ -c | --copy ] [ -l | --link ]"
-    echo "       -h, --help  | Show this help"
-    echo "       -l, --link  | Link config files and startup scripts rather than copying (default)"
-    echo -e "       -c, --copy  | Copy config files and startup scripts rather than linking\n"
+# Helper function to exit the script.
+die() {
+    printf '%s\n' "$1" >&2
+    exit 1
+}
+
+# Initialise the option variables.
+# This ensures we are not contaminated by variables from the environment.
+symlink=1 # 0 is for copy, 1 is for symlink.
+email=
+name=
+
+# TODO: Add a verbose option.
+show_help() {
+    echo "Usage: ./install.sh [-h | --help] [-c | -l | --copy | --link] [-e | --email] [-n | --name]"
+    echo "       -h, --help     | Show this help."
+    echo "       -l, --link     | Link config files and startup scripts rather than copying (default)."
+    echo "       -c, --copy     | Copy config files and startup scripts rather than linking."
+    echo "       -e, --email    | The email that you would like to use for setting up things like git, ssh e.g. \"abc@example.com\"."
+    echo "       -n, --name     | The name that you would like to use for setting up things like git e.g. \"John Doe\"."
+    echo ""
     echo "To remove the files that you don't need, simply open this installation script and delete their names."
-    exit 0
-fi
+}
+
+# Ensure proper usage.
+while :; do
+    case $1 in
+    -h | -\? | --help)
+        show_help
+        exit
+        ;;
+    -c | --copy)
+        symlink=0
+        shift
+        ;;
+    -l | --link)
+        symlink=1
+        shift
+        ;;
+    -e | --email)
+        # TODO: Handle the case where the next argument to email is another option e.g. `-e -c`.
+        if [[ "$2" ]]; then
+            email=$2
+            shift 2
+        else
+            die "ERROR: \"--email\" requires a non-empty option argument."
+        fi
+        ;;
+    --email=?*)
+        email=${1#*=} # Delete everything up to "=" and assign the remainder.
+        shift
+        ;;
+    --email=) # Handle the case of an empty --email=.
+        die "ERROR: \"--email\" requires a non-empty option argument."
+        ;;
+    -n | --name)
+        # TODO: Handle the case where the next argument to name is another option e.g. `-n -c`.
+        if [[ "$2" ]]; then
+            name=$2
+            shift 2
+        else
+            die "ERROR: \"--name\" requires a non-empty option argument."
+        fi
+        ;;
+    --name=?*)
+        name=${1#*=} # Delete everything up to "=" and assign the remainder.
+        shift
+        ;;
+    --name=) # Handle the case of an empty --name=.
+        die "ERROR: \"--name\" requires a non-empty option argument."
+        ;;
+    *) # Default case: No more options, so break out of the loop.
+        echo "Symlink = $symlink"
+        echo "Email = $email"
+        echo "Name = $name"
+        echo ""
+        if ! [[ $email ]]; then
+            die "ERROR: \"--email\" is required."
+        fi
+        if ! [[ $name ]]; then
+            die "ERROR: \"--name\" is required."
+        fi
+        break
+        ;;
+    esac
+done
 
 # Get the current working directory.
 PWD=$(pwd)
@@ -25,12 +102,17 @@ CONFIG_FILES=(
     ".taskbook.json"
     ".tmux.conf"
     ".vimrc"
+    ".zprofile"
     ".zshrc"
 )
 
 # Path to Neovim config file.
 NVIM_DIR="$HOME/.config/nvim"
 NVIM_FILE="nvim/init.vim"
+
+# Path to Neovim config file.
+BAT_DIR="$HOME/.config/bat"
+BAT_FILE="bat/config"
 
 #### TODO: Add backup for Ranger. ####
 
@@ -39,23 +121,26 @@ STARTUP_SCRIPTS=(
     "greeting.sh"
 )
 
-EMAIL="sakhuja.mohit@gmail.com"
-NAME="Mohit Sakhuja"
-
 #### TODO: Backup any previously existing files. ####
 
-case $* in
-# Copy the files.
---copy | -c)
+if [[ $symlink == 0 ]]; then
     echo "Copying config files into $HOME/ ..."
     for file in "${CONFIG_FILES[@]}"; do
         echo "Copying $PWD/config/$file into $HOME/"
         cp $PWD/config/$file $HOME
     done
+
+    # Neovim.
     if ! [[ -d $NVIM_DIR ]]; then
         mkdir -p $NVIM_DIR
     fi
     cp $PWD/config/$NVIM_FILE $NVIM_DIR
+
+    # Bat.
+    if ! [[ -d $BAT_DIR ]]; then
+        mkdir -p $BAT_DIR
+    fi
+    cp $PWD/config/$BAT_FILE $BAT_DIR
     echo ""
 
     echo "Copying startup scripts into $HOME/ ..."
@@ -63,19 +148,24 @@ case $* in
         echo "Copying $PWD/startup_scripts/$file into $HOME/"
         cp $PWD/startup_scripts/$file $HOME
     done
-    ;;
-
-# Symlink the files.
-*)
+else
     echo "Linking config files into $HOME/ ..."
     for file in "${CONFIG_FILES[@]}"; do
         echo "Symlinking $PWD/config/$file into $HOME/"
         ln -s $PWD/config/$file $HOME
     done
+
+    # Neovim.
     if ! [[ -d $NVIM_DIR ]]; then
         mkdir -p $NVIM_DIR
     fi
     ln -s $PWD/config/$NVIM_FILE $NVIM_DIR
+
+    # Bat.
+    if ! [[ -d $BAT_DIR ]]; then
+        mkdir -p $BAT_DIR
+    fi
+    ln -s $PWD/config/$BAT_FILE $BAT_DIR
     echo ""
 
     echo "Linking startup scripts into $HOME/ ..."
@@ -83,8 +173,7 @@ case $* in
         echo "Symlinking $PWD/startup_scripts/$file into $HOME/"
         ln -s $PWD/startup_scripts/$file $HOME
     done
-    ;;
-esac
+fi
 
 # Ask for administrator password.
 echo -e "\nInstallation requires administrator authentication..."
@@ -110,8 +199,8 @@ fi
 touch ~/.api_keys
 
 # Configure git.
-git config --global user.email "$EMAIL"
-git config --global user.name "$NAME"
+git config --global user.email "$email"
+git config --global user.name "$name"
 git config --global core.editor "nvim"
 git config --global core.filemode false
 git config --global status.showuntrackedfiles all
@@ -137,7 +226,7 @@ git config --global color.diff.new "green bold"
 git config --global color.diff.whitespace "red reverse"
 
 # Create SSH key pair.
-ssh-keygen -t rsa -C "$EMAIL"
+ssh-keygen -t rsa -C "$email"
 
 # Run installation scripts.
 echo -e "\nRunning installation scripts..."
