@@ -7,7 +7,6 @@ tap "homebrew/cask-fonts"
 tap "homebrew/cask-drivers"
 tap "homebrew/cask-versions"    # Required to find alternate versions of Casks.
 tap "mongodb/brew"
-tap "AdoptOpenJDK/openjdk"
 
 # Install GNU core utilities (those that come with macOS are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
@@ -108,10 +107,8 @@ cask "suspicious-package"
 cask "webpquicklook"
 
 # For multiversion Java development.
-cask "adoptopenjdk8-jre"
-cask "adoptopenjdk/openjdk/adoptopenjdk8" # This particular cask exists in multiple taps.
-cask "adoptopenjdk11-jre"
-cask "adoptopenjdk11"
+cask "temurin8"
+cask "temurin11"
 
 # Development utilities.
 # cask "android-studio"
