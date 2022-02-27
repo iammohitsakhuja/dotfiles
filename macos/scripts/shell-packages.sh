@@ -39,7 +39,7 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-m
 git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
 echo -e "Oh-my-zsh plugins installed successfully!\n"
 
-# Install Powerlevel9k theme for Zsh.
-echo "Installing Powerlevel9k theme for Zsh..."
-git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
-echo -e "Powerlevel9k theme installed successfully!\n"
+# Install Powerlevel10k theme for Zsh.
+echo "Installing Powerlevel10k theme for Zsh..."
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom/themes/powerlevel10k}
+echo -e "Powerlevel10k theme installed successfully!\n"

@@ -1,11 +1,20 @@
-############################# Exports #############################
-source ~/.exports
+# Things which need to be lazy loaded should be split into two steps.
+# One at the top of this file.
+# Another at the bottom of this file.
+if type direnv >> /dev/null; then
+    emulate zsh -c "$(direnv export zsh)"
+fi
 
 ############################# Powerline setup #############################
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
-POWERLEVEL9K_MODE='nerdfont-complete'
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs virtualenv)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
+############################# Exports #############################
+source ~/.exports
 
 ############################# Zsh configuration #############################
 
@@ -13,11 +22,7 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
 export ZSH=$HOME/.oh-my-zsh
 
 # Set to "random" to load a random theme each time oh-my-zsh is loaded.
-ZSH_THEME="powerlevel9k/powerlevel9k"
-if [[ $TERM_PROGRAM == 'Hyper' ]]; then
-    ZSH_THEME="agnoster"
-    DEFAULT_USER=$USER
-fi
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Plugins for ZSH. Warning: Too many plugins slow down shell startup.
 plugins=(
@@ -100,9 +105,6 @@ done
 
 ############################# Sourcing scripts #############################
 
-# Run greeting script on startup.
-source ~/greeting.sh | lolcat
-
 # API keys.
 source ~/.api_keys
 
@@ -119,10 +121,14 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 # Hook Direnv into shell.
 if type direnv >> /dev/null; then
-    eval "$(direnv hook zsh)"
+    emulate zsh -c "$(direnv hook zsh)"
 fi
 
 # Hook Jenv into shell.
 if type jenv >> /dev/null; then
     eval "$(jenv init -)"
 fi
+
+# Keep this as the last command to be run, so that instant prompt runs correctly.
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
