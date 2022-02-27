@@ -40,15 +40,16 @@ brew "fd" # Faster alternative to `find` command.
 brew "the_silver_searcher" # Provides the `ag` command.
 
 # Programming related packages.
-brew "clang-format"
+# brew "clang-format"
 brew "cmake"
 # brew "composer"
+brew "go"
 brew "google-java-format"
 # brew "facebook/fb/idb-companion" # To automate iOS simulators and devices for development.
 brew "lua"
 brew "mongodb-community@4.2" # The latest version at the time (4.4) has some issue with trying to connect.
 brew "perl"
-# brew "php"
+brew "php" # Since macos no longer ships with php.
 brew "postgresql"
 brew "python"
 brew "redis"
@@ -62,36 +63,32 @@ brew "yarn"
 brew "ack"
 # brew "awscli"
 brew "bash"
-brew "ccat"
+brew "bat"
 brew "curl"
 brew "git"
-# brew "khanhas/tap/spicetify-cli"        # For customising the look of Spotify.
+brew "khanhas/tap/spicetify-cli" # For customising the look of Spotify.
 brew "neofetch"
 brew "tree"
 
 # GUI applications.
 cask "appcleaner"
 # cask "chromium"
-# cask "cloudflare-warp"
+cask "cloudflare-warp" # Best general purpose VPN.
 # cask "deepl"
 cask "downie"
-# cask "dozer"
 cask "dropbox"
 cask "firefox"
 cask "firefox-developer-edition"
 cask "google-chrome"
-cask "iina"
+cask "iina" # Much better native alternative to VLC.
 cask "imageoptim"
 cask "itsycal"
 cask "kap"
 cask "logitech-options"
 cask "macmediakeyforwarder"
-cask "microsoft-teams"
-cask "opera"
-cask "rocket"
-cask "spectacle"
+# cask "microsoft-teams"
+cask "rectangle"
 cask "spotify"
-# cask "spotmenu"
 cask "webtorrent"
 # cask "deluge"
 
