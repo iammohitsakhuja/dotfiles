@@ -490,6 +490,7 @@ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 let g:coc_global_extensions = [
     \   'coc-actions',
+    \   'coc-blade',
     \   'coc-css',
     \   'coc-eslint',
     \   'coc-html',
@@ -497,6 +498,7 @@ let g:coc_global_extensions = [
     \   'coc-json',
     \   'coc-pairs',
     \   'coc-prettier',
+    \   'coc-rust-analyzer',
     \   'coc-snippets',
     \   'coc-tsserver',
     \   'coc-vimlsp',
