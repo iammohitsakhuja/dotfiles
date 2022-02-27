@@ -3,7 +3,7 @@
 BREW_PREFIX="$(brew --prefix)"
 
 # Update path for Ruby in order to install gems to Ruby provided by Homebrew rather than system Ruby.
-export PATH="$BREW_PREFIX/opt/ruby/bin:$BREW_PREFIX/lib/ruby/gems/3.0.0/bin:$PATH"
+export PATH="$BREW_PREFIX/opt/ruby/bin:$BREW_PREFIX/lib/ruby/gems/3.1.0/bin:$PATH"
 
 # Install Ruby gems.
 echo "Installing Gems..."

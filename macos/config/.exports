@@ -4,7 +4,7 @@ BREW_PREFIX="$(brew --prefix)"
 
 # Add 'coreutils' to PATH variable so macOS recognises utilities like
 # sha256sum and sha512sum.
-PATH="$BREW_PREFIX/opt/ruby/bin:$BREW_PREFIX/lib/ruby/gems/3.0.0/bin:$PATH" # Ruby and gems.
+PATH="$BREW_PREFIX/opt/ruby/bin:$BREW_PREFIX/lib/ruby/gems/3.1.0/bin:$PATH" # Ruby and gems.
 PATH="$BREW_PREFIX/opt/sqlite/bin:$PATH"                                    # Sqlite 3.
 PATH="$BREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH"                      # Coreutils.
 PATH="$BREW_PREFIX/opt/gnu-sed/libexec/gnubin:$PATH"                        # GNU Sed.
