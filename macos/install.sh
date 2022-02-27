@@ -98,6 +98,14 @@ while true; do
     kill -0 "$$" || exit
 done 2>/dev/null &
 
+# Make terminal authentication easier by using Touch ID instead of password, if Mac supports it.
+# TODO: Add support for Intel Macs with Touch ID.
+if [[ `uname -m` == 'arm64' ]]; then
+    # Backup the original file.
+    sudo cp /etc/pam.d/sudo /etc/pam.d/sudo.backup
+    sudo sed -i "3i auth       sufficient     pam_tid.so" /etc/pam.d/sudo
+fi
+
 # File to store any API keys in.
 touch ~/.api_keys
 
