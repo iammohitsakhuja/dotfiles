@@ -24,16 +24,17 @@ plugins=(
     brew
     docker
     git
-    git-flow
     helm
     kubectl
     mvn
     npm
+    rust
     tmux
     vi-mode
     yarn
     zsh-autosuggestions
     zsh-completions
+    zsh-interactive-cd
     zsh-syntax-highlighting
 )
 
@@ -41,7 +42,7 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 # Load completions for zsh.
-autoload -U compinit && compinit
+autoload -Uz compinit && compinit
 
 ############################# Useful aliases #############################
 
