@@ -32,6 +32,7 @@ Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
 Plug 'joshdick/onedark.vim', { 'as': 'onedark' }
 Plug 'drewtempelmeyer/palenight.vim', { 'as': 'palenight' }
 Plug 'ayu-theme/ayu-vim', { 'as': 'ayu' }
+Plug 'mountain-theme/Mountain', { 'rtp': 'vim' }
 Plug 'tomasr/molokai', { 'as': 'molokai' }
 
 " Has to be loaded as the last one.
@@ -45,8 +46,8 @@ call plug#end()
 syntax on
 
 " Sets the theme for the editor.
-let ayucolor="dark"
-colorscheme ayu
+let ayucolor="dark" " Check whether this is required, if we are not using `ayu` as the colorscheme.
+colorscheme mountain
 if $TERM_PROGRAM != "Apple_Terminal"
     if has('nvim') || has('termguicolors')
         set termguicolors
@@ -224,7 +225,7 @@ let g:lightline = {
     \           ['filetype', 'fileformat', 'fileencoding']
     \       ]
     \   },
-    \   'colorscheme': 'palenight',
+    \   'colorscheme': 'ayu',
     \   'component_function': {
     \       'cocstatus': 'coc#status',
     \       'currentfunction': 'CocCurrentFunction',
