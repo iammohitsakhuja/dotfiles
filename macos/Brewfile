@@ -35,11 +35,11 @@ brew "imagemagick" # For conversion of images from one format to another.
 brew "jenv"
 brew "kubernetes-cli"
 brew "kubectx"
-brew "kubetail"
 brew "k9s"
 brew "helm"
 brew "telnet"
 brew "ranger"
+brew "stern"
 
 # Faster and easier finding.
 brew "fd" # Faster alternative to `find` command.
