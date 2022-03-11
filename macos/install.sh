@@ -98,6 +98,7 @@ CONFIG_FILES=(
     ".hyper.js"
     ".ideavimrc"
     ".mongorc.js"
+    ".p10k.zsh"
     ".sqliterc"
     ".taskbook.json"
     ".tmux.conf"
