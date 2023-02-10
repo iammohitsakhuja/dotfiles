@@ -97,7 +97,7 @@ CONFIG_FILES=(
     ".exports"
     ".hyper.js"
     ".ideavimrc"
-    ".mongorc.js"
+    ".mongoshrc.js"
     ".p10k.zsh"
     ".sqliterc"
     ".taskbook.json"

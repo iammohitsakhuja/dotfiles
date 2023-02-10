@@ -20,7 +20,7 @@ CONFIG_FILES=(
     ".exports"
     ".hyper.js"
     ".ideavimrc"
-    ".mongorc.js"
+    ".mongoshrc.js"
     ".sqliterc"
     ".taskbook.json"
     ".tmux.conf"
