@@ -78,11 +78,12 @@ brew "neofetch"
 brew "tree"
 
 # GUI applications.
+cask "adguard"
 cask "appcleaner"
-# cask "chromium"
+cask "arc"
 cask "cloudflare-warp" # Best general purpose VPN.
+cask "daisydisk"
 # cask "deepl"
-cask "discord" # Useful for joining many communities.
 cask "downie"
 cask "dropbox"
 cask "firefox"
@@ -96,11 +97,10 @@ cask "kap"
 cask "logitech-options"
 cask "maccy" # Clipboard manager.
 cask "macmediakeyforwarder"
-# cask "microsoft-teams"
+cask "notunes" # Prevent iTunes or Apple Music from launching.
 cask "rectangle" # Alternative to Spectacle as it is no longer maintained.
 cask "spotify"
-cask "webtorrent"
-# cask "deluge"
+cask "transmission"
 
 # Quick-look plugins.
 cask "qlcolorcode"
@@ -110,35 +110,30 @@ cask "qlstephen"
 cask "qlvideo"
 cask "quicklook-csv"
 cask "quicklook-json"
+cask "syntax-highlight"
 cask "suspicious-package"
 cask "webpquicklook"
 
-# For multiversion Java development.
+# Languages and SDKs.
+cask "flutter"
 cask "temurin8"
 cask "temurin11"
+cask "temurin17"
 
 # Development utilities.
 # cask "android-studio"
-cask "dash4"
-cask "docker"
 cask "datagrip"
-cask "figma"
-cask "fork"
+cask "drawio"
 # cask "google-cloud-sdk"
 cask "intellij-idea"
 cask "iterm2"
-cask "love"
-cask "notion"
+cask "mongodb-compass"
 cask "postman"
 cask "raycast" # Alternative to Spotlight and Alfred with focus on development features.
-# cask "tower"
-# cask "tunnelblick"
-# cask "vagrant"
+cask "redisinsight"
 cask "visual-studio-code"
-# cask "zeplin"
-cask "zoom"
 
 # Fonts.
-cask "font-hack-nerd-font"
 cask "font-fira-code"
+cask "font-hack-nerd-font"
 cask "font-meslo-lg-nerd-font" # Our terminal font.
