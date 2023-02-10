@@ -205,8 +205,10 @@ git config --global user.name "$name"
 git config --global core.editor "nvim"
 git config --global core.filemode false
 git config --global status.showuntrackedfiles all
+git config --global status.submodulessummary 1
 git config --global pull.rebase false
 git config --global init.defaultBranch main
+git config --global push.autoSetupRemote true
 
 # Configure `diff-so-fancy` with git.
 git config --global core.pager "diff-so-fancy | less --tabs=4 -RF"
