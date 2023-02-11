@@ -1,5 +1,22 @@
 #!/usr/bin/env bash
 
+PYTHON_VERSION=3.11.1
+
+# Make sure `pyenv` is installed.
+if ! [[ $(which pyenv) ]]; then
+    echo "Installing Pyenv..."
+    brew install pyenv
+    echo -e "Pyenv installation successful!\n"
+fi
+
+# Setup Pyenv.
+eval "$(pyenv init -)"
+
+# Install Python.
+pyenv install ${PYTHON_VERSION}
+pyenv global ${PYTHON_VERSION}
+echo -e "Python installation successful!\n"
+
 # Install Pip packages.
 if [[ $(which pip3) ]]; then
     echo "Installing Pip packages..."

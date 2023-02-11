@@ -1,12 +1,28 @@
 #!/usr/bin/env bash
 
-BREW_PREFIX="$(brew --prefix)"
+RUBY_VERSION=3.20.0
 
-# Update path for Ruby in order to install gems to Ruby provided by Homebrew rather than system Ruby.
-export PATH="$BREW_PREFIX/opt/ruby/bin:$BREW_PREFIX/lib/ruby/gems/3.1.0/bin:$PATH"
+# Make sure `rbenv` is installed.
+if ! [[ $(which rbenv) ]]; then
+    echo "Installing Rbenv..."
+    brew install rbenv
+    echo -e "Rbenv installation successful!\n"
+fi
+
+# Setup Rbenv.
+eval "$(rbenv init -)"
+
+# Install Ruby.
+rbenv install ${RUBY_VERSION}
+rbenv global ${RUBY_VERSION}
+echo -e "Ruby installation successful!\n"
 
 # Install Ruby gems.
-echo "Installing Gems..."
-gem install colorls lolcat mdl
-gem manpages --update-all
-echo -e "Gems installed successfully\n"
+if [[ $(which gem) ]]; then
+    echo "Installing Gems..."
+    gem install colorls
+    gem manpages --update-all
+    echo -e "Gems installed successfully!\n"
+else
+    echo -e "Gem command not found! Skipping gems' installation...\n"
+fi
