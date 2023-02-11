@@ -11,17 +11,13 @@ fi
 
 # Add 'coreutils' to PATH variable so macOS recognises utilities like
 # sha256sum and sha512sum.
-PATH="$BREW_PREFIX/opt/ruby/bin:$BREW_PREFIX/lib/ruby/gems/3.1.0/bin:$PATH" # Ruby and gems.
-PATH="$BREW_PREFIX/opt/sqlite/bin:$PATH"                                    # Sqlite 3.
 PATH="$BREW_PREFIX/opt/curl/bin:$PATH"                                      # Curl.
 PATH="$BREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH"                      # Coreutils.
 PATH="$BREW_PREFIX/opt/gnu-sed/libexec/gnubin:$PATH"                        # GNU Sed.
+PATH="$BREW_PREFIX/opt/gnu-getopt/bin:$PATH"                                # GNU getopt.
 PATH="$BREW_PREFIX/opt/grep/libexec/gnubin:$PATH"                           # Grep.
-PATH="$BREW_PREFIX/opt/openssl/bin:$PATH"                                   # OpenSSL.
-PATH="$BREW_PREFIX/opt/php/bin:$PATH"                                       # PHP.
-PATH="$BREW_PREFIX/opt/mongodb-community@4.2/bin:$PATH"                     # MongoDB.
+PATH="$BREW_PREFIX/opt/libressl/bin:$PATH"                                  # LibreSSL.
 PATH="$BREW_PREFIX/sbin:$PATH"                                              # Homebrew formulae.
-PATH="$HOME/.composer/vendor/bin:$PATH"                                     # Composer.
 PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
 
 # Android development settings for React-Native.
