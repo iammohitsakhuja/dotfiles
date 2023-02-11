@@ -1,0 +1,2 @@
+[includeIf "gitdir:~/Documents/projects/"]
+    path = ~/Documents/projects/.gitconfig_include
