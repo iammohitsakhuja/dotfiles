@@ -15,12 +15,16 @@ fi
 # Install Homebrew if it isn't installed already.
 if ! [[ $(which brew) ]]; then
     echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     echo -e "Installation successful!\n"
+
+    # Evalulate homebrew correctly.
     # TODO: Make this more elegant. For now, the following commented line has been added to `config/.zprofile`
     # in a conditional manner with support for Intel Macs (which will be dropped at some point in the future).
     # echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+    if [ "$(sysctl -in sysctl.proc_translated)" = "0" ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
 fi
 
 # Install x86_64 version of homebrew to install packages which don't support Apple Silicon.
@@ -41,7 +45,7 @@ bash $(pwd)/scripts/shell-packages.sh
 echo -e "Done\n\n"
 
 # Install Homebrew bundle.
-brew tap Homebrew/bundle
+brew tap homebrew/bundle
 
 # Install all packages specified in Brewfile.
 brew bundle
@@ -53,35 +57,9 @@ PERL_MM_OPT="INSTALL_BASE=$HOME/perl5" cpan local::lib
 # Set up FZF autocompletion and keybindings.
 $(brew --prefix)/opt/fzf/install --key-bindings --completion --no-update-rc
 
-# Install mas-cli for Mac App Store applications.
-brew install mas
-
-mas install 1365531024      # 1Blocker.
-mas install 937984704       # Amphetamine.
-# Fix Mac bug which causes sound balance to shift when using bluetooth headphones.
-mas install 1019371109      # Balance Lock.
-mas install 1352778147      # Bitwarden.
-# mas install 411643860       # DaisyDisk.
-# mas install 409183694       # Keynote.
-# mas install 1480068668      # Messenger.
-# mas install 462058435       # Microsoft Excel.
-# mas install 462054704       # Microsoft Word.
-mas install 823766827       # OneDrive.
-mas install 1160374471      # PiPifier.
-mas install 1519867270      # Refined GitHub.
-mas install 803453959       # Slack.
-mas install 1153157709      # Speedtest.
-mas install 1568262835      # Super Agent. Automatically deals with cookie consent on Safari.
-# mas install 747648890       # Telegram.
-mas install 425424353       # The Unarchiver.
-# mas install 966085870       # TickTick.
-# mas install 1482454543      # Twitter.
-# mas install 1284863847      # Unsplash Wallpapers.
-mas install 1147396723      # WhatsApp Desktop.
-
 # Remove outdated versions from the cellar.
 echo "Doing some cleanup..."
-brew cleanup
+brew cleanup && brew autoremove
 echo -e "Done\n"
 
 # Install Go and its packages.
