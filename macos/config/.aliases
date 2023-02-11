@@ -69,5 +69,6 @@ alias dcupbd="docker compose up --build -d"
 alias lzd="lazydocker"
 
 # Kubernetes.
+alias kctl="kubectl"
 alias kctx="kubectx"
 alias kns="kubens"
