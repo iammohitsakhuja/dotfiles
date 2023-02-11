@@ -137,3 +137,12 @@ cask "visual-studio-code"
 cask "font-fira-code"
 cask "font-hack-nerd-font"
 cask "font-meslo-lg-nerd-font" # Our terminal font.
+
+# Mac App Store apps.
+mas "Amphetamine", id: 937984704
+mas "Balance Lock", id: 1019371109 # Fix Mac bug which causes sound balance to shift when using bluetooth headphones.
+mas "Bitwarden", id: 1352778147
+mas "PiPifier", id: 1160374471
+mas "Super Agent", id: 1568262835 # Automatically deals with cookie consent on Safari.
+mas "The Unarchiver", id: 425424353
+mas "Speedtest", id: 1153157709
