@@ -2,11 +2,15 @@
 ####### Uncomment to install particular software. #######
 #########################################################
 
+#########################################################
+# To figure out leaf nodes and their dependencies, run:
+# brew leaves | xargs brew deps --installed --for-each | sed "s/^.*:/$(tput setaf 4)&$(tput sgr0)/"
+#########################################################
+
 # Taps.
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-drivers"
 tap "homebrew/cask-versions"    # Required to find alternate versions of Casks.
-tap "mongodb/brew"
 
 # Install GNU core utilities (those that come with macOS are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
@@ -16,66 +20,79 @@ brew "coreutils"
 # Don’t forget to add `$(brew --prefix gnu-sed)/libexec/gnubin` to `$PATH`.
 brew "gnu-sed"
 
+# Overrides of default utilities.
+brew "ack"
+brew "bash"
+brew "curl"
+brew "grep"
+brew "less" # Updated version of less.
+brew "screen"
+brew "telnet"
+brew "tmux"
+brew "tree"
+brew "vim"
+brew "wget"
+brew "zsh"
+
 # Utilities.
+brew "bat" # Alternative to `cat` command.
 brew "bitwarden-cli" # For using Bitwarden with Raycast.
 brew "diff-so-fancy" # For producing more human readable diffs.
+brew "fd" # Faster alternative to `find` command.
 brew "fzf"
-brew "less" # Updated version of less.
-brew "watchman"
-brew "wget"
-brew "tmux"
-brew "vim"
-brew "neovim"
-brew "grep"
-brew "htop"
-brew "screen"
-brew "direnv"
+brew "git"
 brew "highlight"
+brew "htop" # Alternative to `top` command.
 brew "imagemagick" # For conversion of images from one format to another.
+brew "mas" # Mac App Store CLI.
+brew "neofetch"
+brew "neovim"
+brew "ranger"
+brew "the_silver_searcher" # Provides the `ag` command.
+
+# Programming languages to be installed without version managers.
+brew "lua" # For use with Vim.
+brew "perl"
+
+# Language version managers.
+# We will use these to install the languages, rather than download the
+# languages themselves.
+brew "direnv"
+brew "goenv"
 brew "jenv"
+brew "nodenv"
+brew "pyenv"
+brew "rbenv"
+
+# Docker, Kubernetes and more.
+brew "docker" # Need to install docker as a formula, not Docker Desktop.
+brew "docker-buildx"
+brew "docker-compose"
+brew "docker-credential-helper"
+brew "colima" # Docker Desktop replacement.
+brew "ctop" # Like `top` command, but for Docker.
+brew "dive" # Inspect Docker images in depth.
+brew "helm"
 brew "kubernetes-cli"
 brew "kubectx"
 brew "k9s"
-brew "helm"
-brew "telnet"
-brew "ranger"
+brew "lazydocker"
 brew "stern"
 
-# Faster and easier finding.
-brew "fd" # Faster alternative to `find` command.
-brew "the_silver_searcher" # Provides the `ag` command.
-
-# Programming related packages.
-# brew "clang-format"
-brew "cmake"
-# brew "composer"
-brew "go"
+# Formatting, linting, code quality and analysis tools.
+brew "clang-format"
 brew "google-java-format"
-# brew "facebook/fb/idb-companion" # To automate iOS simulators and devices for development.
-brew "lua"
-brew "mongodb-community@4.2" # The latest version at the time (4.4) has some issue with trying to connect.
-brew "perl"
-brew "php" # Since macos no longer ships with php.
-brew "postgresql"
-brew "python"
-brew "redis"
-brew "ruby"
+brew "pre-commit"
 brew "rust-analyzer"
 brew "shfmt"
-brew "sqlite"
-brew "stdman"
-brew "yarn"
 
-# Install other useful binaries.
-brew "ack"
-# brew "awscli"
-brew "bash"
-brew "bat"
-brew "curl"
-brew "git"
+# Other programming related packages.
+brew "kcat"
+brew "redis"
+brew "stdman"
+
+# Miscellaneous.
 brew "khanhas/tap/spicetify-cli" # For customising the look of Spotify.
-brew "neofetch"
-brew "tree"
 
 # GUI applications.
 cask "adguard"
