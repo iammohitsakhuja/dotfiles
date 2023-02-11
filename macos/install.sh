@@ -111,7 +111,7 @@ CONFIG_FILES=(
 NVIM_DIR="$HOME/.config/nvim"
 NVIM_FILE="nvim/init.vim"
 
-# Path to Neovim config file.
+# Path to Bat config file.
 BAT_DIR="$HOME/.config/bat"
 BAT_FILE="bat/config"
 
