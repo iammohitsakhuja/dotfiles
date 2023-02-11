@@ -115,6 +115,10 @@ NVIM_FILE="nvim/init.vim"
 BAT_DIR="$HOME/.config/bat"
 BAT_FILE="bat/config"
 
+# Path to Colima config file.
+COLIMA_DIR="$HOME/.config/colima/default"
+COLIMA_FILE="colima/default/colima.yaml"
+
 #### TODO: Add backup for Ranger. ####
 
 # Scripts that will run on the start of each session. Remove the ones that you don't need.
@@ -142,6 +146,12 @@ if [[ $symlink == 0 ]]; then
         mkdir -p $BAT_DIR
     fi
     cp $PWD/config/$BAT_FILE $BAT_DIR
+
+    # Colima.
+    if ! [[ -d $COLIMA_DIR ]]; then
+        mkdir -p $COLIMA_DIR
+    fi
+    cp $PWD/config/$COLIMA_FILE $COLIMA_DIR
     echo ""
 
     echo "Copying startup scripts into $HOME/ ..."
@@ -167,6 +177,12 @@ else
         mkdir -p $BAT_DIR
     fi
     ln -s $PWD/config/$BAT_FILE $BAT_DIR
+
+    # Colima.
+    if ! [[ -d $COLIMA_DIR ]]; then
+        mkdir -p $COLIMA_DIR
+    fi
+    ln -s $PWD/config/$COLIMA_FILE $COLIMA_DIR
     echo ""
 
     echo "Linking startup scripts into $HOME/ ..."
