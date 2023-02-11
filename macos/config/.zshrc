@@ -123,9 +123,29 @@ eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
 # Integrate Iterm utilities.
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+# Hook Goenv into shell.
+if type goenv >> /dev/null; then
+    eval "$(goenv init -)"
+fi
+
 # Hook Jenv into shell.
 if type jenv >> /dev/null; then
     eval "$(jenv init -)"
+fi
+
+# Hook Nodenv into shell.
+if type nodenv >> /dev/null; then
+    eval "$(nodenv init -)"
+fi
+
+# Hook Pyenv into shell.
+if type pyenv >> /dev/null; then
+    eval "$(pyenv init -)"
+fi
+
+# Hook Rbenv into shell.
+if type rbenv >> /dev/null; then
+    eval "$(rbenv init -)"
 fi
 
 # Keep this as the last command to be run, so that instant prompt runs correctly.
