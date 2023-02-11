@@ -315,8 +315,10 @@ let NERDTreeWinSize = 50
 " When switching into a tab, make sure that focus is on the file window, not in the NERDTree window.
 let g:nerdtree_tabs_focus_on_files=1
 
-" Open NERDTree on Vim startup.
-let g:nerdtree_tabs_open_on_console_startup=1
+if $TERM_PROGRAM != 'vscode'
+    " Open NERDTree on Vim startup.
+    let g:nerdtree_tabs_open_on_console_startup=1
+endif
 
 " Open Startify on Vim startup.
 autocmd VimEnter *
