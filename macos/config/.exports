@@ -28,6 +28,11 @@ PATH="$PATH:$ANDROID_HOME/tools/bin"
 PATH="$PATH:$ANDROID_HOME/platform-tools"
 export PATH
 
+# Control Zsh history.
+export HISTSIZE=100000
+export SAVEHIST=$HISTSIZE
+setopt EXTENDED_HISTORY
+
 # Make Neovim the default editor.
 export EDITOR="nvim"
 
