@@ -95,7 +95,6 @@ CONFIG_FILES=(
     ".aliases"
     ".clang-format"
     ".exports"
-    ".hyper.js"
     ".ideavimrc"
     ".mongoshrc.js"
     ".p10k.zsh"
