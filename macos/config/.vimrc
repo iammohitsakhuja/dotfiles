@@ -82,7 +82,7 @@ let mapleader = ","
 let g:mapleader = ","
 
 " Fast saving.
-nmap <leader>w :w!<cr>
+nmap <leader>s :w!<cr>
 
 " Fast switching between windows.
 nmap <leader>t <C-w>w
