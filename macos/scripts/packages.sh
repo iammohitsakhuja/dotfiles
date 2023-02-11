@@ -84,6 +84,11 @@ echo "Doing some cleanup..."
 brew cleanup
 echo -e "Done\n"
 
+# Install Go and its packages.
+echo "Installing Go and its packages..."
+bash $(pwd)/scripts/go-packages.sh
+echo -e "Done\n\n"
+
 # Install Node and its packages.
 echo "Installing Node and its packages..."
 bash $(pwd)/scripts/node-packages.sh
