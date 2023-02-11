@@ -1,6 +1,10 @@
 # Things which need to be lazy loaded should be split into two steps.
 # One at the top of this file.
 # Another at the bottom of this file.
+
+# Hook Direnv into shell.
+# Since Direnv can produce some console output, we place it before
+# Powerlevel10k's instant prompt preamble.
 if type direnv >> /dev/null; then
     emulate zsh -c "$(direnv export zsh)"
 fi
@@ -28,9 +32,11 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(
     brew
     docker
+    docker-compose
     git
     helm
     kubectl
+    macos
     mvn
     npm
     rust
@@ -58,12 +64,10 @@ source ~/.aliases
 # Always show files when switching directories via cd.
 cd() { builtin cd "$@" && lc; }
 
-# NVM
-# Defer initialization of NVM until NVM, node or a node-dependent command is run.
-declare -a NODE_GLOBALS=(`find ~/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
+############################# Sourcing scripts #############################
 
-NODE_GLOBALS+=("node")
-NODE_GLOBALS+=("nvm")
+# API keys.
+source ~/.api_keys
 
 # Use the correct version of node by checking for `.nvmrc` file.
 load_nvmrc() {
@@ -118,11 +122,6 @@ eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
 
 # Integrate Iterm utilities.
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
-# Hook Direnv into shell.
-if type direnv >> /dev/null; then
-    emulate zsh -c "$(direnv hook zsh)"
-fi
 
 # Hook Jenv into shell.
 if type jenv >> /dev/null; then
