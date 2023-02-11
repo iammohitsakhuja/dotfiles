@@ -63,3 +63,11 @@ alias tower="gittower"
 
 # Handy aliases for Homebrew.
 alias buu="brew update && brew upgrade && brew cleanup"
+
+# Docker tools.
+alias dcupbd="docker compose up --build -d"
+alias lzd="lazydocker"
+
+# Kubernetes.
+alias kctx="kubectx"
+alias kns="kubens"
