@@ -99,6 +99,12 @@ defaults write com.apple.finder QuitMenuItem -bool true
 defaults write com.apple.finder NewWindowTarget -string "PfDe"
 defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/Desktop/"
 
+# Set ~/Documents/screenshots as the default location for screenshots.
+# By default, it is ~/Desktop.
+# This helps keep the Desktop clean.
+mkdir -p ~/Documents/screenshots
+defaults write com.apple.screencapture location "~/Documents/screenshots"
+
 # Show icons for hard drives and removable media on the desktop.
 defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
 defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
@@ -141,9 +147,9 @@ defaults write com.apple.finder FXPreferredViewStyle -string "clmv"
 # Expand the following File Info panes:
 # “General”, “Open with”, and “Sharing & Permissions”.
 defaults write com.apple.finder FXInfoPanesExpanded -dict \
-	General -bool true \
-	OpenWith -bool true \
-	Privileges -bool true
+    General -bool true \
+    OpenWith -bool true \
+    Privileges -bool true
 
 ###############################################################################
 # Dock and Dashboard                                                          #
@@ -419,16 +425,16 @@ defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool t
 ###############################################################################
 
 for app in "Activity Monitor" \
-	"cfprefsd" \
-	"Dock" \
-	"Finder" \
-	"Google Chrome" \
-	"Mail" \
-	"Messages" \
-	"Photos" \
-	"Safari" \
-	"SystemUIServer"; do
-	killall "${app}" &> /dev/null
+    "cfprefsd" \
+    "Dock" \
+    "Finder" \
+    "Google Chrome" \
+    "Mail" \
+    "Messages" \
+    "Photos" \
+    "Safari" \
+    "SystemUIServer"; do
+    killall "${app}" &>/dev/null
 done
 
 echo "Done. Note that some of these changes require a logout/restart to take effect."
