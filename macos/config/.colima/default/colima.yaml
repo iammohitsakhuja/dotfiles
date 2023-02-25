@@ -84,7 +84,7 @@ network:
 
 # Forward the host's SSH agent to the virtual machine.
 # Default: false
-forwardAgent: false
+forwardAgent: true
 
 # Docker daemon configuration that maps directly to daemon.json.
 # https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file.

@@ -30,6 +30,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Plugins for ZSH. Warning: Too many plugins slow down shell startup.
 plugins=(
+    aliases
     brew
     docker
     docker-compose
@@ -40,14 +41,21 @@ plugins=(
     mvn
     npm
     rust
-    tmux
     vi-mode
     yarn
+    z
     zsh-autosuggestions
     zsh-completions
     zsh-interactive-cd
     zsh-syntax-highlighting
 )
+
+# Hack to fix startup echo which is printed by these plugins.
+if (( $+commands[tmux] )); then
+    plugins+=(
+        tmux
+    )
+fi
 
 # Load oh-my-zsh.
 source $ZSH/oh-my-zsh.sh
