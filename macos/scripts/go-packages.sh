@@ -22,5 +22,5 @@ if [[ $(which go) ]]; then
     echo "Installing Go packages..."
     # Uncomment the following line, and add package names to install global go packages.
     # go install
-    echo -e "NPM packages installed successfully!\n"
+    echo -e "Go packages installed successfully!\n"
 fi

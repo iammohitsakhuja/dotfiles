@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-RUBY_VERSION=3.20.0
+RUBY_VERSION=3.2.0
 
 # Make sure `rbenv` is installed.
 if ! [[ $(which rbenv) ]]; then
