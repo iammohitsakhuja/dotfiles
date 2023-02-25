@@ -133,8 +133,6 @@ cask "webpquicklook"
 
 # Languages and SDKs.
 cask "flutter"
-cask "temurin8"
-cask "temurin11"
 cask "temurin17"
 
 # Development utilities.
