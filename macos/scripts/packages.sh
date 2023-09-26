@@ -29,9 +29,9 @@ fi
 
 # Install x86_64 version of homebrew to install packages which don't support Apple Silicon.
 # This will be removed in the future once all packages have moved to arm64.
-if [[ `uname -m` == 'arm64' ]]; then
-    arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-fi
+# if [[ `uname -m` == 'arm64' ]]; then
+#     arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+# fi
 
 # Update Homebrew.
 brew update
