@@ -41,5 +41,5 @@ echo -e "Oh-my-zsh plugins installed successfully!\n"
 
 # Install Powerlevel10k theme for Zsh.
 echo "Installing Powerlevel10k theme for Zsh..."
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom/themes/powerlevel10k}
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
 echo -e "Powerlevel10k theme installed successfully!\n"
