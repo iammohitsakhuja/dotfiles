@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PYTHON_VERSION=3.11.1
+PYTHON_VERSION=3.11.5
 
 # Make sure `pyenv` is installed.
 if ! [[ $(which pyenv) ]]; then

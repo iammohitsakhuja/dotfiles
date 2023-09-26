@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-NODE_VERSION=18.14.0
+NODE_VERSION=18.17.1
 
 # Make sure `nodenv` is installed.
 if ! [[ $(which nodenv) ]]; then
