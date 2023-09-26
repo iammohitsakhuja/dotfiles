@@ -99,7 +99,6 @@ CONFIG_FILES=(
     ".mongoshrc.js"
     ".p10k.zsh"
     ".sqliterc"
-    ".taskbook.json"
     ".tmux.conf"
     ".vimrc"
     ".zprofile"
