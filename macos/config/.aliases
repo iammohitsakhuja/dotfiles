@@ -30,7 +30,7 @@ alias python="python3"
 alias pip="pip3"
 
 # Configure the 'remove' command.
-alias rm="rm -i"
+alias rm="trash"
 
 # Open vagrant.
 alias vu="vagrant up && vagrant ssh"
@@ -41,6 +41,9 @@ alias showFiles="defaults write com.apple.finder AppleShowAllFiles YES; \
     killall Finder /System/Library/CoreServices/Finder.app"
 alias hideFiles="defaults write com.apple.finder AppleShowAllFiles NO; \
     killall Finder /System/Library/CoreServices/Finder.app"
+
+# Alias to enable sudo access via TouchID on Mac.
+alias enable-fingerprint="sudo sed -i '3 i\auth       sufficient     pam_tid.so' /etc/pam.d/sudo"
 
 # Alias to LOVE2D.
 alias love="/Applications/love.app/Contents/MacOS/love"
@@ -72,3 +75,7 @@ alias lzd="lazydocker"
 alias kctl="kubectl"
 alias kctx="kubectx"
 alias kns="kubens"
+
+# Aliases for quickly switching architectures.
+alias arm="env /usr/bin/arch -arm64 /bin/zsh --login"
+alias intel="env /usr/bin/arch -x86_64 /bin/zsh --login"
