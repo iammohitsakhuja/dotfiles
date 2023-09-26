@@ -2,12 +2,8 @@
 # One at the top of this file.
 # Another at the bottom of this file.
 
-# Hook Direnv into shell.
-# Since Direnv can produce some console output, we place it before
-# Powerlevel10k's instant prompt preamble.
-if type direnv >> /dev/null; then
-    emulate zsh -c "$(direnv export zsh)"
-fi
+# Export Direnv to shell.
+(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv export zsh)"
 
 ############################# Powerline setup #############################
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -35,9 +31,11 @@ plugins=(
     docker
     docker-compose
     git
+    git-extras
     helm
     kubectl
     macos
+    minikube
     mvn
     npm
     rust
@@ -87,6 +85,10 @@ eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
 
 # Integrate Iterm utilities.
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# Hook Direnv into shell.
+# This is a required second step of the initializaton.
+(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv hook zsh)"
 
 # Hook Goenv into shell.
 if type goenv >> /dev/null; then
