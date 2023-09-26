@@ -9,7 +9,6 @@
 
 # Taps.
 tap "homebrew/cask-fonts"
-tap "homebrew/cask-drivers"
 tap "homebrew/cask-versions"    # Required to find alternate versions of Casks.
 
 # Install GNU core utilities (those that come with macOS are outdated).
@@ -67,7 +66,6 @@ brew "pyenv"
 brew "rbenv"
 
 # Docker, Kubernetes and more.
-brew "docker" # Need to install docker as a formula, not Docker Desktop.
 brew "ctop" # Like `top` command, but for Docker.
 brew "dive" # Inspect Docker images in depth.
 brew "helm"
@@ -90,7 +88,7 @@ brew "redis"
 brew "stdman"
 
 # Miscellaneous.
-brew "khanhas/tap/spicetify-cli" # For customising the look of Spotify.
+# brew "khanhas/tap/spicetify-cli" # For customising the look of Spotify.
 
 # GUI applications.
 cask "adguard"

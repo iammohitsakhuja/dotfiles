@@ -15,7 +15,7 @@ fi
 # Install Homebrew if it isn't installed already.
 if ! [[ $(which brew) ]]; then
     echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     echo -e "Installation successful!\n"
 
     # Evalulate homebrew correctly.
@@ -52,6 +52,7 @@ brew bundle
 echo -e "Packages installed successfully\n"
 
 # Set up Perl correctly. Any other changes are in `.zshrc`.
+# TODO: Automate this setup without asking for confirmation on autoconfiguration.
 PERL_MM_OPT="INSTALL_BASE=$HOME/perl5" cpan local::lib
 
 # Set up FZF autocompletion and keybindings.
