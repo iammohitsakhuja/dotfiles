@@ -62,10 +62,6 @@ echo "Doing some cleanup..."
 brew cleanup && brew autoremove
 echo -e "Done\n"
 
-# Link Docker properly.
-ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
-ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-compose ~/.docker/cli-plugins/docker-compose
-
 # Install Go and its packages.
 echo "Installing Go and its packages..."
 bash $(pwd)/scripts/go-packages.sh
