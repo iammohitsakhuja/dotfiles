@@ -41,6 +41,7 @@ brew "diff-so-fancy" # For producing more human readable diffs.
 brew "fd" # Faster alternative to `find` command.
 brew "fzf"
 brew "git"
+brew "git-extras"
 brew "highlight"
 brew "htop" # Alternative to `top` command.
 brew "imagemagick" # For conversion of images from one format to another.
@@ -108,7 +109,6 @@ cask "imageoptim"
 cask "istat-menus"
 cask "itsycal" # Utility for displaying calendar events in the menu bar.
 cask "kap"
-cask "logitech-options"
 cask "maccy" # Clipboard manager.
 cask "macmediakeyforwarder"
 cask "notunes" # Prevent iTunes or Apple Music from launching.
@@ -134,11 +134,11 @@ cask "temurin17"
 
 # Development utilities.
 # cask "android-studio"
-cask "datagrip"
+# cask "datagrip"
 cask "docker"
 cask "drawio"
 # cask "google-cloud-sdk"
-cask "intellij-idea"
+# cask "intellij-idea"
 cask "iterm2"
 cask "mongodb-compass"
 cask "postman"
@@ -155,7 +155,8 @@ cask "font-meslo-lg-nerd-font" # Our terminal font.
 mas "Amphetamine", id: 937984704
 mas "Balance Lock", id: 1019371109 # Fix Mac bug which causes sound balance to shift when using bluetooth headphones.
 mas "Bitwarden", id: 1352778147
+mas "OneDrive", id: 823766827
 mas "PiPifier", id: 1160374471
+mas "Speedtest", id: 1153157709
 mas "Super Agent", id: 1568262835 # Automatically deals with cookie consent on Safari.
 mas "The Unarchiver", id: 425424353
-mas "Speedtest", id: 1153157709
