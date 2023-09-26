@@ -66,10 +66,6 @@ brew "rbenv"
 
 # Docker, Kubernetes and more.
 brew "docker" # Need to install docker as a formula, not Docker Desktop.
-brew "docker-buildx"
-brew "docker-compose"
-brew "docker-credential-helper"
-brew "colima" # Docker Desktop replacement.
 brew "ctop" # Like `top` command, but for Docker.
 brew "dive" # Inspect Docker images in depth.
 brew "helm"
@@ -138,6 +134,7 @@ cask "temurin17"
 # Development utilities.
 # cask "android-studio"
 cask "datagrip"
+cask "docker"
 cask "drawio"
 # cask "google-cloud-sdk"
 cask "intellij-idea"
