@@ -59,6 +59,10 @@ let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
 highlight Comment gui=italic cterm=italic
 
+" Use underline cursor.
+let &t_SI = "\e[4 q"
+let &t_EI = "\e[2 q"
+
 " Set utf8 as standard encoding and en_US as the standard language.
 set encoding=utf8
 
