@@ -244,7 +244,7 @@ git config --global color.diff.new "green bold"
 git config --global color.diff.whitespace "red reverse"
 
 # Create SSH key pair.
-ssh-keygen -t rsa -C "$email"
+ssh-keygen -t ed25519 -C "$email"
 
 # Run installation scripts.
 echo -e "\nRunning installation scripts..."
