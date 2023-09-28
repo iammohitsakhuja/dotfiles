@@ -100,7 +100,6 @@ cask "daisydisk"
 cask "downie"
 cask "dropbox"
 cask "firefox"
-cask "firefox-developer-edition"
 cask "google-chrome"
 cask "iina" # Much better native alternative to VLC.
 cask "imageoptim"
