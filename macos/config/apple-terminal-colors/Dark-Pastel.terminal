@@ -157,14 +157,16 @@
 	cqIWGFhOU09iamVjdAgRGiQpMjdJTFFTV11kand+qKqssbzFzdAAAAAAAAABAQAAAAAA
 	AAAZAAAAAAAAAAAAAAAAAAAA2Q==
 	</data>
+	<key>CursorType</key>
+	<integer>1</integer>
 	<key>Font</key>
 	<data>
 	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
 	AAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGkCwwVFlUkbnVsbNQNDg8QERIT
-	FFZOU1NpemVYTlNmRmxhZ3NWTlNOYW1lViRjbGFzcyNAKgAAAAAAABAQgAKAA18QIE1l
-	c2xvTEdTTmVyZEZvbnRDb21wbGV0ZS1SZWd1bGFy0hcYGRpaJGNsYXNzbmFtZVgkY2xh
-	c3Nlc1ZOU0ZvbnSiGRtYTlNPYmplY3QIERokKTI3SUxRU1heZ253foWOkJKUt7zH0Nfa
-	AAAAAAAAAQEAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAOM=
+	FFZOU1NpemVYTlNmRmxhZ3NWTlNOYW1lViRjbGFzcyNAKgAAAAAAABAQgAKAA18QEk1l
+	c2xvTEdTTkYtUmVndWxhctIXGBkaWiRjbGFzc25hbWVYJGNsYXNzZXNWTlNGb250ohkb
+	WE5TT2JqZWN0CBEaJCkyN0lMUVNYXmdud36FjpCSlKmuucLJzAAAAAAAAAEBAAAAAAAA
+	ABwAAAAAAAAAAAAAAAAAAADV
 	</data>
 	<key>ProfileCurrentVersion</key>
 	<real>2.0699999999999998</real>
@@ -195,11 +197,11 @@
 	oqqtAAAAAAAAAQEAAAAAAAAAGQAAAAAAAAAAAAAAAAAAALY=
 	</data>
 	<key>columnCount</key>
-	<integer>140</integer>
+	<integer>160</integer>
 	<key>name</key>
 	<string>Dark-Pastel</string>
 	<key>rowCount</key>
-	<integer>40</integer>
+	<integer>45</integer>
 	<key>type</key>
 	<string>Window Settings</string>
 </dict>
