@@ -9,6 +9,9 @@ if [[ $(uname -m) == "arm64" ]]; then
     IBREW_PREFIX="$(ibrew --prefix)"
 fi
 
+# Go related things
+export GOENV_ROOT="$HOME/.goenv"
+
 # Add 'coreutils' to PATH variable so macOS recognises utilities like
 # sha256sum and sha512sum.
 PATH="$BREW_PREFIX/opt/curl/bin:$PATH"                                      # Curl.
@@ -19,6 +22,7 @@ PATH="$BREW_PREFIX/opt/grep/libexec/gnubin:$PATH"                           # Gr
 PATH="$BREW_PREFIX/opt/libressl/bin:$PATH"                                  # LibreSSL.
 PATH="$BREW_PREFIX/sbin:$PATH"                                              # Homebrew formulae.
 PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
+PATH="$GOENV_ROOT/bin:$PATH"
 
 # Android development settings for React-Native.
 export ANDROID_HOME=$HOME/Library/Android/sdk
@@ -31,6 +35,7 @@ export PATH
 # Control Zsh history.
 export HISTSIZE=100000
 export SAVEHIST=$HISTSIZE
+export HIST_STAMPS="%F %T"
 setopt EXTENDED_HISTORY
 
 # Make Neovim the default editor.
