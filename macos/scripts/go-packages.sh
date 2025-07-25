@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-GO_VERSION=1.21.0
+GO_VERSION=1.24.4
 
 # Make sure `goenv` is installed.
 if ! [[ $(which goenv) ]]; then
