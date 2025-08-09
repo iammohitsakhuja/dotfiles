@@ -97,7 +97,6 @@ CONFIG_FILES=(
     ".exports"
     ".ideavimrc"
     ".mongoshrc.js"
-    ".p10k.zsh"
     ".sqliterc"
     ".tmux.conf"
     ".vimrc"
@@ -112,6 +111,10 @@ NVIM_FILE="nvim/init.vim"
 # Path to Bat config file.
 BAT_DIR="$HOME/.config/bat"
 BAT_FILE="bat/config"
+
+# Path to Starship config file.
+STARSHIP_DIR="$HOME/.config"
+STARSHIP_FILE="starship.toml"
 
 #### TODO: Add backup for Ranger. ####
 
@@ -141,6 +144,12 @@ if [[ $symlink == 0 ]]; then
     fi
     cp $PWD/config/$BAT_FILE $BAT_DIR
 
+    # Starship.
+    if ! [[ -d $STARSHIP_DIR ]]; then
+        mkdir -p $STARSHIP_DIR
+    fi
+    cp $PWD/config/$STARSHIP_FILE $STARSHIP_DIR
+
     echo "Copying startup scripts into $HOME/ ..."
     for file in "${STARTUP_SCRIPTS[@]}"; do
         echo "Copying $PWD/startup_scripts/$file into $HOME/"
@@ -164,6 +173,12 @@ else
         mkdir -p $BAT_DIR
     fi
     ln -s $PWD/config/$BAT_FILE $BAT_DIR
+
+    # Starship.
+    if ! [[ -d $STARSHIP_DIR ]]; then
+        mkdir -p $STARSHIP_DIR
+    fi
+    ln -s $PWD/config/$STARSHIP_FILE $STARSHIP_DIR
 
     echo "Linking startup scripts into $HOME/ ..."
     for file in "${STARTUP_SCRIPTS[@]}"; do

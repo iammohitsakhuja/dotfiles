@@ -1,18 +1,3 @@
-# Things which need to be lazy loaded should be split into two steps.
-# One at the top of this file.
-# Another at the bottom of this file.
-
-# Export Direnv to shell.
-(( ${+commands[direnv]} )) && emulate zsh -c "$(direnv export zsh)"
-
-############################# Powerline setup #############################
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 ############################# Exports #############################
 source ~/.exports
 
@@ -22,7 +7,8 @@ source ~/.exports
 export ZSH=$HOME/.oh-my-zsh
 
 # Set to "random" to load a random theme each time oh-my-zsh is loaded.
-ZSH_THEME="powerlevel10k/powerlevel10k"
+# Set to "" to let starship take over the prompt.
+ZSH_THEME=""
 
 # Plugins for ZSH. Warning: Too many plugins slow down shell startup.
 plugins=(
@@ -32,16 +18,13 @@ plugins=(
     docker-compose
     git
     git-extras
-    helm
     kubectl
-    macos
     minikube
     mvn
     npm
     rust
     vi-mode
-    yarn
-    z
+    yazi-zoxide
     zsh-autosuggestions
     zsh-completions
     zsh-interactive-cd
@@ -68,7 +51,7 @@ source ~/.aliases
 ############################# Utility functions #############################
 
 # Always show files when switching directories via cd.
-cd() { builtin cd "$@" && lc; }
+cd() { builtin cd "$@" && ls; }
 
 ############################# Sourcing scripts #############################
 
@@ -87,7 +70,6 @@ eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # Hook Direnv into shell.
-# This is a required second step of the initializaton.
 (( ${+commands[direnv]} )) && emulate zsh -c "$(direnv hook zsh)"
 
 # Hook Goenv into shell.
@@ -115,6 +97,21 @@ if type rbenv >> /dev/null; then
     eval "$(rbenv init -)"
 fi
 
-# Keep this as the last command to be run, so that instant prompt runs correctly.
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Hook GitHub Copilot into shell.
+if type gh >> /dev/null; then
+    eval "$(gh copilot alias -- zsh)"
+fi
+
+# Generate completions for `uv`
+if type uv >> /dev/null; then
+    eval "$(uv generate-shell-completion zsh)"
+fi
+
+# Hook Zoxide into shell.
+if type zoxide >> /dev/null; then
+    eval "$(zoxide init zsh)"
+fi
+
+# Enable Starship Prompt.
+# This should be placed as the last command in the initialization.
+eval "$(starship init zsh)"
