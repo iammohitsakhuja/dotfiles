@@ -50,8 +50,8 @@ brew "imagemagick" # For conversion of images from one format to another.
 brew "mas" # Mac App Store CLI.
 brew "neofetch"
 brew "neovim"
+brew "ripgrep" # Fast text search tool.
 brew "starship" # Cross-shell prompt.
-brew "the_silver_searcher" # Provides the `ag` command.
 brew "uv" # Python package and project manager.
 brew "yazi" # Terminal file manager.
 brew "zoxide" # Smart cd replacement.

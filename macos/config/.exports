@@ -65,8 +65,8 @@ export LC_ALL="en_US.UTF-8"
 export FZF_DEFAULT_OPTS='--preview "bat --style=numbers --color=always --line-range :500 {}"'
 
 # Find hidden files with FZF.
-export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
-export FZF_CTRL_T_COMMAND='ag --hidden --ignore .git -g ""'
+export FZF_DEFAULT_COMMAND='fd --hidden --exclude .git'
+export FZF_CTRL_T_COMMAND='fd --hidden --exclude .git'
 
 # Currently disabled flags for C compilation. Enable during development, if needed.
 # export CFLAGS="-std=c18"
