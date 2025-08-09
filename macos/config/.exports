@@ -1,16 +1,10 @@
 #!/usr/bin/env bash
 
 BREW_PREFIX="$(brew --prefix)"
-IBREW_PREFIX="$(brew --prefix)"
 
-# For M1 Mac.
-if [[ $(uname -m) == "arm64" ]]; then
-    alias ibrew="arch -x86_64 /usr/local/bin/brew"
-    IBREW_PREFIX="$(ibrew --prefix)"
-fi
-
-# Go related things
+# Go related things.
 export GOENV_ROOT="$HOME/.goenv"
+PATH="$GOENV_ROOT/bin:$PATH"
 
 # Add 'coreutils' to PATH variable so macOS recognises utilities like
 # sha256sum and sha512sum.
@@ -22,7 +16,6 @@ PATH="$BREW_PREFIX/opt/grep/libexec/gnubin:$PATH"                           # Gr
 PATH="$BREW_PREFIX/opt/libressl/bin:$PATH"                                  # LibreSSL.
 PATH="$BREW_PREFIX/sbin:$PATH"                                              # Homebrew formulae.
 PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
-PATH="$GOENV_ROOT/bin:$PATH"
 
 # Android development settings for React-Native.
 export ANDROID_HOME=$HOME/Library/Android/sdk
