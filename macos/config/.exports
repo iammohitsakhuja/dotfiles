@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 
 BREW_PREFIX="$(brew --prefix)"
-IBREW_PREFIX="$(brew --prefix)"
 
-# For M1 Mac.
-if [[ $(uname -m) == "arm64" ]]; then
-    alias ibrew="arch -x86_64 /usr/local/bin/brew"
-    IBREW_PREFIX="$(ibrew --prefix)"
-fi
+# Go related things.
+export GOENV_ROOT="$HOME/.goenv"
+PATH="$GOENV_ROOT/bin:$PATH"
 
 # Add 'coreutils' to PATH variable so macOS recognises utilities like
 # sha256sum and sha512sum.
@@ -31,6 +28,7 @@ export PATH
 # Control Zsh history.
 export HISTSIZE=100000
 export SAVEHIST=$HISTSIZE
+export HIST_STAMPS="%F %T"
 setopt EXTENDED_HISTORY
 
 # Make Neovim the default editor.

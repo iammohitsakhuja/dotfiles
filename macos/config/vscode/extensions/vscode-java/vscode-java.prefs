@@ -1,1 +1,1 @@
-org.eclipse.jdt.core.compiler.problem.missingSerialVersion=warning
+org.eclipse.jdt.core.compiler.problem.missingSerialVersion=error

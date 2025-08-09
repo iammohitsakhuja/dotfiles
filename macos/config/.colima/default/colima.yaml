@@ -3,8 +3,9 @@
 cpu: 4
 
 # Size of the disk in GiB to be allocated to the virtual machine.
-# NOTE: changing this has no effect after the virtual machine has been created.
-# Default: 60
+# NOTE: value can only be increased after virtual machine has been created.
+#
+# Default: 100
 disk: 50
 
 # Size of the memory in GiB to be allocated to the virtual machine.
@@ -12,33 +13,36 @@ disk: 50
 memory: 8
 
 # Architecture of the virtual machine (x86_64, aarch64, host).
+#
+# NOTE: value cannot be changed after virtual machine is created.
 # Default: host
-arch: aarch64
+arch: host
 
 # Container runtime to be used (docker, containerd).
+#
+# NOTE: value cannot be changed after virtual machine is created.
 # Default: docker
 runtime: docker
+
+# Set custom hostname for the virtual machine.
+# Default: colima
+#          colima-profile_name for other profiles
+hostname: colima
 
 # Kubernetes configuration for the virtual machine.
 kubernetes:
   # Enable kubernetes.
   # Default: false
   enabled: false
-  
+
   # Kubernetes version to use.
   # This needs to exactly match a k3s version https://github.com/k3s-io/k3s/releases
   # Default: latest stable release
-  version: v1.25.4+k3s1
-  
-  # Disable k3s features [coredns servicelb traefik local-storage metrics-server].
-  # All features are enabled unless disabled.
-  #
-  # EXAMPLE - disable traefik and metrics-server
-  # disable: [traefik, metrics-server]
-  #
-  # Default: [traefik]
-  disable:
-    - traefik
+  version: v1.31.2+k3s1
+
+  # Additional args to pass to k3s https://docs.k3s.io/cli/server
+  # Default: traefik is disabled
+  k3sArgs: [--disable=traefik]
 
 # Auto-activate on the Host for client access.
 # Setting to true does the following on startup
@@ -53,7 +57,7 @@ network:
   # NOTE: this is currently macOS only and ignored on Linux.
   # Default: false
   address: true
-  
+
   # Custom DNS resolvers for the virtual machine.
   #
   # EXAMPLE
@@ -61,7 +65,7 @@ network:
   #
   # Default: []
   dns: []
-  
+
   # DNS hostnames to resolve to custom targets using the internal resolver.
   # This setting has no effect if a custom DNS resolver list is supplied above.
   # It does not configure the /etc/hosts files of any machine or container.
@@ -70,13 +74,16 @@ network:
   # EXAMPLE
   # dnsHosts:
   #   example.com: 1.2.3.4
-  dnsHosts: {}
-  
-  # Network driver to use (slirp, gvproxy), (requires vmType `qemu`)
-  #   - slirp is the default user mode networking provided by Qemu
-  #   - gvproxy is an alternative to VPNKit based on gVisor https://github.com/containers/gvisor-tap-vsock
-  # Default: gvproxy
-  driver: gvproxy
+  dnsHosts:
+    host.docker.internal: host.lima.internal
+
+  # Replicate host IP addresses in the VM. This enables port forwarding to specific
+  # host IP addresses.
+  #   e.g. `docker run --port 10.0.1.2:8080:8080 alpine` would only forward to the
+  #   specified IP address.
+  #
+  # Default: false
+  hostAddresses: false
 
 # ===================================================================== #
 # ADVANCED CONFIGURATION
@@ -110,12 +117,17 @@ docker: {}
 #
 # vz is macOS virtualization framework and requires macOS 13
 #
+# NOTE: value cannot be changed after virtual machine is created.
 # Default: qemu
 vmType: vz
 
 # Utilise rosetta for amd64 emulation (requires m1 mac and vmType `vz`)
 # Default: false
 rosetta: false
+
+# Enable nested virtualization for the virtual machine (requires m3 mac and vmType `vz`)
+# Default: false
+nestedVirtualization: false
 
 # Volume mount driver for the virtual machine (virtiofs, 9p, sshfs).
 #
@@ -126,32 +138,29 @@ rosetta: false
 # sshfs is faster than 9p but the least reliable of the options (when there are lots
 # of concurrent reads or writes).
 #
+# NOTE: value cannot be changed after virtual machine is created.
 # Default: virtiofs (for vz), sshfs (for qemu)
 mountType: virtiofs
+
+# Propagate inotify file events to the VM.
+# NOTE: this is experimental.
+mountInotify: false
 
 # The CPU type for the virtual machine (requires vmType `qemu`).
 # Options available for host emulation can be checked with: `qemu-system-$(arch) -cpu help`.
 # Instructions are also supported by appending to the cpu type e.g. "qemu64,+ssse3".
 # Default: host
-cpuType: ""
-
-# For a more general purpose virtual machine, Ubuntu container is optionally provided
-# as a layer on the virtual machine.
-# The underlying virtual machine is still accessible via `colima ssh --layer=false` or running `colima` in
-# the Ubuntu session.
-#
-# Default: false
-layer: false
+cpuType: host
 
 # Custom provision scripts for the virtual machine.
 # Provisioning scripts are executed on startup and therefore needs to be idempotent.
 #
-# EXAMPLE - script exected as root
+# EXAMPLE - script executed as root
 # provision:
 #   - mode: system
-#     script: apk add htop vim
+#     script: apt-get install htop vim
 #
-# EXAMPLE - script exected as user
+# EXAMPLE - script executed as user
 # provision:
 #   - mode: user
 #     script: |
@@ -163,9 +172,15 @@ layer: false
 provision: []
 
 # Modify ~/.ssh/config automatically to include a SSH config for the virtual machine.
-# SSH config will still be generated in ~/.colima/ssh_config regardless.
+# SSH config will still be generated in $COLIMA_HOME/ssh_config regardless.
 # Default: true
 sshConfig: true
+
+# The port number for the SSH server for the virtual machine.
+# When set to 0, a random available port is used.
+#
+# Default: 0
+sshPort: 0
 
 # Configure volume mounts for the virtual machine.
 # Colima mounts user's home directory by default to provide a familiar
