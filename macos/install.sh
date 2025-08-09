@@ -221,9 +221,10 @@ git config --global pull.rebase false
 git config --global init.defaultBranch main
 git config --global push.autoSetupRemote true
 
-# Configure `diff-so-fancy` with git.
-git config --global core.pager "diff-so-fancy | less --tabs=4 -RF"
-git config --global interactive.diffFilter "diff-so-fancy --patch"
+# Configure `delta` with git (diff-so-fancy emulation mode).
+git config --global core.pager delta
+git config --global interactive.diffFilter "delta --color-only"
+git config --global delta.features "diff-so-fancy"
 git config --global color.ui true
 
 git config --global color.diff-highlight.oldNormal "red bold"

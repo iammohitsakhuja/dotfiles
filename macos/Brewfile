@@ -38,17 +38,17 @@ brew "zsh"
 # Utilities.
 brew "bat" # Alternative to `cat` command.
 brew "bitwarden-cli" # For using Bitwarden with Raycast.
-brew "diff-so-fancy" # For producing more human readable diffs.
+brew "btop" # Alternative to `top` and `htop` commands.
 brew "eza"
 brew "fd" # Faster alternative to `find` command.
 brew "fzf"
 brew "git"
+brew "git-delta" # Modern syntax-highlighting pager for git diffs.
 brew "git-extras"
 brew "highlight"
-brew "htop" # Alternative to `top` command.
 brew "imagemagick" # For conversion of images from one format to another.
 brew "mas" # Mac App Store CLI.
-brew "neofetch"
+brew "fastfetch" # Faster alternative to neofetch for system info.
 brew "neovim"
 brew "ripgrep" # Fast text search tool.
 brew "starship" # Cross-shell prompt.

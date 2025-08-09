@@ -53,6 +53,27 @@ source ~/.aliases
 # Always show files when switching directories via cd.
 cd() { builtin cd "$@" && ls; }
 
+# Delta-enhanced text processing functions.
+rg-delta() {
+    rg --color=always "$@" | delta
+}
+
+grep-delta() {
+    grep --color=always "$@" | delta
+}
+
+diff-delta() {
+    diff --color=always "$@" | delta
+}
+
+blame-delta() {
+    git blame "$@" | delta
+}
+
+show-delta() {
+    git show --color=always "$@" | delta
+}
+
 ############################# Sourcing scripts #############################
 
 # API keys.

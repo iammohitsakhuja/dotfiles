@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
+# Homebrew.
 BREW_PREFIX="$(brew --prefix)"
+export HOMEBREW_AUTO_UPDATE_SECS=86400 # 24 hours. Make it less annoying.
 
 # Go related things.
 export GOENV_ROOT="$HOME/.goenv"
