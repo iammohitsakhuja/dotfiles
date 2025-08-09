@@ -93,8 +93,6 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 # Hook Goenv into shell.
 if type goenv >> /dev/null; then
     eval "$(goenv init -)"
-    export PATH="$GOROOT/bin:$PATH"
-    export PATH="$PATH:$GOPATH/bin"
 fi
 
 # Hook Jenv into shell.

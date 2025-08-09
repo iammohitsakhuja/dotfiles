@@ -71,8 +71,8 @@ defaults write NSGlobalDomain KeyRepeat -int 1
 defaults write NSGlobalDomain InitialKeyRepeat -int 10
 
 # Set language and text formats.
-defaults write NSGlobalDomain AppleLanguages -array "en-IN"
-defaults write NSGlobalDomain AppleLocale -string "en_IN"
+defaults write NSGlobalDomain AppleLanguages -array "en-US"
+defaults write NSGlobalDomain AppleLocale -string "en_US"
 defaults write NSGlobalDomain AppleMeasurementUnits -string "Centimeters"
 defaults write NSGlobalDomain AppleMetricUnits -bool true
 defaults write NSGlobalDomain AppleTemperatureUnit -string "Celsius"
@@ -221,7 +221,7 @@ sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator (
 defaults write com.apple.dock wvous-bl-corner -int 5
 defaults write com.apple.dock wvous-bl-modifier -int 0
 
-# Stop the bottom right screen corner from opening the Quick Note.
+# Stop the bottom right screen corner from opening Quick Note.
 defaults write com.apple.dock wvous-br-corner -int 1
 defaults write com.apple.dock wvous-br-modifier -int 0
 
@@ -233,8 +233,8 @@ defaults write com.apple.dock wvous-br-modifier -int 0
 defaults write ~/Library/Preferences/ByHost/com.apple.controlcenter.plist BatteryShowPercentage -bool true
 
 # Change spacing and padding in the Menu Bar.
-# defaults write -globalDomain NSStatusItemSpacing -int 12
-# defaults write -globalDomain NSStatusItemSelectionPadding 8
+defaults write -globalDomain NSStatusItemSpacing -int 12
+defaults write -globalDomain NSStatusItemSelectionPadding 8
 
 ###############################################################################
 # QuickLook                                                                   #
