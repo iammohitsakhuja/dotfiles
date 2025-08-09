@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 
 # Show files/folders vertically and produce a colored output.
-alias ls="ls -pA --group-directories-first --color=always"
+alias ls="eza -A --group-directories-first --color=always --icons=always --classify=always"
+alias ll="eza -HblA --group-directories-first --color=always --icons=always --classify=always --group --time-style=long-iso"
 
-# Use colorls for better colored output.
-alias lc="colorls -A --sd"
-alias ll="colorls -lA --sd"
-
-# Use bat instead of cat.
+# Use bat instead of cat; alias original cat command to `vcat`.
+alias vcat="cat"
 alias cat="bat"
 
 # Prevent opening Vi accidentally.
@@ -19,15 +17,12 @@ alias vim="nvim"
 # Alias for Neovim tabs.
 alias nvim="nvim -p"
 
-# Alias for Ranger.
-alias r="ranger"
-
 # Start python3 and pip3 by default.
 alias python="python3"
 alias pip="pip3"
 
 # Configure the 'remove' command.
-alias rm="trash"
+alias rm="rm -i"
 
 # Open vagrant.
 alias vu="vagrant up && vagrant ssh"
@@ -40,6 +35,7 @@ alias hideFiles="defaults write com.apple.finder AppleShowAllFiles NO; \
     killall Finder /System/Library/CoreServices/Finder.app"
 
 # Alias to enable sudo access via TouchID on Mac.
+# This is usually required after upgrading macOS.
 alias enable-fingerprint="sudo sed -i '3 i\auth       sufficient     pam_tid.so' /etc/pam.d/sudo"
 
 # Alias to LOVE2D.
@@ -57,9 +53,6 @@ alias shake="adb shell input keyevent 82"
 
 # Stop GhostScript from opening up on mistyped git aliases.
 alias gs=""
-
-# Alias for Tower.
-alias tower="gittower"
 
 # Handy aliases for Homebrew.
 alias buu="brew update && brew upgrade && brew cleanup"

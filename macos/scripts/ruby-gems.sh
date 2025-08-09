@@ -20,7 +20,6 @@ echo -e "Ruby installation successful!\n"
 # Install Ruby gems.
 if [[ $(which gem) ]]; then
     echo "Installing Gems..."
-    gem install colorls
     gem manpages --update-all
     echo -e "Gems installed successfully!\n"
 else

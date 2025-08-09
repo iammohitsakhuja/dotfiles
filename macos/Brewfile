@@ -7,6 +7,8 @@
 # brew leaves | xargs brew deps --installed --for-each | sed "s/^.*:/$(tput setaf 4)&$(tput sgr0)/"
 #########################################################
 
+# Each section is arranged alphabetically.
+
 # Taps.
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions"    # Required to find alternate versions of Casks.
@@ -37,6 +39,7 @@ brew "zsh"
 brew "bat" # Alternative to `cat` command.
 brew "bitwarden-cli" # For using Bitwarden with Raycast.
 brew "diff-so-fancy" # For producing more human readable diffs.
+brew "eza"
 brew "fd" # Faster alternative to `find` command.
 brew "fzf"
 brew "git"
@@ -44,11 +47,9 @@ brew "git-extras"
 brew "highlight"
 brew "htop" # Alternative to `top` command.
 brew "imagemagick" # For conversion of images from one format to another.
-brew "macos-trash"
 brew "mas" # Mac App Store CLI.
 brew "neofetch"
 brew "neovim"
-brew "ranger"
 brew "the_silver_searcher" # Provides the `ag` command.
 
 # Programming languages to be installed without version managers.

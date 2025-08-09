@@ -6,8 +6,13 @@ BREW_PREFIX="$(brew --prefix)"
 export GOENV_ROOT="$HOME/.goenv"
 PATH="$GOENV_ROOT/bin:$PATH"
 
-# Add 'coreutils' to PATH variable so macOS recognises utilities like
-# sha256sum and sha512sum.
+# PATH Configuration: GNU Utilities Override
+#
+# Prioritizes GNU/Linux utilities installed via Homebrew over macOS BSD versions.
+# Benefits: Linux compatibility, GNU features, better cross-platform script portability.
+#
+# Note: May cause behavior differences from standard macOS. For compatibility issues,
+# use explicit BSD versions from /usr/bin/ when needed.
 PATH="$BREW_PREFIX/opt/curl/bin:$PATH"                                      # Curl.
 PATH="$BREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH"                      # Coreutils.
 PATH="$BREW_PREFIX/opt/gnu-sed/libexec/gnubin:$PATH"                        # GNU Sed.
@@ -15,20 +20,31 @@ PATH="$BREW_PREFIX/opt/gnu-getopt/bin:$PATH"                                # GN
 PATH="$BREW_PREFIX/opt/grep/libexec/gnubin:$PATH"                           # Grep.
 PATH="$BREW_PREFIX/opt/libressl/bin:$PATH"                                  # LibreSSL.
 PATH="$BREW_PREFIX/sbin:$PATH"                                              # Homebrew formulae.
-PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
 
-# Android development settings for React-Native.
+# Required by Claude Code.
+PATH="$PATH:$HOME/.local/bin"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:$HOME/.lmstudio/bin"
+# End of LM Studio CLI section
+
+# Android development settings.
 export ANDROID_HOME=$HOME/Library/Android/sdk
 PATH="$PATH:$ANDROID_HOME/emulator"
 PATH="$PATH:$ANDROID_HOME/tools"
 PATH="$PATH:$ANDROID_HOME/tools/bin"
 PATH="$PATH:$ANDROID_HOME/platform-tools"
+PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin"
+
+# Add system frameworks and developer tools to PATH.
+PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
 export PATH
 
 # Control Zsh history.
 export HISTSIZE=100000
 export SAVEHIST=$HISTSIZE
 export HIST_STAMPS="%F %T"
+export HISTCONTROL=ignoreboth
 setopt EXTENDED_HISTORY
 
 # Make Neovim the default editor.
@@ -46,7 +62,7 @@ export LC_ALL="en_US.UTF-8"
 
 # DO NOT DO THIS. Not recommended as it produces extra output which causes problems with other utilities that use FZF.
 # But keeping it here for reference purposes.
-# export FZF_DEFAULT_OPTS='--preview "bat --style=numbers --color=always --line-range :500 {}"'
+export FZF_DEFAULT_OPTS='--preview "bat --style=numbers --color=always --line-range :500 {}"'
 
 # Find hidden files with FZF.
 export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
