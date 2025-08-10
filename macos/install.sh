@@ -220,11 +220,14 @@ git config --global status.submodulessummary 1
 git config --global pull.rebase false
 git config --global init.defaultBranch main
 git config --global push.autoSetupRemote true
+git config --global merge.conflictstyle "zdiff3"
 
 # Configure `delta` with git (diff-so-fancy emulation mode).
 git config --global core.pager delta
 git config --global interactive.diffFilter "delta --color-only"
 git config --global delta.features "diff-so-fancy"
+git config --global delta.navigate "true"
+git config --global delta.line-numbers "true"
 git config --global color.ui true
 
 git config --global color.diff-highlight.oldNormal "red bold"

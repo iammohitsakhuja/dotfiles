@@ -54,8 +54,12 @@ alias shake="adb shell input keyevent 82"
 # Stop GhostScript from opening up on mistyped git aliases.
 alias gs=""
 
+# Alias for lazygit.
+alias lzg="lazygit"
+
 # Handy aliases for Homebrew.
 alias buu="brew update && brew upgrade && brew cleanup"
+alias bdeps="brew leaves | xargs brew deps --installed --for-each | sed \"s/^.*:/\$(tput setaf 4)&\$(tput sgr0)/\""
 
 # Docker tools.
 alias dcupbd="docker compose up --build -d"
