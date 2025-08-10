@@ -37,9 +37,5 @@ echo "Installing Oh-my-zsh plugins..."
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions
+git clone https://github.com/fdw/yazi-zoxide-zsh.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/yazi-zoxide
 echo -e "Oh-my-zsh plugins installed successfully!\n"
-
-# Install Powerlevel10k theme for Zsh.
-echo "Installing Powerlevel10k theme for Zsh..."
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel10k
-echo -e "Powerlevel10k theme installed successfully!\n"

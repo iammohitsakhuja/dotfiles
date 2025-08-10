@@ -1,5 +1,0 @@
-# Ignore all fonts, as they may be proprietary.
-fonts/*
-
-# But include the folder.
-!.gitkeep

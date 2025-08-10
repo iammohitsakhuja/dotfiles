@@ -95,9 +95,9 @@ CONFIG_FILES=(
     ".aliases"
     ".clang-format"
     ".exports"
+    ".gitconfig-delta"
     ".ideavimrc"
     ".mongoshrc.js"
-    ".p10k.zsh"
     ".sqliterc"
     ".tmux.conf"
     ".vimrc"
@@ -112,6 +112,10 @@ NVIM_FILE="nvim/init.vim"
 # Path to Bat config file.
 BAT_DIR="$HOME/.config/bat"
 BAT_FILE="bat/config"
+
+# Path to Starship config file.
+STARSHIP_DIR="$HOME/.config"
+STARSHIP_FILE="starship.toml"
 
 #### TODO: Add backup for Ranger. ####
 
@@ -141,6 +145,12 @@ if [[ $symlink == 0 ]]; then
     fi
     cp $PWD/config/$BAT_FILE $BAT_DIR
 
+    # Starship.
+    if ! [[ -d $STARSHIP_DIR ]]; then
+        mkdir -p $STARSHIP_DIR
+    fi
+    cp $PWD/config/$STARSHIP_FILE $STARSHIP_DIR
+
     echo "Copying startup scripts into $HOME/ ..."
     for file in "${STARTUP_SCRIPTS[@]}"; do
         echo "Copying $PWD/startup_scripts/$file into $HOME/"
@@ -164,6 +174,12 @@ else
         mkdir -p $BAT_DIR
     fi
     ln -s $PWD/config/$BAT_FILE $BAT_DIR
+
+    # Starship.
+    if ! [[ -d $STARSHIP_DIR ]]; then
+        mkdir -p $STARSHIP_DIR
+    fi
+    ln -s $PWD/config/$STARSHIP_FILE $STARSHIP_DIR
 
     echo "Linking startup scripts into $HOME/ ..."
     for file in "${STARTUP_SCRIPTS[@]}"; do
@@ -205,24 +221,11 @@ git config --global status.submodulessummary 1
 git config --global pull.rebase false
 git config --global init.defaultBranch main
 git config --global push.autoSetupRemote true
-
-# Configure `diff-so-fancy` with git.
-git config --global core.pager "diff-so-fancy | less --tabs=4 -RF"
-git config --global interactive.diffFilter "diff-so-fancy --patch"
+git config --global merge.conflictstyle "zdiff3"
 git config --global color.ui true
 
-git config --global color.diff-highlight.oldNormal "red bold"
-git config --global color.diff-highlight.oldHighlight "red bold 52"
-git config --global color.diff-highlight.newNormal "green bold"
-git config --global color.diff-highlight.newHighlight "green bold 22"
-
-git config --global color.diff.meta "11"
-git config --global color.diff.frag "magenta bold"
-git config --global color.diff.func "146 bold"
-git config --global color.diff.commit "yellow bold"
-git config --global color.diff.old "red bold"
-git config --global color.diff.new "green bold"
-git config --global color.diff.whitespace "red reverse"
+# Include delta configuration from separate file.
+git config --global include.path "~/.gitconfig-delta"
 
 # Create SSH key pair.
 ssh-keygen -t ed25519 -C "$email"
