@@ -1,11 +1,14 @@
 # Git configuration for delta pager and diff enhancements
 [core]
+	# Set delta as the pager for all utilities that interact with git.
 	pager = delta
 
 [interactive]
+	# Use color-only mode when interacting with git.
 	diffFilter = delta --color-only
 
 [delta]
+	# Set common delta options which will be applied everywhere delta is invoked from.
 	features = diff-so-fancy
 	navigate = true
 	line-numbers = true
