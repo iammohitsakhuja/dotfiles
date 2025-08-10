@@ -3,6 +3,7 @@
 # Homebrew.
 BREW_PREFIX="$(brew --prefix)"
 export HOMEBREW_AUTO_UPDATE_SECS=86400 # 24 hours. Make it less annoying.
+export HOMEBREW_NO_ENV_HINTS=1 # Disable environment variable hints.
 
 # Go related things.
 export GOENV_ROOT="$HOME/.goenv"
