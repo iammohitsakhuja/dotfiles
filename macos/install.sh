@@ -9,15 +9,18 @@ die() {
 # Initialise the option variables.
 # This ensures we are not contaminated by variables from the environment.
 symlink=1 # 0 is for copy, 1 is for symlink.
+backup=1 # 0 is for no backup, 1 is for backup (default).
 email=
 name=
 
 # TODO: Add a verbose option.
 show_help() {
-    echo "Usage: ./install.sh [-h | --help] [-c | -l | --copy | --link] [-e | --email] [-n | --name]"
+    echo "Usage: ./install.sh [-h | --help] [-c | -l | --copy | --link] [--backup | --no-backup] [-e | --email] [-n | --name]"
     echo "       -h, --help     | Show this help."
     echo "       -l, --link     | Link config files and startup scripts rather than copying (default)."
     echo "       -c, --copy     | Copy config files and startup scripts rather than linking."
+    echo "       --backup       | Backup existing files before stow operations (default)."
+    echo "       --no-backup    | Skip backing up existing files before stow operations."
     echo "       -e, --email    | The email that you would like to use for setting up things like git, ssh e.g. \"abc@example.com\"."
     echo "       -n, --name     | The name that you would like to use for setting up things like git e.g. \"John Doe\"."
     echo ""
@@ -37,6 +40,14 @@ while :; do
         ;;
     -l | --link)
         symlink=1
+        shift
+        ;;
+    --backup)
+        backup=1
+        shift
+        ;;
+    --no-backup)
+        backup=0
         shift
         ;;
     -e | --email)
@@ -73,6 +84,7 @@ while :; do
         ;;
     *) # Default case: No more options, so break out of the loop.
         echo "Symlink = $symlink"
+        echo "Backup = $backup"
         echo "Email = $email"
         echo "Name = $name"
         echo ""
@@ -93,8 +105,114 @@ PWD=$(pwd)
 # Stow will handle all dotfile symlinking/copying automatically
 # The home/ directory structure mirrors the home directory structure
 
+# Function to backup existing files before stow operations
+backup_existing_files() {
+    if [[ $backup == 0 ]]; then
+        echo "Skipping backup as requested..."
+        return 0
+    fi
 
-#### TODO: Backup any previously existing files. ####
+    echo "Checking for existing files that would be overwritten..."
+    
+    # Create timestamped backup directory
+    local backup_timestamp=$(date +%Y%m%d-%H%M%S)
+    local backup_dir="$HOME/.dotfiles-backup-$backup_timestamp"
+    local manifest_file="$backup_dir/backup-manifest.txt"
+    
+    # Use stow simulation to detect conflicts
+    local stow_conflicts
+    stow_conflicts=$(stow -n -d "$PWD" -t "$HOME" home 2>&1 | grep -E "(existing target|WARNING.*would be overwritten)" || true)
+    
+    if [[ -z "$stow_conflicts" ]]; then
+        echo "No existing files would be overwritten. Proceeding without backup."
+        return 0
+    fi
+    
+    # Check available disk space (require at least 100MB free)
+    local available_space
+    available_space=$(df "$HOME" | awk 'NR==2 {print $4}')
+    if [[ $available_space -lt 102400 ]]; then
+        die "ERROR: Insufficient disk space for backup. At least 100MB required."
+    fi
+    
+    echo "Creating backup directory: $backup_dir"
+    mkdir -p "$backup_dir"
+    
+    # Initialize manifest file
+    echo "Backup created on: $(date)" > "$manifest_file"
+    echo "Original dotfiles repository: $PWD" >> "$manifest_file"
+    echo "Backup mode: $([ $symlink == 1 ] && echo 'symlink' || echo 'copy')" >> "$manifest_file"
+    echo "" >> "$manifest_file"
+    echo "Files backed up:" >> "$manifest_file"
+    
+    local files_backed_up=0
+    
+    # Parse stow simulation output to find conflicting files
+    while IFS= read -r line; do
+        if [[ $line =~ existing\ target\ is\ (.*) ]] || [[ $line =~ WARNING.*would\ be\ overwritten.*:\ (.*) ]]; then
+            local target_file="${BASH_REMATCH[1]}"
+            
+            # Skip if target_file is empty or just whitespace
+            [[ -z "${target_file// }" ]] && continue
+            
+            # Convert relative paths to absolute
+            if [[ ! "$target_file" =~ ^/ ]]; then
+                target_file="$HOME/$target_file"
+            fi
+            
+            # Skip if file doesn't exist or is already a stow link to our repository
+            if [[ ! -e "$target_file" ]]; then
+                continue
+            fi
+            
+            # Check if it's already a stow link pointing to our repository
+            if [[ -L "$target_file" ]]; then
+                local link_target
+                link_target=$(readlink "$target_file")
+                if [[ "$link_target" =~ ^$PWD/home/ ]]; then
+                    echo "Skipping $target_file (already managed by stow)"
+                    continue
+                fi
+            fi
+            
+            # Create backup directory structure
+            local relative_path="${target_file#$HOME/}"
+            local backup_file="$backup_dir/$relative_path"
+            local backup_parent_dir
+            backup_parent_dir=$(dirname "$backup_file")
+            
+            mkdir -p "$backup_parent_dir"
+            
+            # Copy file preserving permissions and metadata
+            if cp -p "$target_file" "$backup_file" 2>/dev/null; then
+                echo "  ✓ $relative_path" >> "$manifest_file"
+                echo "Backed up: $relative_path"
+                ((files_backed_up++))
+            else
+                echo "  ✗ $relative_path (copy failed)" >> "$manifest_file"
+                echo "WARNING: Failed to backup $relative_path"
+            fi
+        fi
+    done <<< "$stow_conflicts"
+    
+    if [[ $files_backed_up -gt 0 ]]; then
+        echo ""
+        echo "Backup completed successfully!"
+        echo "  Location: $backup_dir"
+        echo "  Files backed up: $files_backed_up"
+        echo "  Manifest: $manifest_file"
+        echo ""
+    else
+        # Remove empty backup directory if no files were actually backed up
+        rmdir "$backup_dir" 2>/dev/null || true
+        echo "No files needed backup. Proceeding with installation."
+    fi
+    
+    return 0
+}
+
+# Backup existing files before stow operations
+backup_existing_files
 
 if [[ $symlink == 0 ]]; then
     echo "Copying dotfiles into $HOME/ using stow ..."
