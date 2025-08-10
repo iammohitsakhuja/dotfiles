@@ -1,4 +1,7 @@
 git:
+  # Better diff context
+  diffContextSize: 4
+
   paging:
     colorArg: always
     # Set lazygit specific options for delta.
