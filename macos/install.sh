@@ -93,10 +93,6 @@ PWD=$(pwd)
 # Stow will handle all dotfile symlinking/copying automatically
 # The home/ directory structure mirrors the home directory structure
 
-# Scripts that will run on the start of each session. Remove the ones that you don't need.
-STARTUP_SCRIPTS=(
-    "greeting.sh"
-)
 
 #### TODO: Backup any previously existing files. ####
 
@@ -112,16 +108,6 @@ else
     stow -d $PWD -t $HOME home
 fi
 
-echo "Installing startup scripts into $HOME/ ..."
-for file in "${STARTUP_SCRIPTS[@]}"; do
-    if [[ $symlink == 0 ]]; then
-        echo "Copying $PWD/startup_scripts/$file into $HOME/"
-        cp $PWD/startup_scripts/$file $HOME
-    else
-        echo "Symlinking $PWD/startup_scripts/$file into $HOME/"
-        ln -s $PWD/startup_scripts/$file $HOME
-    fi
-done
 
 # Ask for administrator password.
 echo -e "\nInstallation requires administrator authentication..."
