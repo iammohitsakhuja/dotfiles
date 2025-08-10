@@ -1,3 +1,7 @@
+gui:
+  nerdFontsVersion: "3"
+  showFileIcons: true
+
 git:
   # Better diff context
   diffContextSize: 4
