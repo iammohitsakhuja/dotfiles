@@ -19,7 +19,7 @@ if ! [[ $(which brew) ]]; then
     echo -e "Installation successful!\n"
 
     # Evalulate homebrew correctly.
-    # TODO: Make this more elegant. For now, the following commented line has been added to `config/.zprofile`
+    # TODO: Make this more elegant. For now, the following commented line has been added to `home/.zprofile`
     # in a conditional manner with support for Intel Macs (which will be dropped at some point in the future).
     # echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
     if [ "$(sysctl -in sysctl.proc_translated)" = "0" ]; then

@@ -90,34 +90,8 @@ done
 # Get the current working directory.
 PWD=$(pwd)
 
-# Config files. Remove the files that you don't need.
-CONFIG_FILES=(
-    ".aliases"
-    ".clang-format"
-    ".exports"
-    ".gitconfig-delta"
-    ".ideavimrc"
-    ".mongoshrc.js"
-    ".sqliterc"
-    ".tmux.conf"
-    ".vimrc"
-    ".zprofile"
-    ".zshrc"
-)
-
-# Path to Neovim config file.
-NVIM_DIR="$HOME/.config/nvim"
-NVIM_FILE="nvim/init.vim"
-
-# Path to Bat config file.
-BAT_DIR="$HOME/.config/bat"
-BAT_FILE="bat/config"
-
-# Path to Starship config file.
-STARSHIP_DIR="$HOME/.config"
-STARSHIP_FILE="starship.toml"
-
-#### TODO: Add backup for Ranger. ####
+# Stow will handle all dotfile symlinking/copying automatically
+# The home/ directory structure mirrors the home directory structure
 
 # Scripts that will run on the start of each session. Remove the ones that you don't need.
 STARTUP_SCRIPTS=(
@@ -127,66 +101,27 @@ STARTUP_SCRIPTS=(
 #### TODO: Backup any previously existing files. ####
 
 if [[ $symlink == 0 ]]; then
-    echo "Copying config files into $HOME/ ..."
-    for file in "${CONFIG_FILES[@]}"; do
-        echo "Copying $PWD/config/$file into $HOME/"
-        cp $PWD/config/$file $HOME
-    done
+    echo "Copying dotfiles into $HOME/ using stow ..."
+    # Note: Stow doesn't have a native copy mode, so we'll use stow then copy the links
+    stow -d $PWD -t $HOME home
+    echo "Converting symlinks to copies..."
+    # This is a workaround - in practice, most users will use symlink mode
+    find $HOME -maxdepth 3 -type l -lname "$PWD/home/*" -exec bash -c 'target=$(readlink "$1"); rm "$1"; cp "$target" "$1"' _ {} \;
+else
+    echo "Linking dotfiles into $HOME/ using stow ..."
+    stow -d $PWD -t $HOME home
+fi
 
-    # Neovim.
-    if ! [[ -d $NVIM_DIR ]]; then
-        mkdir -p $NVIM_DIR
-    fi
-    cp $PWD/config/$NVIM_FILE $NVIM_DIR
-
-    # Bat.
-    if ! [[ -d $BAT_DIR ]]; then
-        mkdir -p $BAT_DIR
-    fi
-    cp $PWD/config/$BAT_FILE $BAT_DIR
-
-    # Starship.
-    if ! [[ -d $STARSHIP_DIR ]]; then
-        mkdir -p $STARSHIP_DIR
-    fi
-    cp $PWD/config/$STARSHIP_FILE $STARSHIP_DIR
-
-    echo "Copying startup scripts into $HOME/ ..."
-    for file in "${STARTUP_SCRIPTS[@]}"; do
+echo "Installing startup scripts into $HOME/ ..."
+for file in "${STARTUP_SCRIPTS[@]}"; do
+    if [[ $symlink == 0 ]]; then
         echo "Copying $PWD/startup_scripts/$file into $HOME/"
         cp $PWD/startup_scripts/$file $HOME
-    done
-else
-    echo "Linking config files into $HOME/ ..."
-    for file in "${CONFIG_FILES[@]}"; do
-        echo "Symlinking $PWD/config/$file into $HOME/"
-        ln -s $PWD/config/$file $HOME
-    done
-
-    # Neovim.
-    if ! [[ -d $NVIM_DIR ]]; then
-        mkdir -p $NVIM_DIR
-    fi
-    ln -s $PWD/config/$NVIM_FILE $NVIM_DIR
-
-    # Bat.
-    if ! [[ -d $BAT_DIR ]]; then
-        mkdir -p $BAT_DIR
-    fi
-    ln -s $PWD/config/$BAT_FILE $BAT_DIR
-
-    # Starship.
-    if ! [[ -d $STARSHIP_DIR ]]; then
-        mkdir -p $STARSHIP_DIR
-    fi
-    ln -s $PWD/config/$STARSHIP_FILE $STARSHIP_DIR
-
-    echo "Linking startup scripts into $HOME/ ..."
-    for file in "${STARTUP_SCRIPTS[@]}"; do
+    else
         echo "Symlinking $PWD/startup_scripts/$file into $HOME/"
         ln -s $PWD/startup_scripts/$file $HOME
-    done
-fi
+    fi
+done
 
 # Ask for administrator password.
 echo -e "\nInstallation requires administrator authentication..."
@@ -239,8 +174,8 @@ echo -e "Packages installed successfully!\n"
 
 # Configure Tmux colors.
 echo "Configuring Tmux colors..."
-tic -x $PWD/config/terminfo/xterm-256color-italic.terminfo
-tic -x $PWD/config/terminfo/tmux-256color.terminfo
+tic -x $PWD/utils/terminfo/xterm-256color-italic.terminfo
+tic -x $PWD/utils/terminfo/tmux-256color.terminfo
 echo -e "Tmux colors configured successfully!\n"
 
 # Configure MacOS settings.
