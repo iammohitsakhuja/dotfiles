@@ -8,16 +8,15 @@ die() {
 
 # Initialise the option variables.
 # This ensures we are not contaminated by variables from the environment.
-symlink=1 # 0 is for copy, 1 is for symlink.
+backup=1 # 0 is for no backup, 1 is for backup (default).
 email=
 name=
 
 # TODO: Add a verbose option.
 show_help() {
-    echo "Usage: ./install.sh [-h | --help] [-c | -l | --copy | --link] [-e | --email] [-n | --name]"
+    echo "Usage: ./install.sh [-h | --help] [--no-backup] [-e | --email] [-n | --name]"
     echo "       -h, --help     | Show this help."
-    echo "       -l, --link     | Link config files and startup scripts rather than copying (default)."
-    echo "       -c, --copy     | Copy config files and startup scripts rather than linking."
+    echo "       --no-backup    | Skip backing up existing files before stow operations."
     echo "       -e, --email    | The email that you would like to use for setting up things like git, ssh e.g. \"abc@example.com\"."
     echo "       -n, --name     | The name that you would like to use for setting up things like git e.g. \"John Doe\"."
     echo ""
@@ -31,12 +30,8 @@ while :; do
         show_help
         exit
         ;;
-    -c | --copy)
-        symlink=0
-        shift
-        ;;
-    -l | --link)
-        symlink=1
+    --no-backup)
+        backup=0
         shift
         ;;
     -e | --email)
@@ -72,7 +67,7 @@ while :; do
         die "ERROR: \"--name\" requires a non-empty option argument."
         ;;
     *) # Default case: No more options, so break out of the loop.
-        echo "Symlink = $symlink"
+        echo "Backup = $backup"
         echo "Email = $email"
         echo "Name = $name"
         echo ""
@@ -90,23 +85,119 @@ done
 # Get the current working directory.
 PWD=$(pwd)
 
-# Stow will handle all dotfile symlinking/copying automatically
-# The home/ directory structure mirrors the home directory structure
-
-
-#### TODO: Backup any previously existing files. ####
-
-if [[ $symlink == 0 ]]; then
-    echo "Copying dotfiles into $HOME/ using stow ..."
-    # Note: Stow doesn't have a native copy mode, so we'll use stow then copy the links
-    stow -d $PWD -t $HOME home
-    echo "Converting symlinks to copies..."
-    # This is a workaround - in practice, most users will use symlink mode
-    find $HOME -maxdepth 3 -type l -lname "$PWD/home/*" -exec bash -c 'target=$(readlink "$1"); rm "$1"; cp "$target" "$1"' _ {} \;
-else
-    echo "Linking dotfiles into $HOME/ using stow ..."
-    stow -d $PWD -t $HOME home
+# Validate stow is available
+if ! command -v stow >/dev/null 2>&1; then
+    die "ERROR: GNU Stow is required but not installed"
 fi
+
+# Function to backup existing files before stow operations
+backup_existing_files() {
+    if [[ $backup == 0 ]]; then
+        echo "Skipping backup as requested..."
+        return 0
+    fi
+
+    echo "Checking for existing files that would be overwritten..."
+
+    # Create timestamped backup directory
+    local backup_timestamp=$(date +%Y%m%d-%H%M%S)
+    local backup_dir="$HOME/.dotfiles-backup-$backup_timestamp"
+    local manifest_file="$backup_dir/backup-manifest.txt"
+
+    # Use stow simulation with verbose output to detect actual conflicts
+    local stow_output
+    stow_output=$(stow -n -d "$PWD" -t "$HOME" home --verbose=3 2>&1)
+
+    # Filter files that are causing conflicts.
+    local actual_conflicts
+    actual_conflicts=$(echo "$stow_output" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p')
+
+    if [[ -z "$actual_conflicts" ]]; then
+        echo "No existing files would be overwritten. Proceeding without backup."
+        return 0
+    fi
+
+    # Check available disk space (require at least 100MB free)
+    local available_space
+    available_space=$(df "$HOME" | awk 'NR==2 {print $4}')
+    # $available_space is in `KB`
+    if [[ $available_space -lt 102400 ]]; then
+        die "ERROR: Insufficient disk space for backup. At least 100MB required."
+    fi
+
+    echo "Creating backup directory: $backup_dir"
+    mkdir -p "$backup_dir"
+    echo "Manifest file path: $manifest_file"
+
+    # Initialize manifest file
+    echo "Backup created on: $(date)" > "$manifest_file"
+    echo "Original dotfiles repository: $PWD" >> "$manifest_file"
+    echo "" >> "$manifest_file"
+    echo "Files that would be overwritten:" >> "$manifest_file"
+    echo "$actual_conflicts" >> "$manifest_file"
+    echo "" >> "$manifest_file"
+    echo "Files backed up:" >> "$manifest_file"
+
+    local files_backed_up=0
+
+    # Backup all conflicting files.
+    for relative_path in $actual_conflicts; do
+        # Validate paths are relative and safe
+        if [[ "$relative_path" =~ ^/ ]] || [[ "$relative_path" =~ \.\. ]]; then
+            echo "WARNING: Unsafe path detected: $relative_path"
+            echo "  ✗ $relative_path (unsafe path)" >> "$manifest_file"
+            continue
+        fi
+
+        local target_file="$HOME/$relative_path"
+
+        # Check if target file exists
+        if [[ -e "$target_file" ]]; then
+            # File exists and would conflict, backup it
+            local backup_file="$backup_dir/$relative_path"
+            local backup_parent_dir
+            backup_parent_dir=$(dirname "$backup_file")
+
+            mkdir -p "$backup_parent_dir"
+
+            # Copy file preserving permissions and metadata.
+            if cp -p "$target_file" "$backup_file" 2>/dev/null; then
+                echo "  ✓ $relative_path" >> "$manifest_file"
+                echo "Backed up: $relative_path"
+                ((files_backed_up++))
+            else
+                echo "  ✗ $relative_path (copy failed)" >> "$manifest_file"
+                die "ERROR: Failed to backup $relative_path - check permissions for $(dirname "$backup_file")"
+            fi
+        else
+            die "ERROR: Conflict file $relative_path doesn't exist at target"
+        fi
+    done
+
+    if [[ $files_backed_up -gt 0 ]]; then
+        echo ""
+        echo "Backup completed successfully!"
+        echo "  Location: $backup_dir"
+        echo "  Files backed up: $files_backed_up"
+        echo "  Manifest: $manifest_file"
+        echo ""
+    else
+        # Remove empty backup directory if no files were actually backed up
+        rmdir "$backup_dir" 2>/dev/null || true
+        echo "No files needed backup. Proceeding with installation."
+        echo ""
+    fi
+
+    return 0
+}
+
+# Backup existing files before stow operations
+backup_existing_files
+
+# Stow will handle all dotfile symlinking.
+# The home/ directory structure mirrors the $HOME directory structure
+echo "Linking dotfiles into $HOME/ using stow ..."
+stow -d $PWD -t $HOME home --verbose=1
 
 
 # Ask for administrator password.
