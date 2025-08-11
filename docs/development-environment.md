@@ -52,18 +52,33 @@ After the setup script completes:
 ### 3. Install macOS
 
 1. **Start the VM** and follow the macOS installation process
-2. **Complete initial setup** (create user account, etc.)
+2. **Complete initial setup** - create user account and **remember the username and password** (required for SSH access)
 3. **Access shared files** at `/Volumes/My Shared Files/` within the VM
 
-### 4. Test Dotfiles Installation
+### 4. SSH Setup (One-time)
 
-Inside the VM:
+Get the VM's IP address from within the VM:
 
 ```bash
-# Navigate to shared dotfiles
-cd "/Volumes/My Shared Files"
+# Inside the VM, run one of these commands:
+ifconfig en0 | grep "inet " | awk '{print $2}'
+# or
+hostname -I
+```
 
-# Test installation
+Note down the IP address (e.g., `192.168.64.3`) for SSH access from your host machine.
+
+### 5. Test Dotfiles Installation
+
+From your host machine, use SSH to run commands in the VM:
+
+```bash
+# Replace 'username' with your VM username and 'VM_IP' with the noted IP
+ssh username@VM_IP "cd /Volumes/My\ Shared\ Files && ./macos/install.sh --email test@example.com --name 'Test User'"
+
+# Or connect interactively:
+ssh username@VM_IP
+cd "/Volumes/My Shared Files"
 ./macos/install.sh --email test@example.com --name "Test User"
 ```
 
@@ -119,9 +134,8 @@ cd "/Volumes/My Shared Files"
 
 3. **Test Installation**:
    - Boot VM
-   - Navigate to shared files: `cd "/Volumes/My Shared Files"`
-   - Run installation: `./macos/install.sh --email test@example.com --name "Test User"`
-   - Verify configuration and functionality
+   - SSH from host: `ssh username@VM_IP "cd /Volumes/My\ Shared\ Files && ./macos/install.sh --email test@example.com --name 'Test User'"`
+   - Verify configuration via SSH: `ssh username@VM_IP "ls -la ~"`
 
 4. **Reset for Next Test**:
    ```bash
@@ -136,29 +150,6 @@ cd "/Volumes/My Shared Files"
 - **post-install**: After successful dotfiles installation (create manually)
 - **pre-test**: Before trying experimental changes (create as needed)
 
-## Troubleshooting
-
-### Common Issues
-
-**VM Creation Fails**:
-- Ensure you have sufficient disk space and RAM
-- Verify the installer path is correct
-- Check UTM documentation for system requirements
-
-**Shared Directory Not Accessible**:
-- Verify shared directory is configured in UTM VM settings
-- Restart the VM after changing shared directory settings
-- Check that the host directory exists and has proper permissions
-
-**Performance Issues**:
-- Ensure sufficient RAM is allocated to the VM
-- Enable hardware acceleration in UTM if supported
-
-**VM Manager Commands Fail**:
-- Ensure VM is named "dotfiles-test" (default)
-- Check that UTM is running and accessible
-- Verify `utmctl` command-line tools are available
-
 ### Multiple VM Configurations
 
 You can create multiple VMs for different testing scenarios:
@@ -168,13 +159,6 @@ You can create multiple VMs for different testing scenarios:
 ./setup-development.sh --version 14.0  # macOS Sonoma IPSW
 ./setup-development.sh --version 15.0  # macOS Sequoia IPSW
 ```
-
-## Security Considerations
-
-- The VM environment is isolated from your host system
-- Shared directories provide controlled access to dotfiles
-- Snapshots allow safe experimentation with system changes
-- Regular cleanup prevents accumulation of test data
 
 ---
 
