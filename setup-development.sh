@@ -8,31 +8,36 @@ die() {
     exit 1
 }
 
-# Function to download macOS installer
-download_installer() {
+# Function to download macOS IPSW firmware
+download_ipsw() {
     local target_version="$1"
-    echo "Downloading macOS installer version $target_version..."
-    if ! sudo softwareupdate --download --fetch-full-installer --full-installer-version "$target_version"; then
-        die "ERROR: Failed to download macOS installer version $target_version. Check if version is available."
+    echo "Downloading macOS IPSW firmware version $target_version..."
+
+    # Create cache directory if it doesn't exist
+    mkdir -p "$CACHE_DIR"
+
+    if ! mist download firmware "$target_version" --output-directory "$CACHE_DIR"; then
+        die "ERROR: Failed to download macOS IPSW version $target_version. Check if version is available."
     fi
-    echo "Download completed successfully."
+    echo "IPSW download completed successfully."
 }
 
 # Initialize option variables.
 version=""
+CACHE_DIR=".cache"
 
 show_help() {
     echo "Usage: ./setup-development.sh [-h | --help] [-v | --version]"
     echo "       -h, --help     | Show this help."
-    echo "       -v, --version  | Specify macOS installer version (e.g. \"15.6\"). Uses latest if not specified."
+    echo "       -v, --version  | Specify macOS version (e.g. \"15.0\" for Sequoia). Uses latest if not specified."
     echo ""
     echo "Examples:"
-    echo "  ./setup-development.sh                # Use latest macOS installer"
-    echo "  ./setup-development.sh --version 15.6 # Use specific version"
+    echo "  ./setup-development.sh                # Use latest macOS IPSW"
+    echo "  ./setup-development.sh --version 15.0 # Use specific version"
     echo ""
     echo "This script will:"
-    echo "1. Install UTM (if not present)"
-    echo "2. Download the specified macOS installer"
+    echo "1. Install UTM and mist-cli (if not present)"
+    echo "2. Download the specified macOS IPSW firmware"
     echo "3. Provide setup instructions for creating a VM"
 }
 
@@ -72,59 +77,61 @@ if ! command -v utmctl &> /dev/null; then
     brew install --cask utm
 fi
 
+# Install mist-cli if not present
+if ! command -v mist &> /dev/null; then
+    echo "Installing mist-cli..."
+    brew install mist-cli
+fi
+
 # Determine target macOS version
 if [[ -n "$version" ]]; then
     TARGET_VERSION="$version"
     echo "Target macOS version: $TARGET_VERSION"
 else
     echo "Getting latest available macOS version..."
-    TARGET_VERSION=$(softwareupdate --list-full-installers 2>/dev/null | grep "macOS" | head -1 | awk '{print $6}' | sed 's/,$//')
+    TARGET_VERSION=$(mist list firmware | grep -E "macOS.*[0-9]+\.[0-9]+" | head -1 | grep -oE "[0-9]+\.[0-9]+(\.[0-9]+)?" | head -1)
     if [[ -z "$TARGET_VERSION" ]]; then
         die "ERROR: Could not determine latest macOS version. Try specifying a version with --version."
     fi
     echo "Latest available version: $TARGET_VERSION"
 fi
 
-# Check if any installer already exists first
-EXISTING_INSTALLER=$(ls -d /Applications/Install\ macOS*.app 2>/dev/null | head -1)
-if [[ -n "$EXISTING_INSTALLER" ]]; then
-    echo "Found existing macOS installer at: $EXISTING_INSTALLER"
+# Check if any IPSW already exists first
+EXISTING_IPSW=$(ls "$CACHE_DIR"/*.ipsw 2>/dev/null | head -1)
+if [[ -n "$EXISTING_IPSW" ]]; then
+    echo "Found existing macOS IPSW at: $EXISTING_IPSW"
 
-    # Extract version from installer using system_profiler or defaults
-    EXISTING_VERSION=$(defaults read "$EXISTING_INSTALLER/Contents/Info.plist" DTPlatformVersion 2>/dev/null || echo "unknown")
-    echo "Existing installer version: $EXISTING_VERSION"
-
-    # If we have a specific version requirement, check if it matches
-    if [[ "$EXISTING_VERSION" == "$TARGET_VERSION" ]]; then
-        echo "Existing installer version matches requested version. Using existing installer: $EXISTING_INSTALLER"
+    # Check if existing IPSW filename contains the target version
+    if [[ "$EXISTING_IPSW" == *"$TARGET_VERSION"* ]]; then
+        echo "Existing IPSW appears to match requested version ($TARGET_VERSION). Using existing IPSW."
     else
-        echo "Existing installer version ($EXISTING_VERSION) doesn't match requested version ($TARGET_VERSION)"
-        download_installer "$TARGET_VERSION"
+        echo "Existing IPSW may not match requested version ($TARGET_VERSION). Downloading specific version..."
+        download_ipsw "$TARGET_VERSION"
     fi
 else
-    echo "No existing installer found."
-    download_installer "$TARGET_VERSION"
+    echo "No existing IPSW found."
+    download_ipsw "$TARGET_VERSION"
 fi
 
-# Find the installer (should exist now)
-INSTALLER_PATH=$(ls -d /Applications/Install\ macOS*.app 2>/dev/null | head -1)
-if [ ! -d "$INSTALLER_PATH" ]; then
-    echo "Error: macOS installer not found after download attempt"
-    echo "Available installers:"
-    ls -la /Applications/ | grep -i "install.*macos" || echo "No macOS installers found"
+# Find the IPSW (should exist now)
+IPSW_PATH=$(ls "$CACHE_DIR"/*.ipsw 2>/dev/null | head -1)
+if [ ! -f "$IPSW_PATH" ]; then
+    echo "Error: macOS IPSW not found after download attempt"
+    echo "Available IPSW files:"
+    ls -la "$CACHE_DIR"/*.ipsw 2>/dev/null || echo "No IPSW files found in $CACHE_DIR"
     exit 1
 fi
 
-echo "macOS installer ready at: $INSTALLER_PATH"
+echo "macOS IPSW ready at: $IPSW_PATH"
 
 echo ""
 echo "==============================================="
-echo "✅ macOS Installer Ready for UTM Setup"
+echo "✅ macOS IPSW Ready for UTM Setup"
 echo "==============================================="
 echo ""
 echo "Next steps:"
 echo "1. Open UTM and create a new macOS VM"
-echo "2. Use the installer at: $INSTALLER_PATH"
+echo "2. Use the IPSW file at: $IPSW_PATH"
 echo "3. Configure shared directory to: $(pwd)"
 echo "4. Complete VM setup following docs/development-environment.md"
 echo ""

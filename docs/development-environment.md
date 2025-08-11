@@ -26,9 +26,9 @@ The development environment uses UTM (Universal Turing Machine) to create macOS 
 ```
 
 This script will:
-- Install UTM if not present
-- Download the specified macOS installer (or latest available)
-- Reuse existing installers when possible to save time and bandwidth
+- Install UTM and mist-cli if not present
+- Download the specified macOS IPSW firmware (or latest available)
+- Reuse existing IPSW files when possible to save time and bandwidth
 
 ### 2. Create UTM Virtual Machine
 
@@ -42,7 +42,7 @@ After the setup script completes:
    - Choose "macOS 12+" (or appropriate version)
 
 3. **Configure VM Settings**:
-   - **Boot ISO Image**: Browse and select the installer path shown by the setup script
+   - **IPSW**: Browse and select the IPSW file path shown by the setup script
    - **Memory**: 8192 MB (8GB)
    - **Storage**: 50GB
    - **Shared Directory**: Add the dotfiles repository root directory (path shown by setup script)
@@ -165,8 +165,8 @@ You can create multiple VMs for different testing scenarios:
 
 ```bash
 # Different macOS versions
-./setup-development.sh --version 14.0  # macOS Sonoma
-./setup-development.sh --version 15.0  # macOS Sequoia
+./setup-development.sh --version 14.0  # macOS Sonoma IPSW
+./setup-development.sh --version 15.0  # macOS Sequoia IPSW
 ```
 
 ## Security Considerations

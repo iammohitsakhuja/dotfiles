@@ -4,3 +4,6 @@
 
 # Ignore lockfile for Brew.
 Brewfile.lock.json
+
+# Ignore cache directory for IPSW files.
+.cache/
