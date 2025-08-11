@@ -8,17 +8,14 @@ die() {
 
 # Initialise the option variables.
 # This ensures we are not contaminated by variables from the environment.
-symlink=1 # 0 is for copy, 1 is for symlink.
 backup=1 # 0 is for no backup, 1 is for backup (default).
 email=
 name=
 
 # TODO: Add a verbose option.
 show_help() {
-    echo "Usage: ./install.sh [-h | --help] [-c | -l | --copy | --link] [--backup | --no-backup] [-e | --email] [-n | --name]"
+    echo "Usage: ./install.sh [-h | --help] [--backup | --no-backup] [-e | --email] [-n | --name]"
     echo "       -h, --help     | Show this help."
-    echo "       -l, --link     | Link config files and startup scripts rather than copying (default)."
-    echo "       -c, --copy     | Copy config files and startup scripts rather than linking."
     echo "       --backup       | Backup existing files before stow operations (default)."
     echo "       --no-backup    | Skip backing up existing files before stow operations."
     echo "       -e, --email    | The email that you would like to use for setting up things like git, ssh e.g. \"abc@example.com\"."
@@ -33,14 +30,6 @@ while :; do
     -h | -\? | --help)
         show_help
         exit
-        ;;
-    -c | --copy)
-        symlink=0
-        shift
-        ;;
-    -l | --link)
-        symlink=1
-        shift
         ;;
     --backup)
         backup=1
@@ -83,7 +72,6 @@ while :; do
         die "ERROR: \"--name\" requires a non-empty option argument."
         ;;
     *) # Default case: No more options, so break out of the loop.
-        echo "Symlink = $symlink"
         echo "Backup = $backup"
         echo "Email = $email"
         echo "Name = $name"
@@ -145,7 +133,6 @@ backup_existing_files() {
     # Initialize manifest file
     echo "Backup created on: $(date)" > "$manifest_file"
     echo "Original dotfiles repository: $PWD" >> "$manifest_file"
-    echo "Backup mode: $([ $symlink == 1 ] && echo 'symlink' || echo 'copy')" >> "$manifest_file"
     echo "" >> "$manifest_file"
     echo "Files that would be overwritten:" >> "$manifest_file"
     echo "$actual_conflicts" >> "$manifest_file"
@@ -203,18 +190,8 @@ backup_existing_files
 
 # Stow will handle all dotfile symlinking.
 # The home/ directory structure mirrors the $HOME directory structure
-
-if [[ $symlink == 0 ]]; then
-    echo "Copying dotfiles into $HOME/ using stow ..."
-    # Note: Stow doesn't have a native copy mode, so we'll use stow then copy the links
-    stow -d $PWD -t $HOME home --verbose=1
-    echo "Converting symlinks to copies..."
-    # This is a workaround - in practice, most users will use symlink mode
-    find $HOME -maxdepth 3 -type l -lname "$PWD/home/*" -exec bash -c 'target=$(readlink "$1"); rm "$1"; cp "$target" "$1"' _ {} \;
-else
-    echo "Linking dotfiles into $HOME/ using stow ..."
-    stow -d $PWD -t $HOME home --verbose=1
-fi
+echo "Linking dotfiles into $HOME/ using stow ..."
+stow -d $PWD -t $HOME home --verbose=1
 
 
 # Ask for administrator password.

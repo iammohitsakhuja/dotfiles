@@ -28,8 +28,8 @@ sudo chmod u+x macos/install.sh
 ./macos/install.sh --email "your@email.com" --name "Your Name"
 
 # Options:
-./macos/install.sh --link    # Create symlinks (default)
-./macos/install.sh --copy    # Copy files instead
+./macos/install.sh --backup     # Backup existing files (default)
+./macos/install.sh --no-backup  # Skip backup of existing files
 ```
 
 ### Package Management Commands
@@ -64,7 +64,7 @@ bash macos/scripts/macos.sh
 4. **Terminal Enhancement**: Custom colors, tmux integration, vi-mode support
 
 ### Configuration Management
-Files are installed via symlinks (default) or copying using GNU Stow:
+Files are installed via symlinks using GNU Stow:
 - Dotfiles in `macos/home/` are stowed to `$HOME/`
 - Neovim config goes to `$HOME/.config/nvim/`
 - Bat config goes to `$HOME/.config/bat/`
