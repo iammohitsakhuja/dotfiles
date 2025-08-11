@@ -48,8 +48,8 @@ test_installation() {
 
     echo "Test environment ready. Manual testing required:"
     echo "1. VM should be accessible via UTM interface"
-    echo "2. Dotfiles should be available at: /Volumes/My Shared Files/"
-    echo "3. Run installation: cd /Volumes/My\ Shared\ Files && ./macos/install.sh --email test@example.com --name 'Test User'"
+    echo "2. Dotfiles should be available at: /Volumes/My Shared Files/dotfiles"
+    echo "3. Run installation: cd /Volumes/My\ Shared\ Files/dotfiles && ./macos/install.sh --email test@example.com --name 'Test User'"
     echo ""
     echo "After testing, run: $0 cleanup-test"
 }

@@ -20,7 +20,7 @@ UTM-based testing infrastructure for safe dotfiles installation validation.
 ## Workflow
 
 1. **Setup**: `./setup-development.sh` creates UTM VM with shared dotfiles
-2. **Test**: Complete macOS setup in VM, test installation at `/Volumes/My Shared Files/`
+2. **Test**: Complete macOS setup in VM, test installation at `/Volumes/My Shared Files/dotfiles`
 3. **Snapshot**: `./test/utils/vm-manager.sh snapshot` saves clean states
 4. **Reset**: `./test/utils/vm-manager.sh restore` resets for new tests
 

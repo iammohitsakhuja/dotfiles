@@ -54,7 +54,7 @@ After the setup script completes:
 
 1. **Start the VM** and follow the macOS installation process
 2. **Complete initial setup** - create user account and **remember the username and password** (required for SSH access)
-3. **Access shared files** at `/Volumes/My Shared Files/` within the VM
+3. **Access shared files** at `/Volumes/My Shared Files/dotfiles` within the VM
 
 ### 4. SSH Setup (One-time)
 
@@ -100,11 +100,11 @@ From your host machine, use SSH to run commands in the VM:
 utmctl start dotfiles-test
 
 # Wait for VM to boot, then SSH (replace 'username' with your VM username and 'VM_IP' with the noted IP)
-ssh username@VM_IP "cd /Volumes/My\ Shared\ Files && ./macos/install.sh --email test@example.com --name 'Test User'"
+ssh username@VM_IP "cd /Volumes/My\ Shared\ Files/dotfiles && ./macos/install.sh --email test@example.com --name 'Test User'"
 
 # Or connect interactively:
 ssh username@VM_IP
-cd "/Volumes/My Shared Files"
+cd "/Volumes/My Shared Files/dotfiles"
 ./macos/install.sh --email test@example.com --name "Test User"
 
 # Stop the VM when done
@@ -179,7 +179,7 @@ For advanced VM management (snapshots, restore):
    utmctl start dotfiles-test
 
    # SSH and run installation
-   ssh username@VM_IP "cd /Volumes/My\ Shared\ Files && ./macos/install.sh --email test@example.com --name 'Test User'"
+   ssh username@VM_IP "cd /Volumes/My\ Shared\ Files/dotfiles && ./macos/install.sh --email test@example.com --name 'Test User'"
 
    # Verify configuration via SSH
    ssh username@VM_IP "ls -la ~"
