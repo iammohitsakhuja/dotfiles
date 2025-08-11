@@ -65,13 +65,20 @@ fi
 # Download macOS installer
 if [[ -n "$version" ]]; then
     echo "Downloading macOS installer version $version..."
-    sudo softwareupdate --download --fetch-full-installer --full-installer-version "$version"
+    if ! sudo softwareupdate --download --fetch-full-installer --full-installer-version "$version"; then
+        die "ERROR: Failed to download macOS installer version $version. Check if version is available."
+    fi
 else
     echo "Downloading latest available macOS installer..."
     # Get the latest version available
-    LATEST_VERSION=$(softwareupdate --list-full-installers | grep "macOS" | head -1 | awk '{print $6}' | sed 's/,$//')
+    LATEST_VERSION=$(softwareupdate --list-full-installers 2>/dev/null | grep "macOS" | head -1 | awk '{print $6}' | sed 's/,$//')
+    if [[ -z "$LATEST_VERSION" ]]; then
+        die "ERROR: Could not determine latest macOS version. Try specifying a version with --version."
+    fi
     echo "Latest available version: $LATEST_VERSION"
-    sudo softwareupdate --download --fetch-full-installer --full-installer-version "$LATEST_VERSION"
+    if ! sudo softwareupdate --download --fetch-full-installer --full-installer-version "$LATEST_VERSION"; then
+        die "ERROR: Failed to download macOS installer version $LATEST_VERSION."
+    fi
 fi
 
 # Find the installer
@@ -89,16 +96,34 @@ echo "macOS installer ready at: $INSTALLER_PATH"
 echo "Creating UTM VM..."
 
 # Create VM configuration (this is more complex with utmctl)
-utmctl create --name "dotfiles-test" \
+echo "Creating UTM VM 'dotfiles-test'..."
+if ! utmctl create --name "dotfiles-test" \
     --os macos \
     --installer "$INSTALLER_PATH" \
     --memory 8096 \
     --disk-size 50 \
-    --shared-directory "$(pwd)"
+    --shared-directory "$(pwd)"; then
+    die "ERROR: Failed to create UTM VM. Check UTM installation and try again."
+fi
 
-echo "VM created! Starting installation..."
-utmctl start "dotfiles-test"
+echo "VM created successfully!"
+echo "Starting VM for initial setup..."
+if ! utmctl start "dotfiles-test"; then
+    echo "WARNING: Failed to start VM automatically. You can start it manually via UTM interface."
+fi
 
 echo ""
+echo "==============================================="
+echo "✅ UTM Development Environment Setup Complete"
+echo "==============================================="
+echo ""
 echo "Next steps:"
-echo "After VM setup, your dotfiles will be at: /Volumes/My Shared Files/"
+echo "1. Complete macOS installation in the VM"
+echo "2. Your dotfiles will be available at: /Volumes/My Shared Files/"
+echo "3. Test installation: cd /Volumes/My\\ Shared\\ Files && ./macos/install.sh --email you@example.com --name 'Your Name'"
+echo ""
+echo "VM Management:"
+echo "• Use ./test/utils/vm-manager.sh for VM operations"
+echo "• Use ./test/scripts/test-runner.sh for testing workflows"
+echo ""
+echo "For help with testing: ./test/scripts/test-runner.sh --help"
