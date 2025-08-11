@@ -24,7 +24,7 @@ download_ipsw() {
 
 # Initialize option variables.
 version=""
-CACHE_DIR=".cache"
+CACHE_DIR="$HOME/.cache/dotfiles"
 
 show_help() {
     echo "Usage: ./setup-development.sh [-h | --help] [-v | --version]"
