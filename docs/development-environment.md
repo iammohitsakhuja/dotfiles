@@ -38,10 +38,11 @@ After the setup script completes:
 
 2. **Create New VM**:
    - Click "Create a New Virtual Machine"
-   - Select "Virtualize" 
+   - Select "Virtualize"
    - Choose "macOS 12+" (or appropriate version)
 
 3. **Configure VM Settings**:
+   - **Name**: Set VM name to `dotfiles-test` (enables CLI management via utmctl)
    - **IPSW**: Browse and select the IPSW file path shown by the setup script
    - **Memory**: 8192 MB (8GB)
    - **Storage**: 50GB
@@ -57,34 +58,78 @@ After the setup script completes:
 
 ### 4. SSH Setup (One-time)
 
-Get the VM's IP address from within the VM:
+Get the VM's IP address from within the macOS VM:
+
+1. Open the VM via UTM GUI
+2. Once macOS is running, open **Terminal** within the VM
+3. Run one of these commands in the VM's Terminal:
 
 ```bash
-# Inside the VM, run one of these commands:
+# Inside the VM's Terminal, run one of these commands:
 ifconfig en0 | grep "inet " | awk '{print $2}'
 # or
 hostname -I
 ```
 
-Note down the IP address (e.g., `192.168.64.3`) for SSH access from your host machine.
+Note down the IP address (e.g., `192.168.64.3`) for SSH access from your host machine. This is the only step that requires using the VM GUI - after getting the IP, you can manage everything via CLI.
 
-### 5. Test Dotfiles Installation
+### 5. CLI VM Management
+
+With the VM named `dotfiles-test`, you can manage it from the command line:
+
+```bash
+# Start the VM
+utmctl start dotfiles-test
+
+# Check VM status
+utmctl list
+
+# Check specific VM status
+utmctl status dotfiles-test
+
+# Stop the VM
+utmctl stop dotfiles-test
+```
+
+### 6. Test Dotfiles Installation
 
 From your host machine, use SSH to run commands in the VM:
 
 ```bash
-# Replace 'username' with your VM username and 'VM_IP' with the noted IP
+# Start the VM first
+utmctl start dotfiles-test
+
+# Wait for VM to boot, then SSH (replace 'username' with your VM username and 'VM_IP' with the noted IP)
 ssh username@VM_IP "cd /Volumes/My\ Shared\ Files && ./macos/install.sh --email test@example.com --name 'Test User'"
 
 # Or connect interactively:
 ssh username@VM_IP
 cd "/Volumes/My Shared Files"
 ./macos/install.sh --email test@example.com --name "Test User"
+
+# Stop the VM when done
+utmctl stop dotfiles-test
 ```
 
 ## VM Management
 
-### Using VM Manager Utility
+### CLI Commands (utmctl)
+
+For basic VM operations, use utmctl directly:
+
+```bash
+# Start/stop VM
+utmctl start dotfiles-test
+utmctl stop dotfiles-test
+
+# Check status
+utmctl list
+utmctl status dotfiles-test
+```
+
+### VM Manager Utility
+
+For advanced VM management (snapshots, restore):
 
 ```bash
 # Check VM status
@@ -95,10 +140,6 @@ cd "/Volumes/My Shared Files"
 
 # Restore to clean state after testing
 ./test/utils/vm-manager.sh restore clean-state
-
-# Start/stop VM
-./test/utils/vm-manager.sh start
-./test/utils/vm-manager.sh stop
 
 # Clean up VM completely
 ./test/utils/vm-manager.sh cleanup
@@ -133,9 +174,19 @@ cd "/Volumes/My Shared Files"
    ```
 
 3. **Test Installation**:
-   - Boot VM
-   - SSH from host: `ssh username@VM_IP "cd /Volumes/My\ Shared\ Files && ./macos/install.sh --email test@example.com --name 'Test User'"`
-   - Verify configuration via SSH: `ssh username@VM_IP "ls -la ~"`
+   ```bash
+   # Start VM from CLI
+   utmctl start dotfiles-test
+
+   # SSH and run installation
+   ssh username@VM_IP "cd /Volumes/My\ Shared\ Files && ./macos/install.sh --email test@example.com --name 'Test User'"
+
+   # Verify configuration via SSH
+   ssh username@VM_IP "ls -la ~"
+
+   # Stop VM
+   utmctl stop dotfiles-test
+   ```
 
 4. **Reset for Next Test**:
    ```bash
