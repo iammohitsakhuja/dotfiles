@@ -62,38 +62,40 @@ if ! command -v utmctl &> /dev/null; then
     brew install --cask utm
 fi
 
-# Download macOS installer
+# Determine target macOS version
 if [[ -n "$version" ]]; then
-    echo "Downloading macOS installer version $version..."
-    if ! sudo softwareupdate --download --fetch-full-installer --full-installer-version "$version"; then
-        die "ERROR: Failed to download macOS installer version $version. Check if version is available."
-    fi
+    TARGET_VERSION="$version"
+    echo "Target macOS version: $TARGET_VERSION"
 else
-    echo "Downloading latest available macOS installer..."
-    # Get the latest version available
-    LATEST_VERSION=$(softwareupdate --list-full-installers 2>/dev/null | grep "macOS" | head -1 | awk '{print $6}' | sed 's/,$//')
-    if [[ -z "$LATEST_VERSION" ]]; then
+    echo "Getting latest available macOS version..."
+    TARGET_VERSION=$(softwareupdate --list-full-installers 2>/dev/null | grep "macOS" | head -1 | awk '{print $6}' | sed 's/,$//')
+    if [[ -z "$TARGET_VERSION" ]]; then
         die "ERROR: Could not determine latest macOS version. Try specifying a version with --version."
     fi
-    echo "Latest available version: $LATEST_VERSION"
-    if ! sudo softwareupdate --download --fetch-full-installer --full-installer-version "$LATEST_VERSION"; then
-        die "ERROR: Failed to download macOS installer version $LATEST_VERSION."
-    fi
+    echo "Latest available version: $TARGET_VERSION"
 fi
 
-# Find the installer
-INSTALLER_PATH=$(ls -d /Applications/Install\ macOS*.app 2>/dev/null | head -1)
+# Check if installer for target version already exists
+INSTALLER_PATH=$(ls -d /Applications/Install\ macOS*${TARGET_VERSION}*.app 2>/dev/null | head -1)
+if [[ -n "$INSTALLER_PATH" ]]; then
+    echo "Found existing macOS installer for version $TARGET_VERSION at: $INSTALLER_PATH"
+else
+    echo "Downloading macOS installer version $TARGET_VERSION..."
+    if ! sudo softwareupdate --download --fetch-full-installer --full-installer-version "$TARGET_VERSION"; then
+        die "ERROR: Failed to download macOS installer version $TARGET_VERSION. Check if version is available."
+    fi
+    INSTALLER_PATH=$(ls -d /Applications/Install\ macOS*${TARGET_VERSION}*.app 2>/dev/null | head -1)
+fi
+
+# Verify installer was found/downloaded
 if [ ! -d "$INSTALLER_PATH" ]; then
-    echo "Error: macOS installer not found"
+    echo "Error: macOS installer not found after download attempt"
     echo "Available installers:"
     ls -la /Applications/ | grep -i "install.*macos" || echo "No macOS installers found"
     exit 1
 fi
 
 echo "macOS installer ready at: $INSTALLER_PATH"
-
-# After the installer download, add:
-echo "Creating UTM VM..."
 
 # Create VM configuration (this is more complex with utmctl)
 echo "Creating UTM VM 'dotfiles-test'..."
