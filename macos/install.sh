@@ -14,9 +14,8 @@ name=
 
 # TODO: Add a verbose option.
 show_help() {
-    echo "Usage: ./install.sh [-h | --help] [--backup | --no-backup] [-e | --email] [-n | --name]"
+    echo "Usage: ./install.sh [-h | --help] [--no-backup] [-e | --email] [-n | --name]"
     echo "       -h, --help     | Show this help."
-    echo "       --backup       | Backup existing files before stow operations (default)."
     echo "       --no-backup    | Skip backing up existing files before stow operations."
     echo "       -e, --email    | The email that you would like to use for setting up things like git, ssh e.g. \"abc@example.com\"."
     echo "       -n, --name     | The name that you would like to use for setting up things like git e.g. \"John Doe\"."
@@ -30,10 +29,6 @@ while :; do
     -h | -\? | --help)
         show_help
         exit
-        ;;
-    --backup)
-        backup=1
-        shift
         ;;
     --no-backup)
         backup=0

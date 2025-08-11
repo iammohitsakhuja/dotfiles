@@ -28,8 +28,7 @@ sudo chmod u+x macos/install.sh
 ./macos/install.sh --email "your@email.com" --name "Your Name"
 
 # Options:
-./macos/install.sh --backup     # Backup existing files (default)
-./macos/install.sh --no-backup  # Skip backup of existing files
+./macos/install.sh --no-backup  # Skip backup of existing files (backup is default)
 ```
 
 ### Package Management Commands
