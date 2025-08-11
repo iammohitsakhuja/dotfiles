@@ -8,6 +8,20 @@ die() {
     exit 1
 }
 
+# Validate version format (e.g., "15.0", "14.7.1")
+validate_version() {
+    local version="$1"
+    if [[ ! "$version" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+        die "ERROR: Invalid version format '$version'. Expected format: X.Y or X.Y.Z (e.g., '15.0' or '14.7.1')"
+    fi
+}
+
+# Check available disk space for IPSW downloads
+check_disk_space() {
+    local available=$(df -BG "$CACHE_DIR" | awk 'NR==2 {gsub(/G/, "", $4); print $4}')
+    [ "$available" -gt 15 ] || die "ERROR: Insufficient disk space. Need 15GB+, have ${available}GB available"
+}
+
 # Function to download macOS IPSW firmware
 download_ipsw() {
     local target_version="$1"
@@ -15,6 +29,9 @@ download_ipsw() {
 
     # Create cache directory if it doesn't exist
     mkdir -p "$CACHE_DIR"
+    
+    # Check available disk space before downloading
+    check_disk_space
 
     if ! mist download firmware "$target_version" --output-directory "$CACHE_DIR"; then
         die "ERROR: Failed to download macOS IPSW version $target_version. Check if version is available."
@@ -50,6 +67,7 @@ while :; do
         ;;
     -v | --version)
         if [[ "$2" ]]; then
+            validate_version "$2"
             version=$2
             shift 2
         else
@@ -58,6 +76,7 @@ while :; do
         ;;
     --version=?*)
         version=${1#*=} # Delete everything up to "=" and assign the remainder.
+        validate_version "$version"
         shift
         ;;
     --version=) # Handle the case of an empty --version=.
