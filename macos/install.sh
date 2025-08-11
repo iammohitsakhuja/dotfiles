@@ -8,16 +8,15 @@ die() {
 
 # Initialise the option variables.
 # This ensures we are not contaminated by variables from the environment.
-symlink=1 # 0 is for copy, 1 is for symlink.
+backup=1 # 0 is for no backup, 1 is for backup (default).
 email=
 name=
 
 # TODO: Add a verbose option.
 show_help() {
-    echo "Usage: ./install.sh [-h | --help] [-c | -l | --copy | --link] [-e | --email] [-n | --name]"
+    echo "Usage: ./install.sh [-h | --help] [--no-backup] [-e | --email] [-n | --name]"
     echo "       -h, --help     | Show this help."
-    echo "       -l, --link     | Link config files and startup scripts rather than copying (default)."
-    echo "       -c, --copy     | Copy config files and startup scripts rather than linking."
+    echo "       --no-backup    | Skip backing up existing files before stow operations."
     echo "       -e, --email    | The email that you would like to use for setting up things like git, ssh e.g. \"abc@example.com\"."
     echo "       -n, --name     | The name that you would like to use for setting up things like git e.g. \"John Doe\"."
     echo ""
@@ -31,12 +30,8 @@ while :; do
         show_help
         exit
         ;;
-    -c | --copy)
-        symlink=0
-        shift
-        ;;
-    -l | --link)
-        symlink=1
+    --no-backup)
+        backup=0
         shift
         ;;
     -e | --email)
@@ -72,7 +67,7 @@ while :; do
         die "ERROR: \"--name\" requires a non-empty option argument."
         ;;
     *) # Default case: No more options, so break out of the loop.
-        echo "Symlink = $symlink"
+        echo "Backup = $backup"
         echo "Email = $email"
         echo "Name = $name"
         echo ""
@@ -90,103 +85,132 @@ done
 # Get the current working directory.
 PWD=$(pwd)
 
-# Config files. Remove the files that you don't need.
-CONFIG_FILES=(
-    ".aliases"
-    ".clang-format"
-    ".exports"
-    ".gitconfig-delta"
-    ".ideavimrc"
-    ".mongoshrc.js"
-    ".sqliterc"
-    ".tmux.conf"
-    ".vimrc"
-    ".zprofile"
-    ".zshrc"
-)
-
-# Path to Neovim config file.
-NVIM_DIR="$HOME/.config/nvim"
-NVIM_FILE="nvim/init.vim"
-
-# Path to Bat config file.
-BAT_DIR="$HOME/.config/bat"
-BAT_FILE="bat/config"
-
-# Path to Starship config file.
-STARSHIP_DIR="$HOME/.config"
-STARSHIP_FILE="starship.toml"
-
-#### TODO: Add backup for Ranger. ####
-
-# Scripts that will run on the start of each session. Remove the ones that you don't need.
-STARTUP_SCRIPTS=(
-    "greeting.sh"
-)
-
-#### TODO: Backup any previously existing files. ####
-
-if [[ $symlink == 0 ]]; then
-    echo "Copying config files into $HOME/ ..."
-    for file in "${CONFIG_FILES[@]}"; do
-        echo "Copying $PWD/config/$file into $HOME/"
-        cp $PWD/config/$file $HOME
-    done
-
-    # Neovim.
-    if ! [[ -d $NVIM_DIR ]]; then
-        mkdir -p $NVIM_DIR
-    fi
-    cp $PWD/config/$NVIM_FILE $NVIM_DIR
-
-    # Bat.
-    if ! [[ -d $BAT_DIR ]]; then
-        mkdir -p $BAT_DIR
-    fi
-    cp $PWD/config/$BAT_FILE $BAT_DIR
-
-    # Starship.
-    if ! [[ -d $STARSHIP_DIR ]]; then
-        mkdir -p $STARSHIP_DIR
-    fi
-    cp $PWD/config/$STARSHIP_FILE $STARSHIP_DIR
-
-    echo "Copying startup scripts into $HOME/ ..."
-    for file in "${STARTUP_SCRIPTS[@]}"; do
-        echo "Copying $PWD/startup_scripts/$file into $HOME/"
-        cp $PWD/startup_scripts/$file $HOME
-    done
-else
-    echo "Linking config files into $HOME/ ..."
-    for file in "${CONFIG_FILES[@]}"; do
-        echo "Symlinking $PWD/config/$file into $HOME/"
-        ln -s $PWD/config/$file $HOME
-    done
-
-    # Neovim.
-    if ! [[ -d $NVIM_DIR ]]; then
-        mkdir -p $NVIM_DIR
-    fi
-    ln -s $PWD/config/$NVIM_FILE $NVIM_DIR
-
-    # Bat.
-    if ! [[ -d $BAT_DIR ]]; then
-        mkdir -p $BAT_DIR
-    fi
-    ln -s $PWD/config/$BAT_FILE $BAT_DIR
-
-    # Starship.
-    if ! [[ -d $STARSHIP_DIR ]]; then
-        mkdir -p $STARSHIP_DIR
-    fi
-    ln -s $PWD/config/$STARSHIP_FILE $STARSHIP_DIR
-
-    echo "Linking startup scripts into $HOME/ ..."
-    for file in "${STARTUP_SCRIPTS[@]}"; do
-        echo "Symlinking $PWD/startup_scripts/$file into $HOME/"
-        ln -s $PWD/startup_scripts/$file $HOME
-    done
+# Validate stow is available
+if ! command -v stow >/dev/null 2>&1; then
+    die "ERROR: GNU Stow is required but not installed"
 fi
+
+# Function to backup existing files before stow operations
+backup_existing_files() {
+    if [[ $backup == 0 ]]; then
+        echo "Skipping backup as requested..."
+        return 0
+    fi
+
+    echo "Checking for existing files that would be overwritten..."
+
+    # Create timestamped backup directory
+    local backup_timestamp=$(date +%Y%m%d-%H%M%S)
+    local backup_dir="$HOME/.dotfiles-backup-$backup_timestamp"
+    local manifest_file="$backup_dir/backup-manifest.txt"
+
+    # Use stow simulation with verbose output to detect actual conflicts
+    local stow_output
+    stow_output=$(stow -n -d "$PWD" -t "$HOME" home --verbose=3 2>&1)
+
+    # Filter files that are causing conflicts.
+    local actual_conflicts
+    actual_conflicts=$(echo "$stow_output" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p')
+
+    if [[ -z "$actual_conflicts" ]]; then
+        echo "No existing files would be overwritten. Proceeding without backup."
+        return 0
+    fi
+
+    # Check available disk space (require at least 100MB free)
+    local available_space
+    available_space=$(df "$HOME" | awk 'NR==2 {print $4}')
+    # $available_space is in `KB`
+    if [[ $available_space -lt 102400 ]]; then
+        die "ERROR: Insufficient disk space for backup. At least 100MB required."
+    fi
+
+    echo "Creating backup directory: $backup_dir"
+    mkdir -p "$backup_dir"
+    echo "Manifest file path: $manifest_file"
+
+    # Initialize manifest file
+    echo "Backup created on: $(date)" > "$manifest_file"
+    echo "Original dotfiles repository: $PWD" >> "$manifest_file"
+    echo "" >> "$manifest_file"
+    echo "Files that would be overwritten:" >> "$manifest_file"
+    echo "$actual_conflicts" >> "$manifest_file"
+    echo "" >> "$manifest_file"
+    echo "Files backed up:" >> "$manifest_file"
+
+    local files_backed_up=0
+
+    # Backup all conflicting files.
+    for relative_path in $actual_conflicts; do
+        # Validate paths are relative and safe
+        if [[ "$relative_path" =~ ^/ ]] || [[ "$relative_path" =~ \.\. ]]; then
+            echo "WARNING: Unsafe path detected: $relative_path"
+            echo "  ✗ $relative_path (unsafe path)" >> "$manifest_file"
+            continue
+        fi
+
+        local target_file="$HOME/$relative_path"
+
+        # Check if target file exists
+        if [[ -e "$target_file" ]]; then
+            # File exists and would conflict, backup it
+            local backup_file="$backup_dir/$relative_path"
+            local backup_parent_dir
+            backup_parent_dir=$(dirname "$backup_file")
+
+            mkdir -p "$backup_parent_dir"
+
+            # Copy file preserving permissions and metadata.
+            if cp -p "$target_file" "$backup_file" 2>/dev/null; then
+                # Verify backup file exists before removing original
+                if [[ -f "$backup_file" ]]; then
+                    # Remove the original file to prevent stow conflicts
+                    if rm "$target_file" 2>/dev/null; then
+                        echo "  ✓ $relative_path (backed up and removed)" >> "$manifest_file"
+                        echo "Backed up and removed: $relative_path"
+                        ((files_backed_up++))
+                    else
+                        echo "  ⚠ $relative_path (backed up but removal failed)" >> "$manifest_file"
+                        die "ERROR: Failed to remove $relative_path after backup - check permissions"
+                    fi
+                else
+                    echo "  ✗ $relative_path (backup verification failed)" >> "$manifest_file"
+                    die "ERROR: Backup verification failed for $relative_path"
+                fi
+            else
+                echo "  ✗ $relative_path (copy failed)" >> "$manifest_file"
+                die "ERROR: Failed to backup $relative_path - check permissions for $(dirname "$backup_file")"
+            fi
+        else
+            die "ERROR: Conflict file $relative_path doesn't exist at target"
+        fi
+    done
+
+    if [[ $files_backed_up -gt 0 ]]; then
+        echo ""
+        echo "Backup completed successfully!"
+        echo "  Location: $backup_dir"
+        echo "  Files backed up: $files_backed_up"
+        echo "  Manifest: $manifest_file"
+        echo ""
+    else
+        # Remove empty backup directory if no files were actually backed up
+        rmdir "$backup_dir" 2>/dev/null || true
+        echo "No files needed backup. Proceeding with installation."
+        echo ""
+    fi
+
+    return 0
+}
+
+# Backup existing files before stow operations
+backup_existing_files
+
+# Stow will handle all dotfile symlinking.
+# The home/ directory structure mirrors the $HOME directory structure
+echo "Linking dotfiles into $HOME/ using stow ..."
+stow -d $PWD -t $HOME home --verbose=1
+
 
 # Ask for administrator password.
 echo -e "\nInstallation requires administrator authentication..."
@@ -239,8 +263,8 @@ echo -e "Packages installed successfully!\n"
 
 # Configure Tmux colors.
 echo "Configuring Tmux colors..."
-tic -x $PWD/config/terminfo/xterm-256color-italic.terminfo
-tic -x $PWD/config/terminfo/tmux-256color.terminfo
+tic -x $PWD/utils/terminfo/xterm-256color-italic.terminfo
+tic -x $PWD/utils/terminfo/tmux-256color.terminfo
 echo -e "Tmux colors configured successfully!\n"
 
 # Configure MacOS settings.

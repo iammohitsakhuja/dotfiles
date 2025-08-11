@@ -336,9 +336,9 @@ defaults write com.apple.terminal SecureKeyboardEntry -bool true
 defaults write com.apple.Terminal ShowLineMarks -int 0
 
 # Install iTerm themes (Ayu, Material Design and Argonaut).
-# open "../config/itermcolors/ayu.itermcolors"
-# open "../config/itermcolors/Argonaut.itermcolors"
-# open "../config/itermcolors/material-design-colors.itermcolors"
+# open "../themes/iterm-colors/ayu.itermcolors"
+# open "../themes/iterm-colors/Argonaut.itermcolors"
+# open "../themes/iterm-colors/Material-Design-Colors.itermcolors"
 
 # Don’t display the annoying prompt when quitting iTerm.
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
