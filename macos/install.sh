@@ -162,9 +162,21 @@ backup_existing_files() {
 
             # Copy file preserving permissions and metadata.
             if cp -p "$target_file" "$backup_file" 2>/dev/null; then
-                echo "  ✓ $relative_path" >> "$manifest_file"
-                echo "Backed up: $relative_path"
-                ((files_backed_up++))
+                # Verify backup file exists before removing original
+                if [[ -f "$backup_file" ]]; then
+                    # Remove the original file to prevent stow conflicts
+                    if rm "$target_file" 2>/dev/null; then
+                        echo "  ✓ $relative_path (backed up and removed)" >> "$manifest_file"
+                        echo "Backed up and removed: $relative_path"
+                        ((files_backed_up++))
+                    else
+                        echo "  ⚠ $relative_path (backed up but removal failed)" >> "$manifest_file"
+                        die "ERROR: Failed to remove $relative_path after backup - check permissions"
+                    fi
+                else
+                    echo "  ✗ $relative_path (backup verification failed)" >> "$manifest_file"
+                    die "ERROR: Backup verification failed for $relative_path"
+                fi
             else
                 echo "  ✗ $relative_path (copy failed)" >> "$manifest_file"
                 die "ERROR: Failed to backup $relative_path - check permissions for $(dirname "$backup_file")"
