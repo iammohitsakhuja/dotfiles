@@ -119,3 +119,40 @@ Two GitHub Actions workflows enable Claude Code integration:
 
 ### Brewfile Organization
 - Each section in `macos/Brewfile` is arranged alphabetically
+
+## Development Environment and Testing
+
+### UTM-based Testing Setup
+For safe testing of dotfiles without affecting the host system:
+
+```bash
+# Setup development environment with latest macOS
+./setup-development.sh
+
+# Or specify a version
+./setup-development.sh --version 15.0
+```
+
+This script:
+- Installs UTM and mist-cli if needed
+- Downloads specified macOS IPSW firmware
+- Provides instructions for VM creation
+
+### VM Management Commands
+```bash
+# CLI VM control (requires VM named 'dotfiles-test')
+utmctl start dotfiles-test
+utmctl stop dotfiles-test
+utmctl status dotfiles-test
+utmctl list
+```
+
+### SSH Testing Workflow
+1. **Get VM IP**: Use UTM GUI initially to get IP address from VM Terminal
+2. **SSH Testing**: `ssh username@VM_IP "cd /Volumes/My\ Shared\ Files/dotfiles && ./macos/install.sh --email test@example.com --name 'Test User'"`
+3. **Verify Results**: `ssh username@VM_IP "ls -la ~"`
+
+### Testing Environment Architecture
+- **VM Shared Directory**: `/Volumes/My Shared Files/dotfiles` (within VM)
+- **Host Repository**: Shared with VM for live testing
+- **IPSW Cache**: `$HOME/.cache/dotfiles/` for reusing firmware downloads
