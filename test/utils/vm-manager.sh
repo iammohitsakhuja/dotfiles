@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+######### Disclaimer: THIS FILE HAS NOT BEEN RUN/TESTED YET #########
+
 set -e
 
 # VM Management Utilities for UTM-based Testing Environment
@@ -21,11 +23,11 @@ vm_exists() {
 # Create VM snapshot
 create_snapshot() {
     local snapshot_name="${1:-clean-state}"
-    
+
     if ! vm_exists; then
         die "ERROR: VM '$VM_NAME' does not exist. Run setup-development.sh first."
     fi
-    
+
     echo "Creating snapshot '$snapshot_name' for VM '$VM_NAME'..."
     utmctl snapshot create "$VM_NAME" --name "$snapshot_name"
     echo "Snapshot '$snapshot_name' created successfully."
@@ -34,11 +36,11 @@ create_snapshot() {
 # Restore from snapshot
 restore_snapshot() {
     local snapshot_name="${1:-clean-state}"
-    
+
     if ! vm_exists; then
         die "ERROR: VM '$VM_NAME' does not exist. Run setup-development.sh first."
     fi
-    
+
     echo "Restoring VM '$VM_NAME' to snapshot '$snapshot_name'..."
     utmctl stop "$VM_NAME" 2>/dev/null || true
     utmctl snapshot restore "$VM_NAME" --name "$snapshot_name"
@@ -50,7 +52,7 @@ list_snapshots() {
     if ! vm_exists; then
         die "ERROR: VM '$VM_NAME' does not exist. Run setup-development.sh first."
     fi
-    
+
     echo "Available snapshots for VM '$VM_NAME':"
     utmctl snapshot list "$VM_NAME"
 }
@@ -61,7 +63,7 @@ cleanup_vm() {
         echo "VM '$VM_NAME' does not exist. Nothing to clean up."
         return 0
     fi
-    
+
     echo "Stopping and removing VM '$VM_NAME'..."
     utmctl stop "$VM_NAME" 2>/dev/null || true
     utmctl delete "$VM_NAME"
@@ -74,7 +76,7 @@ vm_status() {
         echo "VM '$VM_NAME' does not exist."
         return 1
     fi
-    
+
     echo "VM Status for '$VM_NAME':"
     utmctl list | grep "^$VM_NAME\s"
 }
@@ -84,7 +86,7 @@ start_vm() {
     if ! vm_exists; then
         die "ERROR: VM '$VM_NAME' does not exist. Run setup-development.sh first."
     fi
-    
+
     echo "Starting VM '$VM_NAME'..."
     utmctl start "$VM_NAME"
     echo "VM '$VM_NAME' started successfully."
@@ -95,7 +97,7 @@ stop_vm() {
     if ! vm_exists; then
         die "ERROR: VM '$VM_NAME' does not exist."
     fi
-    
+
     echo "Stopping VM '$VM_NAME'..."
     utmctl stop "$VM_NAME"
     echo "VM '$VM_NAME' stopped successfully."

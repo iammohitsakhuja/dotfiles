@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+######### Disclaimer: THIS FILE HAS NOT BEEN RUN/TESTED YET #########
+
 set -e
 
 # Basic Test Runner for Dotfiles Installation
@@ -20,7 +22,7 @@ check_prerequisites() {
     if [ ! -f "$VM_MANAGER" ]; then
         die "ERROR: VM manager not found at $VM_MANAGER"
     fi
-    
+
     if ! command -v utmctl &> /dev/null; then
         die "ERROR: UTM not installed. Run setup-development.sh first."
     fi
@@ -29,9 +31,9 @@ check_prerequisites() {
 # Run basic installation test
 test_installation() {
     local test_name="${1:-basic-install}"
-    
+
     echo "=== Running test: $test_name ==="
-    
+
     # Ensure VM is in clean state
     echo "Preparing clean test environment..."
     "$VM_MANAGER" restore clean-state 2>/dev/null || {
@@ -40,10 +42,10 @@ test_installation() {
         sleep 10  # Allow VM to boot
         "$VM_MANAGER" snapshot clean-state
     }
-    
+
     echo "Starting VM for testing..."
     "$VM_MANAGER" start
-    
+
     echo "Test environment ready. Manual testing required:"
     echo "1. VM should be accessible via UTM interface"
     echo "2. Dotfiles should be available at: /Volumes/My Shared Files/"
@@ -63,19 +65,19 @@ cleanup_test() {
 # Run smoke tests
 smoke_test() {
     echo "=== Running smoke tests ==="
-    
+
     # Check if setup script exists and is executable
     if [ ! -x "$PROJECT_ROOT/setup-development.sh" ]; then
         die "ERROR: setup-development.sh not found or not executable"
     fi
-    
+
     # Check if VM manager works
     "$VM_MANAGER" status || echo "VM not yet created (expected)"
-    
+
     # Check if required directories exist
     [ -d "$PROJECT_ROOT/test/utils" ] || die "ERROR: test/utils directory missing"
     [ -d "$PROJECT_ROOT/test/scripts" ] || die "ERROR: test/scripts directory missing"
-    
+
     echo "✅ Smoke tests passed"
 }
 
@@ -87,7 +89,7 @@ Test Commands:
   smoke-test               Run basic smoke tests
   test-installation        Prepare VM for installation testing
   cleanup-test             Reset VM to clean state after testing
-  
+
 Examples:
   $0 smoke-test           # Verify test infrastructure
   $0 test-installation    # Start interactive installation test
