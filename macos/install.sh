@@ -85,6 +85,11 @@ done
 # Get the current working directory.
 PWD=$(pwd)
 
+# Validate stow is available
+if ! command -v stow >/dev/null 2>&1; then
+    die "ERROR: GNU Stow is required but not installed"
+fi
+
 # Function to backup existing files before stow operations
 backup_existing_files() {
     if [[ $backup == 0 ]]; then
@@ -162,7 +167,7 @@ backup_existing_files() {
                 ((files_backed_up++))
             else
                 echo "  ✗ $relative_path (copy failed)" >> "$manifest_file"
-                die "ERROR: Failed to backup $relative_path"
+                die "ERROR: Failed to backup $relative_path - check permissions for $(dirname "$backup_file")"
             fi
         else
             die "ERROR: Conflict file $relative_path doesn't exist at target"
