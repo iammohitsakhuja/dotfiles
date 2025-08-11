@@ -102,9 +102,6 @@ done
 # Get the current working directory.
 PWD=$(pwd)
 
-# Stow will handle all dotfile symlinking/copying automatically
-# The home/ directory structure mirrors the home directory structure
-
 # Function to backup existing files before stow operations
 backup_existing_files() {
     if [[ $backup == 0 ]]; then
@@ -113,88 +110,77 @@ backup_existing_files() {
     fi
 
     echo "Checking for existing files that would be overwritten..."
-    
+
     # Create timestamped backup directory
     local backup_timestamp=$(date +%Y%m%d-%H%M%S)
     local backup_dir="$HOME/.dotfiles-backup-$backup_timestamp"
     local manifest_file="$backup_dir/backup-manifest.txt"
-    
-    # Use stow simulation to detect conflicts
-    local stow_conflicts
-    stow_conflicts=$(stow -n -d "$PWD" -t "$HOME" home 2>&1 | grep -E "(existing target|WARNING.*would be overwritten)" || true)
-    
-    if [[ -z "$stow_conflicts" ]]; then
+
+    # Use stow simulation with verbose output to detect actual conflicts
+    local stow_output
+    stow_output=$(stow -n -d "$PWD" -t "$HOME" home --verbose=3 2>&1)
+
+    # Filter files that are causing conflicts.
+    local actual_conflicts
+    actual_conflicts=$(echo "$stow_output" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^ ]*\).*/\1/p')
+    echo "Actual conflicts: $actual_conflicts"
+
+    if [[ -z "$actual_conflicts" ]]; then
         echo "No existing files would be overwritten. Proceeding without backup."
         return 0
     fi
-    
+
     # Check available disk space (require at least 100MB free)
     local available_space
     available_space=$(df "$HOME" | awk 'NR==2 {print $4}')
+    # $available_space is in `KB`
     if [[ $available_space -lt 102400 ]]; then
         die "ERROR: Insufficient disk space for backup. At least 100MB required."
     fi
-    
+
     echo "Creating backup directory: $backup_dir"
     mkdir -p "$backup_dir"
-    
+    echo "Manifest file path: $manifest_file"
+
     # Initialize manifest file
     echo "Backup created on: $(date)" > "$manifest_file"
     echo "Original dotfiles repository: $PWD" >> "$manifest_file"
     echo "Backup mode: $([ $symlink == 1 ] && echo 'symlink' || echo 'copy')" >> "$manifest_file"
     echo "" >> "$manifest_file"
+    echo "Files that would be overwritten:" >> "$manifest_file"
+    echo "$actual_conflicts" >> "$manifest_file"
+    echo "" >> "$manifest_file"
     echo "Files backed up:" >> "$manifest_file"
-    
+
     local files_backed_up=0
-    
-    # Parse stow simulation output to find conflicting files
-    while IFS= read -r line; do
-        if [[ $line =~ existing\ target\ is\ (.*) ]] || [[ $line =~ WARNING.*would\ be\ overwritten.*:\ (.*) ]]; then
-            local target_file="${BASH_REMATCH[1]}"
-            
-            # Skip if target_file is empty or just whitespace
-            [[ -z "${target_file// }" ]] && continue
-            
-            # Convert relative paths to absolute
-            if [[ ! "$target_file" =~ ^/ ]]; then
-                target_file="$HOME/$target_file"
-            fi
-            
-            # Skip if file doesn't exist or is already a stow link to our repository
-            if [[ ! -e "$target_file" ]]; then
-                continue
-            fi
-            
-            # Check if it's already a stow link pointing to our repository
-            if [[ -L "$target_file" ]]; then
-                local link_target
-                link_target=$(readlink "$target_file")
-                if [[ "$link_target" =~ ^$PWD/home/ ]]; then
-                    echo "Skipping $target_file (already managed by stow)"
-                    continue
-                fi
-            fi
-            
-            # Create backup directory structure
-            local relative_path="${target_file#$HOME/}"
+
+    # Backup all conflicting files.
+    for relative_path in $actual_conflicts; do
+        local target_file="$HOME/$relative_path"
+
+        # Check if target file exists
+        if [[ -e "$target_file" ]]; then
+            # File exists and would conflict, backup it
             local backup_file="$backup_dir/$relative_path"
             local backup_parent_dir
             backup_parent_dir=$(dirname "$backup_file")
-            
+
             mkdir -p "$backup_parent_dir"
-            
-            # Copy file preserving permissions and metadata
+
+            # Copy file preserving permissions and metadata.
             if cp -p "$target_file" "$backup_file" 2>/dev/null; then
                 echo "  ✓ $relative_path" >> "$manifest_file"
                 echo "Backed up: $relative_path"
                 ((files_backed_up++))
             else
                 echo "  ✗ $relative_path (copy failed)" >> "$manifest_file"
-                echo "WARNING: Failed to backup $relative_path"
+                die "WARNING: Failed to backup $relative_path"
             fi
+        else
+            die "WARNING: Conflict file $relative_path doesn't exist at target"
         fi
-    done <<< "$stow_conflicts"
-    
+    done
+
     if [[ $files_backed_up -gt 0 ]]; then
         echo ""
         echo "Backup completed successfully!"
@@ -206,24 +192,28 @@ backup_existing_files() {
         # Remove empty backup directory if no files were actually backed up
         rmdir "$backup_dir" 2>/dev/null || true
         echo "No files needed backup. Proceeding with installation."
+        echo ""
     fi
-    
+
     return 0
 }
 
 # Backup existing files before stow operations
 backup_existing_files
 
+# Stow will handle all dotfile symlinking.
+# The home/ directory structure mirrors the $HOME directory structure
+
 if [[ $symlink == 0 ]]; then
     echo "Copying dotfiles into $HOME/ using stow ..."
     # Note: Stow doesn't have a native copy mode, so we'll use stow then copy the links
-    stow -d $PWD -t $HOME home
+    stow -d $PWD -t $HOME home --verbose=1
     echo "Converting symlinks to copies..."
     # This is a workaround - in practice, most users will use symlink mode
     find $HOME -maxdepth 3 -type l -lname "$PWD/home/*" -exec bash -c 'target=$(readlink "$1"); rm "$1"; cp "$target" "$1"' _ {} \;
 else
     echo "Linking dotfiles into $HOME/ using stow ..."
-    stow -d $PWD -t $HOME home
+    stow -d $PWD -t $HOME home --verbose=1
 fi
 
 
