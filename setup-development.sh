@@ -8,6 +8,16 @@ die() {
     exit 1
 }
 
+# Function to download macOS installer
+download_installer() {
+    local target_version="$1"
+    echo "Downloading macOS installer version $target_version..."
+    if ! sudo softwareupdate --download --fetch-full-installer --full-installer-version "$target_version"; then
+        die "ERROR: Failed to download macOS installer version $target_version. Check if version is available."
+    fi
+    echo "Download completed successfully."
+}
+
 # Initialize option variables.
 version=""
 
@@ -75,19 +85,29 @@ else
     echo "Latest available version: $TARGET_VERSION"
 fi
 
-# Check if installer for target version already exists
-INSTALLER_PATH=$(ls -d /Applications/Install\ macOS*${TARGET_VERSION}*.app 2>/dev/null | head -1)
-if [[ -n "$INSTALLER_PATH" ]]; then
-    echo "Found existing macOS installer for version $TARGET_VERSION at: $INSTALLER_PATH"
-else
-    echo "Downloading macOS installer version $TARGET_VERSION..."
-    if ! sudo softwareupdate --download --fetch-full-installer --full-installer-version "$TARGET_VERSION"; then
-        die "ERROR: Failed to download macOS installer version $TARGET_VERSION. Check if version is available."
+# Check if any installer already exists first
+EXISTING_INSTALLER=$(ls -d /Applications/Install\ macOS*.app 2>/dev/null | head -1)
+if [[ -n "$EXISTING_INSTALLER" ]]; then
+    echo "Found existing macOS installer at: $EXISTING_INSTALLER"
+
+    # Extract version from installer using system_profiler or defaults
+    EXISTING_VERSION=$(defaults read "$EXISTING_INSTALLER/Contents/Info.plist" DTPlatformVersion 2>/dev/null || echo "unknown")
+    echo "Existing installer version: $EXISTING_VERSION"
+
+    # If we have a specific version requirement, check if it matches
+    if [[ "$EXISTING_VERSION" == "$TARGET_VERSION" ]]; then
+        echo "Existing installer version matches requested version. Using existing installer: $EXISTING_INSTALLER"
+    else
+        echo "Existing installer version ($EXISTING_VERSION) doesn't match requested version ($TARGET_VERSION)"
+        download_installer "$TARGET_VERSION"
     fi
-    INSTALLER_PATH=$(ls -d /Applications/Install\ macOS*${TARGET_VERSION}*.app 2>/dev/null | head -1)
+else
+    echo "No existing installer found."
+    download_installer "$TARGET_VERSION"
 fi
 
-# Verify installer was found/downloaded
+# Find the installer (should exist now)
+INSTALLER_PATH=$(ls -d /Applications/Install\ macOS*.app 2>/dev/null | head -1)
 if [ ! -d "$INSTALLER_PATH" ]; then
     echo "Error: macOS installer not found after download attempt"
     echo "Available installers:"
