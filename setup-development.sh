@@ -117,35 +117,15 @@ fi
 
 echo "macOS installer ready at: $INSTALLER_PATH"
 
-# Create VM configuration (this is more complex with utmctl)
-echo "Creating UTM VM 'dotfiles-test'..."
-if ! utmctl create --name "dotfiles-test" \
-    --os macos \
-    --installer "$INSTALLER_PATH" \
-    --memory 8096 \
-    --disk-size 50 \
-    --shared-directory "$(pwd)"; then
-    die "ERROR: Failed to create UTM VM. Check UTM installation and try again."
-fi
-
-echo "VM created successfully!"
-echo "Starting VM for initial setup..."
-if ! utmctl start "dotfiles-test"; then
-    echo "WARNING: Failed to start VM automatically. You can start it manually via UTM interface."
-fi
-
 echo ""
 echo "==============================================="
-echo "✅ UTM Development Environment Setup Complete"
+echo "✅ macOS Installer Ready for UTM Setup"
 echo "==============================================="
 echo ""
 echo "Next steps:"
-echo "1. Complete macOS installation in the VM"
-echo "2. Your dotfiles will be available at: /Volumes/My Shared Files/"
-echo "3. Test installation: cd /Volumes/My\\ Shared\\ Files && ./macos/install.sh --email you@example.com --name 'Your Name'"
+echo "1. Open UTM and create a new macOS VM"
+echo "2. Use the installer at: $INSTALLER_PATH"
+echo "3. Configure shared directory to: $(pwd)"
+echo "4. Complete VM setup following docs/development-environment.md"
 echo ""
-echo "VM Management:"
-echo "• Use ./test/utils/vm-manager.sh for VM operations"
-echo "• Use ./test/scripts/test-runner.sh for testing workflows"
-echo ""
-echo "For help with testing: ./test/scripts/test-runner.sh --help"
+echo "For detailed setup instructions, see: docs/development-environment.md"
