@@ -105,8 +105,7 @@ backup_existing_files() {
 
     # Filter files that are causing conflicts.
     local actual_conflicts
-    actual_conflicts=$(echo "$stow_output" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^ ]*\).*/\1/p')
-    echo "Actual conflicts: $actual_conflicts"
+    actual_conflicts=$(echo "$stow_output" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p')
 
     if [[ -z "$actual_conflicts" ]]; then
         echo "No existing files would be overwritten. Proceeding without backup."
@@ -138,6 +137,13 @@ backup_existing_files() {
 
     # Backup all conflicting files.
     for relative_path in $actual_conflicts; do
+        # Validate paths are relative and safe
+        if [[ "$relative_path" =~ ^/ ]] || [[ "$relative_path" =~ \.\. ]]; then
+            echo "WARNING: Unsafe path detected: $relative_path"
+            echo "  ✗ $relative_path (unsafe path)" >> "$manifest_file"
+            continue
+        fi
+
         local target_file="$HOME/$relative_path"
 
         # Check if target file exists
@@ -156,10 +162,10 @@ backup_existing_files() {
                 ((files_backed_up++))
             else
                 echo "  ✗ $relative_path (copy failed)" >> "$manifest_file"
-                die "WARNING: Failed to backup $relative_path"
+                die "ERROR: Failed to backup $relative_path"
             fi
         else
-            die "WARNING: Conflict file $relative_path doesn't exist at target"
+            die "ERROR: Conflict file $relative_path doesn't exist at target"
         fi
     done
 
