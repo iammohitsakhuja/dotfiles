@@ -18,6 +18,7 @@ PATH="$GOENV_ROOT/bin:$PATH"
 # use explicit BSD versions from /usr/bin/ when needed.
 PATH="$BREW_PREFIX/opt/curl/bin:$PATH"                                      # Curl.
 PATH="$BREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH"                      # Coreutils.
+PATH="$BREW_PREFIX/opt/findutils/libexec/gnubin:$PATH"                      # Find, xargs, etc.
 PATH="$BREW_PREFIX/opt/gnu-sed/libexec/gnubin:$PATH"                        # GNU Sed.
 PATH="$BREW_PREFIX/opt/gnu-getopt/bin:$PATH"                                # GNU getopt.
 PATH="$BREW_PREFIX/opt/grep/libexec/gnubin:$PATH"                           # Grep.
