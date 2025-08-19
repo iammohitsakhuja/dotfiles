@@ -54,7 +54,8 @@ After the setup script completes:
 
 1. **Start the VM** and follow the macOS installation process
 2. **Complete initial setup** - create user account and **remember the username and password** (required for SSH access)
-3. **Access shared files** at `/Volumes/My Shared Files/dotfiles` within the VM
+3. **Configure sleep settings** to prevent shared directory sync issues (see Troubleshooting section below for details)
+4. **Access shared files** at `/Volumes/My Shared Files/dotfiles` within the VM
 
 ### 4. SSH Setup (One-time)
 
@@ -210,6 +211,37 @@ You can create multiple VMs for different testing scenarios:
 ./setup-development.sh --version 14.0  # macOS Sonoma IPSW
 ./setup-development.sh --version 15.0  # macOS Sequoia IPSW
 ```
+
+## Troubleshooting
+
+### Shared Directory File Synchronization Issues
+
+**Problem**: Changes to files in the shared directory don't reflect in the VM or appear stale.
+
+**Primary Solution - Configure VM Sleep Settings**:
+
+1. **Option 1 - Energy/Battery Settings** (macOS Sequoia+):
+   - Go to **System Settings** > **Energy** (or **Battery** > **Options** on laptops)
+   - Set **Prevent automatic sleeping when the display is off** to enabled
+
+2. **Option 2 - Lock Screen Settings**:
+   - Go to **System Settings** > **Lock Screen**
+   - Set **Turn display off on battery when inactive** to "Never"
+   - Set **Turn display off on power adapter when inactive** to "Never"
+
+**Additional Solutions**:
+
+- **Restart shared directory service**:
+
+  ```bash
+  utmctl stop dotfiles-test
+  utmctl start dotfiles-test
+  ```
+
+### Other Common Issues
+
+- **Permission errors**: Ensure the shared directory has proper read/write permissions
+- **VM won't start**: Check available disk space and UTM logs
 
 ---
 
