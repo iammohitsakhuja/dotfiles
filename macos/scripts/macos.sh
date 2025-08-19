@@ -236,6 +236,9 @@ defaults write ~/Library/Preferences/ByHost/com.apple.controlcenter.plist Batter
 defaults write -globalDomain NSStatusItemSpacing -int 12
 defaults write -globalDomain NSStatusItemSelectionPadding 8
 
+# Automatically hide and show the Menu Bar.
+defaults write NSGlobalDomain _HIHideMenuBar -bool true
+
 ###############################################################################
 # QuickLook                                                                   #
 ###############################################################################
