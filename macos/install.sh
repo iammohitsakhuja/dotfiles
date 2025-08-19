@@ -465,8 +465,31 @@ echo "  ✓ Git configuration completed"
 
 # Create SSH key pair.
 echo "  → Generating SSH key pair..."
-ssh-keygen -t ed25519 -C "$email"
-echo "  ✓ SSH key pair generated"
+
+# Check if SSH keys already exist
+if [[ -f "$HOME/.ssh/id_ed25519" ]]; then
+    echo "  ✓ SSH key already exists at $HOME/.ssh/id_ed25519"
+    echo "    Skipping key generation to avoid overwriting existing key"
+else
+    # Generate SSH key non-interactively
+    ssh-keygen -t ed25519 -C "$email" -f "$HOME/.ssh/id_ed25519" -N "" -q
+    
+    # Verify SSH key generation was successful
+    if [[ -f "$HOME/.ssh/id_ed25519" && -f "$HOME/.ssh/id_ed25519.pub" ]]; then
+        echo "  ✓ SSH key pair generated successfully"
+        
+        # Verify SSH directory permissions
+        ssh_dir_perms=$(stat -f "%A" "$HOME/.ssh" 2>/dev/null || echo "unknown")
+        if [[ "$ssh_dir_perms" == "700" ]]; then
+            echo "  ✓ SSH directory permissions are correct (700)"
+        else
+            echo "  ⚠ Warning: SSH directory permissions may need adjustment"
+            echo "    Expected: 700, Current: $ssh_dir_perms"
+        fi
+    else
+        die "ERROR: SSH key generation failed - key files not found"
+    fi
+fi
 echo ""
 
 echo "======================================================================"
