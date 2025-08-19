@@ -26,8 +26,8 @@ show_help() {
     echo "  ./restore.sh --dry-run                 # Preview restoration actions"
     echo ""
     echo "This script helps restore original dotfiles from backups created during failed"
-    echo "or interrupted installations. It cleans up stow-managed symlinks and restores"
-    echo "your original configuration files safely."
+    echo "or interrupted installations. It cleans up stow-managed symlinks and moves"
+    echo "your original configuration files back from backup locations."
 }
 
 # Parse command line arguments.
@@ -79,6 +79,11 @@ if ! command -v stow >/dev/null 2>&1; then
     die "ERROR: GNU Stow is required but not installed"
 fi
 
+# Validate jq is available for JSON processing
+if ! command -v jq >/dev/null 2>&1; then
+    die "ERROR: jq is required for JSON manifest processing but not installed"
+fi
+
 # Function to find and list available backup directories
 list_available_backups() {
     local backup_pattern="$HOME/.dotfiles-backup-*"
@@ -99,12 +104,16 @@ list_available_backups() {
 
     for backup_dir in "${backup_dirs[@]}"; do
         local timestamp=$(basename "$backup_dir" | sed 's/^\.dotfiles-backup-//')
-        local manifest_file="$backup_dir/backup-manifest.txt"
+        local manifest_file="$backup_dir/backup-manifest.json"
 
         if [[ -f "$manifest_file" ]]; then
-            local backup_date=$(head -n1 "$manifest_file" | sed 's/Backup created on: //')
+            local backup_date
             local file_count
-            file_count=$(grep -c "^[[:space:]]*✓" "$manifest_file" 2>/dev/null || echo "0")
+
+            # Extract backup date and file count from JSON
+            backup_date=$(jq -r '.metadata.backup_date' "$manifest_file" 2>/dev/null || echo "Unknown")
+            file_count=$(jq -r '.summary.files_backed_up' "$manifest_file" 2>/dev/null || echo "0")
+
             echo "  $timestamp ($file_count files backed up)"
             echo "    Date: $backup_date"
             echo "    Location: $backup_dir"
@@ -135,7 +144,7 @@ get_backup_dir() {
 # Function to validate backup directory and manifest
 validate_backup() {
     local backup_dir="$1"
-    local manifest_file="$backup_dir/backup-manifest.txt"
+    local manifest_file="$backup_dir/backup-manifest.json"
 
     if [[ ! -d "$backup_dir" ]]; then
         die "ERROR: Backup directory not found: $backup_dir"
@@ -145,8 +154,15 @@ validate_backup() {
         die "ERROR: Backup manifest file not found: $manifest_file"
     fi
 
+    # Validate JSON format
+    if ! jq empty "$manifest_file" 2>/dev/null; then
+        die "ERROR: Invalid JSON format in manifest file"
+    fi
+
     # Check if any files were successfully backed up
-    if ! grep -q "^[[:space:]]*✓" "$manifest_file" 2>/dev/null; then
+    local backed_up_count
+    backed_up_count=$(jq -r '.summary.files_backed_up' "$manifest_file" 2>/dev/null || echo "0")
+    if [[ "$backed_up_count" -eq 0 ]]; then
         die "ERROR: No successfully backed up files found in manifest"
     fi
 
@@ -179,8 +195,8 @@ cleanup_stow_symlinks() {
 get_files_to_restore() {
     local manifest_file="$1"
 
-    # Extract files that were successfully backed up (have ✓ status)
-    grep "^[[:space:]]*✓" "$manifest_file" | sed 's/^[[:space:]]*✓[[:space:]]*//'
+    # Extract files that were successfully moved to backup
+    jq -r '.files[] | select(.status == "moved_successfully") | .path' "$manifest_file"
 }
 
 # Function to restore files from backup
@@ -239,11 +255,11 @@ restore_files() {
             # Check if target file already exists
             if [[ -e "$target_file" ]]; then
                 echo "⚠ Warning: Target file already exists: $relative_path"
-                echo "  Choose action: (o)verwrite, (s)kip, (q)uit"
+                echo "  Choose action: (r)eplace, (s)kip, (q)uit"
                 read -r action
                 case "$action" in
-                    o|O|overwrite)
-                        echo "  Overwriting existing file..."
+                    r|R|replace)
+                        echo "  Replacing existing file..."
                         ;;
                     s|S|skip)
                         echo "  Skipping file..."
@@ -260,8 +276,8 @@ restore_files() {
                 esac
             fi
 
-            # Restore the file with preserved permissions and metadata
-            if cp -p "$backup_file" "$target_file" 2>/dev/null; then
+            # Move file back from backup (atomic operation - reverse of backup)
+            if mv "$backup_file" "$target_file" 2>/dev/null; then
                 echo "✓ Restored: $relative_path"
                 ((files_restored++))
             else
@@ -298,8 +314,9 @@ perform_restoration() {
     if [[ "$dry_run_flag" != "dry-run" ]]; then
         echo "Restoration completed successfully!"
         echo ""
-        echo "Your original dotfiles have been restored. The backup directory"
-        echo "has been preserved at: $backup_dir"
+        echo "Your original dotfiles have been moved back from backup."
+        echo "Note: The backup directory may now be empty as files were moved"
+        echo "back to their original locations at: $backup_dir"
         echo ""
         echo "You can now re-run the installation script if desired, or keep"
         echo "your restored configuration as-is."
@@ -346,8 +363,8 @@ main() {
     manifest_file=$(validate_backup "$backup_dir")
 
     # Show backup details
-    local backup_date=$(head -n1 "$manifest_file" | sed 's/Backup created on: //')
-    local file_count=$(grep -c "^[[:space:]]*✓" "$manifest_file" 2>/dev/null || echo "0")
+    local backup_date=$(jq -r '.metadata.backup_date' "$manifest_file" 2>/dev/null || echo "Unknown")
+    local file_count=$(jq -r '.summary.files_backed_up' "$manifest_file" 2>/dev/null || echo "0")
 
     echo "Preparing to restore from backup: $backup_timestamp"
     echo "Backup details:"

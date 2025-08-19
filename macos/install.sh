@@ -184,6 +184,15 @@ bootstrap_dependencies() {
         echo "  ✓ GNU Stow already installed"
     fi
 
+    # Install jq for JSON processing if not available
+    if ! command -v jq >/dev/null 2>&1; then
+        echo "  → Installing jq for JSON processing..."
+        brew install jq
+        echo "  ✓ jq installation completed"
+    else
+        echo "  ✓ jq already installed"
+    fi
+
     echo ""
     echo "✓ Essential dependencies are ready!"
     echo ""
@@ -191,6 +200,11 @@ bootstrap_dependencies() {
 
 # Install essential dependencies before proceeding
 bootstrap_dependencies
+
+echo "======================================================================"
+echo "                     Backup & File Management"
+echo "======================================================================"
+echo ""
 
 # Function to backup existing files before stow operations
 backup_existing_files() {
@@ -204,15 +218,22 @@ backup_existing_files() {
     # Create timestamped backup directory
     local backup_timestamp=$(date +%Y%m%d-%H%M%S)
     local backup_dir="$HOME/.dotfiles-backup-$backup_timestamp"
-    local manifest_file="$backup_dir/backup-manifest.txt"
+    local manifest_file="$backup_dir/backup-manifest.json"
 
     # Use stow simulation with verbose output to detect actual conflicts
     local stow_output
     stow_output=$(stow -n -d "$PWD" -t "$HOME" home --verbose=3 2>&1)
 
-    # Filter files that are causing conflicts.
+    # Filter files that are causing conflicts - catch both types of conflicts
+    local stowing_conflicts
+    stowing_conflicts=$(echo "$stow_output" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p')
+
+    local ownership_conflicts
+    ownership_conflicts=$(echo "$stow_output" | grep "CONFLICT when stowing" | sed -n 's/.*existing target is not owned by stow: \([^[:space:]]*\).*/\1/p')
+
+    # Combine both types of conflicts
     local actual_conflicts
-    actual_conflicts=$(echo "$stow_output" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p')
+    actual_conflicts=$(printf "%s\n%s" "$stowing_conflicts" "$ownership_conflicts" | grep -v '^$' | sort -u)
 
     if [[ -z "$actual_conflicts" ]]; then
         echo "No existing files would be overwritten. Proceeding without backup."
@@ -231,30 +252,112 @@ backup_existing_files() {
     mkdir -p "$backup_dir"
     echo "Manifest file path: $manifest_file"
 
-    # Initialize manifest file
-    echo "Backup created on: $(date)" > "$manifest_file"
-    echo "Original dotfiles repository: $PWD" >> "$manifest_file"
-    echo "" >> "$manifest_file"
-    echo "Files that would be overwritten:" >> "$manifest_file"
-    echo "$actual_conflicts" >> "$manifest_file"
-    echo "" >> "$manifest_file"
-    echo "Files backed up:" >> "$manifest_file"
+    # Show conflict summary to user
+    local stowing_count=$(echo "$stowing_conflicts" | grep -c . 2>/dev/null || echo 0)
+    local ownership_count=$(echo "$ownership_conflicts" | grep -c . 2>/dev/null || echo 0)
+    echo "Found conflicts: $stowing_count stowing conflicts, $ownership_count ownership conflicts"
+
+    # Initialize JSON manifest file
+    local backup_date=$(date -Iseconds)
+    local stowing_conflicts_json
+    local ownership_conflicts_json
+
+    # Convert conflicts to JSON arrays
+    if [[ -n "$stowing_conflicts" ]]; then
+        stowing_conflicts_json=$(echo "$stowing_conflicts" | jq -R -s 'split("\n") | map(select(length > 0))')
+    else
+        stowing_conflicts_json="[]"
+    fi
+
+    if [[ -n "$ownership_conflicts" ]]; then
+        ownership_conflicts_json=$(echo "$ownership_conflicts" | jq -R -s 'split("\n") | map(select(length > 0))')
+    else
+        ownership_conflicts_json="[]"
+    fi
+
+    local total_conflicts
+    total_conflicts=$(echo "$actual_conflicts" | grep -c . 2>/dev/null || echo 0)
+
+    # Create initial JSON structure
+    cat > "$manifest_file" << EOF
+{
+  "metadata": {
+    "backup_date": "$backup_date",
+    "repository_path": "$PWD",
+    "backup_version": "1.0"
+  },
+  "conflicts": {
+    "stowing_conflicts": $stowing_conflicts_json,
+    "ownership_conflicts": $ownership_conflicts_json,
+    "total_count": $total_conflicts
+  },
+  "files": [],
+  "summary": {
+    "files_backed_up": 0,
+    "files_failed": 0,
+    "backup_size_total": 0
+  }
+}
+EOF
 
     local files_backed_up=0
+    local files_failed=0
+    local total_backup_size=0
+
+    # Helper function to add file entry to JSON manifest
+    add_file_to_manifest() {
+        local file_path="$1"
+        local status="$2"
+        local conflict_type="$3"
+        local file_size="$4"
+
+        # Create temporary file with new entry
+        local temp_manifest=$(mktemp)
+        jq --arg path "$file_path" --arg status "$status" --arg type "$conflict_type" --argjson size "$file_size" \
+           '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
+           "$manifest_file" > "$temp_manifest"
+        mv "$temp_manifest" "$manifest_file"
+    }
+
+    # Helper function to update manifest summary
+    update_manifest_summary() {
+        local temp_manifest=$(mktemp)
+        jq --argjson backed_up "$files_backed_up" --argjson failed "$files_failed" --argjson total_size "$total_backup_size" \
+           '.summary.files_backed_up = $backed_up | .summary.files_failed = $failed | .summary.backup_size_total = $total_size' \
+           "$manifest_file" > "$temp_manifest"
+        mv "$temp_manifest" "$manifest_file"
+    }
 
     # Backup all conflicting files.
     for relative_path in $actual_conflicts; do
         # Validate paths are relative and safe
         if [[ "$relative_path" =~ ^/ ]] || [[ "$relative_path" =~ \.\. ]]; then
             echo "WARNING: Unsafe path detected: $relative_path"
-            echo "  ✗ $relative_path (unsafe path)" >> "$manifest_file"
+            add_file_to_manifest "$relative_path" "unsafe_path" "unknown" 0
+            ((files_failed++))
             continue
         fi
 
         local target_file="$HOME/$relative_path"
 
+        # Determine conflict type
+        local conflict_type="unknown"
+        if echo "$stowing_conflicts" | grep -q "^$relative_path$"; then
+            conflict_type="stowing"
+        elif echo "$ownership_conflicts" | grep -q "^$relative_path$"; then
+            conflict_type="ownership"
+        fi
+
         # Check if target file exists
         if [[ -e "$target_file" ]]; then
+            # Get file size
+            local file_size
+            if [[ -f "$target_file" ]]; then
+                file_size=$(stat -f%z "$target_file" 2>/dev/null || echo 0)
+            else
+                file_size=0
+            fi
+
             # File exists and would conflict, backup it
             local backup_file="$backup_dir/$relative_path"
             local backup_parent_dir
@@ -262,31 +365,26 @@ backup_existing_files() {
 
             mkdir -p "$backup_parent_dir"
 
-            # Copy file preserving permissions and metadata.
-            if cp -p "$target_file" "$backup_file" 2>/dev/null; then
-                # Verify backup file exists before removing original
-                if [[ -f "$backup_file" ]]; then
-                    # Remove the original file to prevent stow conflicts
-                    if rm "$target_file" 2>/dev/null; then
-                        echo "  ✓ $relative_path (backed up and removed)" >> "$manifest_file"
-                        echo "Backed up and removed: $relative_path"
-                        ((files_backed_up++))
-                    else
-                        echo "  ⚠ $relative_path (backed up but removal failed)" >> "$manifest_file"
-                        die "ERROR: Failed to remove $relative_path after backup - check permissions"
-                    fi
-                else
-                    echo "  ✗ $relative_path (backup verification failed)" >> "$manifest_file"
-                    die "ERROR: Backup verification failed for $relative_path"
-                fi
+            # Move file to backup location (atomic operation)
+            if mv "$target_file" "$backup_file" 2>/dev/null; then
+                add_file_to_manifest "$relative_path" "moved_successfully" "$conflict_type" "$file_size"
+                echo "Moved to backup: $relative_path"
+                ((files_backed_up++))
+                ((total_backup_size += file_size))
             else
-                echo "  ✗ $relative_path (copy failed)" >> "$manifest_file"
-                die "ERROR: Failed to backup $relative_path - check permissions for $(dirname "$backup_file")"
+                add_file_to_manifest "$relative_path" "move_failed" "$conflict_type" 0
+                ((files_failed++))
+                die "ERROR: Failed to move $relative_path to backup - check permissions"
             fi
         else
+            add_file_to_manifest "$relative_path" "target_missing" "$conflict_type" 0
+            ((files_failed++))
             die "ERROR: Conflict file $relative_path doesn't exist at target"
         fi
     done
+
+    # Update final summary in manifest
+    update_manifest_summary
 
     if [[ $files_backed_up -gt 0 ]]; then
         echo ""
@@ -304,11 +402,6 @@ backup_existing_files() {
 
     return 0
 }
-
-echo "======================================================================"
-echo "                     Backup & File Management"
-echo "======================================================================"
-echo ""
 
 # Backup existing files before stow operations
 echo "Step 2/5: Backing up existing files and linking dotfiles..."
@@ -335,6 +428,7 @@ if [[ $(uname -m) == 'arm64' ]]; then
     if ! sudo grep -q "pam_tid.so" /etc/pam.d/sudo; then
         # Backup the original file before modifying
         sudo cp /etc/pam.d/sudo /etc/pam.d/sudo.backup
+        # This syntax is required to work properly with macOS's inbuilt version of `sed`
         sudo sed -i '' "3i\\
 auth       sufficient     pam_tid.so
 " /etc/pam.d/sudo
