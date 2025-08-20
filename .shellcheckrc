@@ -1,0 +1,22 @@
+# vim: ft=conf
+# ShellCheck configuration file
+# See https://github.com/koalaman/shellcheck/wiki/Ignore for explanations
+
+# Disable specific warnings that are often false positives or overly strict
+disable=SC1091  # Not following sourced files (often external files)
+disable=SC2034  # Variable appears unused (may be used in sourced files)
+disable=SC2059  # Don't use variables in printf format strings (sometimes intentional)
+disable=SC2086  # Double quote to prevent globbing and word splitting (sometimes intentional)
+disable=SC2154  # Variable is referenced but not assigned (may be from environment)
+
+# Enable all optional checks
+enable=all
+
+# Use bash shell dialect by default
+shell=bash
+
+# Set severity level (error, warning, info, style)
+severity=style
+
+# External sources to follow (add paths to commonly sourced files)
+source-path=SCRIPTDIR
