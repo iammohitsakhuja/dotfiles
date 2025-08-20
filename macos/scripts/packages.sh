@@ -44,9 +44,6 @@ echo "Installing/updating Shell and its packages..."
 bash $(pwd)/scripts/shell-packages.sh
 echo -e "Done\n\n"
 
-# Install Homebrew bundle.
-brew tap homebrew/bundle
-
 # Install all packages specified in Brewfile.
 brew bundle
 echo -e "Packages installed successfully\n"
