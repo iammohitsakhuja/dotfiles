@@ -72,7 +72,12 @@ ifconfig en0 | grep "inet " | awk '{print $2}'
 hostname -I
 ```
 
-Note down the IP address (e.g., `192.168.64.3`) for SSH access from your host machine. This is the only step that requires using the VM GUI - after getting the IP, you can manage everything via CLI.
+Note down the IP address for SSH access from your host machine. This is the only step that requires using the VM GUI - after getting the IP, you can manage everything via CLI.
+
+**Quick Reference:**
+- **VM Username**: Usually same as your host machine username
+- **VM IP Pattern**: UTM typically assigns IPs like `192.168.64.3`, `192.168.64.4`, etc.
+- **Example SSH**: `ssh $(whoami)@192.168.64.3`
 
 ### 5. CLI VM Management
 
@@ -92,25 +97,11 @@ utmctl status dotfiles-test
 utmctl stop dotfiles-test
 ```
 
-### 6. Test Dotfiles Installation
+### 6. Ready for Testing
 
-From your host machine, use SSH to run commands in the VM:
+Your VM is now ready for safe testing! See the **Testing Workflow** section below for comprehensive testing instructions.
 
-```bash
-# Start the VM first
-utmctl start dotfiles-test
-
-# Wait for VM to boot, then SSH (replace 'username' with your VM username and 'VM_IP' with the noted IP)
-ssh username@VM_IP "cd /Volumes/My\ Shared\ Files/dotfiles && ./macos/install.sh --email test@example.com --name 'Test User'"
-
-# Or connect interactively:
-ssh username@VM_IP
-cd "/Volumes/My Shared Files/dotfiles"
-./macos/install.sh --email test@example.com --name "Test User"
-
-# Stop the VM when done
-utmctl stop dotfiles-test
-```
+**⚠️ CRITICAL: Always test installation scripts in VM, never on host machine!**
 
 ## VM Management
 
@@ -161,7 +152,15 @@ For advanced VM management (snapshots, restore):
 
 ## Testing Workflow
 
-### Recommended Process
+### Core Testing Principles
+
+**⚠️ NEVER test installation scripts on the host machine!** Always use VM environment to prevent:
+- Git configuration corruption
+- System setting changes
+- Unwanted file modifications
+- SSH key overwrites
+
+### Recommended Testing Process
 
 1. **Initial Setup**:
    ```bash
@@ -174,16 +173,21 @@ For advanced VM management (snapshots, restore):
    ./test/utils/vm-manager.sh snapshot clean-state
    ```
 
-3. **Test Installation**:
+3. **SSH-Based Testing Pattern**:
    ```bash
-   # Start VM from CLI
+   # Start VM
    utmctl start dotfiles-test
 
-   # SSH and run installation
-   ssh username@VM_IP "cd /Volumes/My\ Shared\ Files/dotfiles && ./macos/install.sh --email test@example.com --name 'Test User'"
+   # Wait for VM to boot, then test via SSH (never run scripts directly on host)
+   ssh $(whoami)@192.168.64.3 "cd /Volumes/My\ Shared\ Files/dotfiles && ./macos/install.sh --email test@example.com --name 'Test User'"
 
-   # Verify configuration via SSH
-   ssh username@VM_IP "ls -la ~"
+   # Or connect interactively for more control:
+   ssh $(whoami)@192.168.64.3
+   cd "/Volumes/My Shared Files/dotfiles"
+   ./macos/install.sh --email test@example.com --name "Test User"
+
+   # Verify results via SSH
+   ssh $(whoami)@192.168.64.3 "ls -la ~ && git config --global --list"
 
    # Stop VM
    utmctl stop dotfiles-test
@@ -194,7 +198,33 @@ For advanced VM management (snapshots, restore):
    ./test/utils/vm-manager.sh restore clean-state
    ```
 
-5. **Iterate**: Repeat testing with different configurations or changes
+### Testing Commands Framework
+
+#### Basic Testing Pattern
+
+```bash
+# Connection verification (username usually same as host, IP typically 192.168.64.x)
+ssh $(whoami)@192.168.64.3 "echo 'VM ready for testing'"
+
+# Script execution (replace with actual script and params)
+ssh $(whoami)@192.168.64.3 "cd /Volumes/My\ Shared\ Files/dotfiles && ./target_script.sh --params"
+
+# Results verification (customize based on what you're testing)
+ssh $(whoami)@192.168.64.3 "ls -la ~ && git config --list --global"
+
+# Clean state for next test
+ssh $(whoami)@192.168.64.3 "cleanup_commands_as_needed"
+```
+
+#### Error Testing
+
+```bash
+# Test error handling by providing invalid inputs
+ssh $(whoami)@192.168.64.3 "cd /Volumes/My\ Shared\ Files/dotfiles && ./script.sh --invalid-params"
+
+# Test edge cases
+ssh $(whoami)@192.168.64.3 "setup_edge_case_conditions && cd /Volumes/My\ Shared\ Files/dotfiles && ./script.sh"
+```
 
 ### Snapshot Management
 

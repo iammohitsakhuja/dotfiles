@@ -148,9 +148,16 @@ utmctl list
 ```
 
 ### SSH Testing Workflow
-1. **Get VM IP**: Use UTM GUI initially to get IP address from VM Terminal
-2. **SSH Testing**: `ssh username@VM_IP "cd /Volumes/My\ Shared\ Files/dotfiles && ./macos/install.sh --email test@example.com --name 'Test User'"`
-3. **Verify Results**: `ssh username@VM_IP "ls -la ~"`
+
+**⚠️ CRITICAL: NEVER test installation scripts on host machine - always use VM via SSH**
+
+1. **Get VM IP**: Use UTM GUI initially to get IP address from VM Terminal (typically `192.168.64.3`)
+2. **SSH Testing**: `ssh $(whoami)@192.168.64.3 "cd /Volumes/My\ Shared\ Files/dotfiles && ./script.sh [params]"`
+3. **Verify Results**: `ssh $(whoami)@192.168.64.3 "verification_commands"`
+
+**Quick Reference**: VM username usually same as host user, UTM IPs typically `192.168.64.x`
+
+See `docs/development-environment.md` for comprehensive testing instructions.
 
 ### Testing Environment Architecture
 - **VM Shared Directory**: `/Volumes/My Shared Files/dotfiles` (within VM)
