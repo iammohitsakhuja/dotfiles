@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Source shared logging utilities
+# Source shared utilities
 source "$(dirname "$0")/utils/logging.sh"
+source "$(dirname "$0")/utils/backup.sh"
 
 # Initialise the option variables.
 # This ensures we are not contaminated by variables from the environment.
@@ -212,9 +213,9 @@ backup_existing_files() {
     echo "Checking for existing files that would be overwritten..."
 
     # Create timestamped backup directory
-    local backup_timestamp=$(date +%Y%m%d-%H%M%S)
-    local backup_dir="$HOME/.backup/dotfiles/$backup_timestamp"
-    local manifest_file="$backup_dir/backup-manifest.json"
+    local backup_timestamp=$(generate_backup_timestamp)
+    local backup_dir=$(get_backup_dir_by_timestamp "$backup_timestamp")
+    local manifest_file=$(get_manifest_file_path "$backup_dir")
 
     # Use stow simulation with verbose output to detect actual conflicts
     local stow_output
@@ -244,16 +245,9 @@ backup_existing_files() {
         die "ERROR: Insufficient disk space for backup. At least 100MB required."
     fi
 
-    # Ensure that parent backup directory exists as a directory, not file.
-    if [[ -f "$HOME/.backup" ]]; then
-        die "ERROR: $HOME/.backup exists as a file. Cannot create backup directory structure."
-    fi
-
     # Create backup directory structure.
     echo "Creating backup directory: $backup_dir"
-    if ! mkdir -p "$backup_dir" 2>/dev/null; then
-        die "ERROR: Failed to create backup directory: $backup_dir. Check disk space and permissions."
-    fi
+    ensure_backup_structure "$backup_dir"
     echo "Manifest file path: $manifest_file"
 
     # Show conflict summary to user
@@ -399,7 +393,7 @@ EOF
         echo ""
     else
         # Remove empty backup directory if no files were actually backed up
-        rmdir "$backup_dir" 2>/dev/null || true
+        cleanup_empty_backup_dir "$backup_dir"
         echo "No files needed backup. Proceeding with installation."
         echo ""
     fi
@@ -550,6 +544,6 @@ echo "  • Restart your terminal or run 'source ~/.zshrc'"
 echo "  • Review installed applications and configure as needed"
 echo ""
 echo "SSH public key location: $HOME/.ssh/id_ed25519.pub"
-echo "Dotfiles backup location: $HOME/.backup/dotfiles/ (if created)"
+echo "Dotfiles backup location: $(get_backup_base_dir)/ (if created)"
 echo ""
 echo "======================================================================"

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Source shared logging utilities
+# Source shared utilities
 source "$(dirname "$0")/utils/logging.sh"
+source "$(dirname "$0")/utils/backup.sh"
 
 # Initialize option variables.
 list_backups=0
@@ -82,33 +83,29 @@ fi
 
 # Function to find and list available backup directories
 list_available_backups() {
-    local backup_pattern="$HOME/.backup/dotfiles/*"
-    local backup_dirs=()
+    local backup_dirs
+    backup_dirs=$(find_backup_directories)
 
-    # Find backup directories and sort them (newest first)
-    while IFS= read -r -d '' dir; do
-        backup_dirs+=("$dir")
-    done < <(find "$HOME/.backup/dotfiles" -maxdepth 1 -type d -name "[0-9]*" -print0 2>/dev/null | sort -rz)
-
-    if [[ ${#backup_dirs[@]} -eq 0 ]]; then
-        echo "No backup directories found in $HOME/.backup/dotfiles"
+    if [[ -z "$backup_dirs" ]]; then
+        echo "No backup directories found in $(get_backup_base_dir)"
         return 1
     fi
 
     echo "Available backups:"
     echo "=================="
 
-    for backup_dir in "${backup_dirs[@]}"; do
+    while IFS= read -r backup_dir; do
+        [[ -z "$backup_dir" ]] && continue
         local timestamp=$(basename "$backup_dir")
-        local manifest_file="$backup_dir/backup-manifest.json"
+        local manifest_file=$(get_manifest_file_path "$backup_dir")
 
         if [[ -f "$manifest_file" ]]; then
             local backup_date
             local file_count
 
             # Extract backup date and file count from JSON
-            backup_date=$(jq -r '.metadata.backup_date' "$manifest_file" 2>/dev/null || echo "Unknown")
-            file_count=$(jq -r '.summary.files_backed_up' "$manifest_file" 2>/dev/null || echo "0")
+            backup_date=$(get_backup_metadata "$manifest_file" "date")
+            file_count=$(get_backup_metadata "$manifest_file" "file_count")
 
             echo "  $timestamp ($file_count files backed up)"
             echo "    Date: $backup_date"
@@ -117,53 +114,11 @@ list_available_backups() {
             echo "  $timestamp (manifest file missing - backup may be incomplete)"
         fi
         echo ""
-    done
+    done <<< "$backup_dirs"
 
     return 0
 }
 
-# Function to validate backup timestamp format
-validate_timestamp() {
-    local timestamp="$1"
-
-    if [[ ! "$timestamp" =~ ^[0-9]{8}-[0-9]{6}$ ]]; then
-        die "ERROR: Invalid timestamp format. Expected YYYYMMDD-HHMMSS (e.g., 20250811-143022)"
-    fi
-}
-
-# Function to get backup directory path from timestamp
-get_backup_dir() {
-    local timestamp="$1"
-    echo "$HOME/.backup/dotfiles/$timestamp"
-}
-
-# Function to validate backup directory and manifest
-validate_backup() {
-    local backup_dir="$1"
-    local manifest_file="$backup_dir/backup-manifest.json"
-
-    if [[ ! -d "$backup_dir" ]]; then
-        die "ERROR: Backup directory not found: $backup_dir"
-    fi
-
-    if [[ ! -f "$manifest_file" ]]; then
-        die "ERROR: Backup manifest file not found: $manifest_file"
-    fi
-
-    # Validate JSON format
-    if ! jq empty "$manifest_file" 2>/dev/null; then
-        die "ERROR: Invalid JSON format in manifest file"
-    fi
-
-    # Check if any files were successfully backed up
-    local backed_up_count
-    backed_up_count=$(jq -r '.summary.files_backed_up' "$manifest_file" 2>/dev/null || echo "0")
-    if [[ "$backed_up_count" -eq 0 ]]; then
-        die "ERROR: No successfully backed up files found in manifest"
-    fi
-
-    echo "$manifest_file"
-}
 
 # Function to clean up stow-managed symlinks
 cleanup_stow_symlinks() {
@@ -192,13 +147,6 @@ cleanup_stow_symlinks() {
     echo ""
 }
 
-# Function to get list of files to restore from manifest
-get_files_to_restore() {
-    local manifest_file="$1"
-
-    # Extract files that were successfully moved to backup
-    jq -r '.files[] | select(.status == "moved_successfully") | .path' "$manifest_file"
-}
 
 # Function to restore files from backup
 restore_files() {
@@ -209,7 +157,7 @@ restore_files() {
     print_step 2 3 "Restoring original files from backup"
 
     local files_to_restore
-    files_to_restore=$(get_files_to_restore "$manifest_file")
+    files_to_restore=$(get_backed_up_files "$manifest_file")
 
     if [[ -z "$files_to_restore" ]]; then
         print_warning "No files to restore from this backup"
@@ -361,7 +309,7 @@ perform_restoration() {
     echo "Summary of restoration operations:"
     echo ""
     print_success "Stow-managed symlinks cleaned up from $HOME"
-    local file_count=$(jq -r '.summary.files_backed_up' "$manifest_file" 2>/dev/null || echo "0")
+    local file_count=$(get_backup_metadata "$manifest_file" "file_count")
     print_success "Original files restored from backup ($file_count files)"
     print_success "Dotfiles restoration completed successfully"
     echo ""
@@ -422,17 +370,17 @@ main() {
     fi
 
     # Validate timestamp format
-    validate_timestamp "$backup_timestamp"
+    validate_backup_timestamp "$backup_timestamp"
 
     # Get and validate backup directory
     local backup_dir
-    backup_dir=$(get_backup_dir "$backup_timestamp")
+    backup_dir=$(get_backup_dir_by_timestamp "$backup_timestamp")
     local manifest_file
-    manifest_file=$(validate_backup "$backup_dir")
+    manifest_file=$(validate_backup_directory "$backup_dir")
 
     # Show configuration details
-    local backup_date=$(jq -r '.metadata.backup_date' "$manifest_file" 2>/dev/null || echo "Unknown")
-    local file_count=$(jq -r '.summary.files_backed_up' "$manifest_file" 2>/dev/null || echo "0")
+    local backup_date=$(get_backup_metadata "$manifest_file" "date")
+    local file_count=$(get_backup_metadata "$manifest_file" "file_count")
 
     print_header "Dotfiles Restoration Process"
     echo ""
