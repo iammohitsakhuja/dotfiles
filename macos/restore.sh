@@ -82,16 +82,16 @@ fi
 
 # Function to find and list available backup directories
 list_available_backups() {
-    local backup_pattern="$HOME/.dotfiles-backup-*"
+    local backup_pattern="$HOME/.backup/dotfiles/*"
     local backup_dirs=()
 
     # Find backup directories and sort them (newest first)
     while IFS= read -r -d '' dir; do
         backup_dirs+=("$dir")
-    done < <(find "$HOME" -maxdepth 1 -name ".dotfiles-backup-*" -type d -print0 2>/dev/null | sort -rz)
+    done < <(find "$HOME/.backup/dotfiles" -maxdepth 1 -type d -name "[0-9]*" -print0 2>/dev/null | sort -rz)
 
     if [[ ${#backup_dirs[@]} -eq 0 ]]; then
-        echo "No backup directories found in $HOME"
+        echo "No backup directories found in $HOME/.backup/dotfiles"
         return 1
     fi
 
@@ -99,7 +99,7 @@ list_available_backups() {
     echo "=================="
 
     for backup_dir in "${backup_dirs[@]}"; do
-        local timestamp=$(basename "$backup_dir" | sed 's/^\.dotfiles-backup-//')
+        local timestamp=$(basename "$backup_dir")
         local manifest_file="$backup_dir/backup-manifest.json"
 
         if [[ -f "$manifest_file" ]]; then
@@ -134,7 +134,7 @@ validate_timestamp() {
 # Function to get backup directory path from timestamp
 get_backup_dir() {
     local timestamp="$1"
-    echo "$HOME/.dotfiles-backup-$timestamp"
+    echo "$HOME/.backup/dotfiles/$timestamp"
 }
 
 # Function to validate backup directory and manifest

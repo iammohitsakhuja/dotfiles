@@ -213,7 +213,7 @@ backup_existing_files() {
 
     # Create timestamped backup directory
     local backup_timestamp=$(date +%Y%m%d-%H%M%S)
-    local backup_dir="$HOME/.dotfiles-backup-$backup_timestamp"
+    local backup_dir="$HOME/.backup/dotfiles/$backup_timestamp"
     local manifest_file="$backup_dir/backup-manifest.json"
 
     # Use stow simulation with verbose output to detect actual conflicts
@@ -244,8 +244,16 @@ backup_existing_files() {
         die "ERROR: Insufficient disk space for backup. At least 100MB required."
     fi
 
+    # Ensure that parent backup directory exists as a directory, not file.
+    if [[ -f "$HOME/.backup" ]]; then
+        die "ERROR: $HOME/.backup exists as a file. Cannot create backup directory structure."
+    fi
+
+    # Create backup directory structure.
     echo "Creating backup directory: $backup_dir"
-    mkdir -p "$backup_dir"
+    if ! mkdir -p "$backup_dir" 2>/dev/null; then
+        die "ERROR: Failed to create backup directory: $backup_dir. Check disk space and permissions."
+    fi
     echo "Manifest file path: $manifest_file"
 
     # Show conflict summary to user
@@ -542,6 +550,6 @@ echo "  • Restart your terminal or run 'source ~/.zshrc'"
 echo "  • Review installed applications and configure as needed"
 echo ""
 echo "SSH public key location: $HOME/.ssh/id_ed25519.pub"
-echo "Dotfiles backup location: $HOME/.dotfiles-backup-* (if created)"
+echo "Dotfiles backup location: $HOME/.backup/dotfiles/ (if created)"
 echo ""
 echo "======================================================================"
