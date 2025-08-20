@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
-# Helper function to exit the script.
-die() {
-    printf '%s\n' "$1" >&2
-    exit 1
-}
+# Source shared logging utilities
+source "$(dirname "$0")/utils/logging.sh"
 
 # Initialise the option variables.
 # This ensures we are not contaminated by variables from the environment.
@@ -20,7 +17,6 @@ show_help() {
     echo "       -e, --email    | The email that you would like to use for setting up things like git, ssh e.g. \"abc@example.com\"."
     echo "       -n, --name     | The name that you would like to use for setting up things like git e.g. \"John Doe\"."
     echo ""
-    echo "To remove the files that you don't need, simply open this installation script and delete their names."
 }
 
 # Ensure proper usage.
@@ -67,14 +63,16 @@ while :; do
         die "ERROR: \"--name\" requires a non-empty option argument."
         ;;
     *) # Default case: No more options, so break out of the loop.
-        echo "======================================================================"
-        echo "                    macOS Dotfiles Installation"
-        echo "======================================================================"
+        # Get the stow directory (directory containing this script).
+        STOW_DIR=$(cd "$(dirname "$0")" && pwd)
+
+        print_header "macOS Dotfiles Installation"
         echo ""
         echo "Configuration:"
-        echo "  • Backup existing files: $(if [[ $backup == 1 ]]; then echo "Yes"; else echo "No"; fi)"
-        echo "  • Email: $email"
-        echo "  • Name: $name"
+        print_config_item "Backup existing files" "$(if [[ $backup == 1 ]]; then echo "Yes"; else echo "No"; fi)"
+        print_config_item "Email" "$email"
+        print_config_item "Name" "$name"
+        print_config_item "Stow directory" "$STOW_DIR"
         echo ""
         if ! [[ $email ]]; then
             die "ERROR: \"--email\" is required."
@@ -87,16 +85,16 @@ while :; do
     esac
 done
 
-# Get the current working directory.
-PWD=$(pwd)
+# Validate we found the correct directory with home/ package
+if [[ ! -d "$STOW_DIR/home" ]]; then
+    die "ERROR: Could not locate home/ directory for stow operations."
+fi
 
-echo "======================================================================"
-echo "                  Authentication & Dependencies"
-echo "======================================================================"
+print_header "Authentication & Dependencies"
 echo ""
 
 # Ask for administrator password upfront.
-echo "Installation requires administrator authentication..."
+print_action "Requesting administrator authentication..."
 sudo -v
 
 # Keep `sudo` alive i.e. update existing time stamp until `./install.sh` has
@@ -107,35 +105,35 @@ while true; do
     kill -0 "$$" || exit
 done 2>/dev/null &
 
-echo "✓ Administrator authentication confirmed"
+print_success "Administrator authentication confirmed"
 echo ""
 
 # Function to install essential dependencies needed for the installation
 bootstrap_dependencies() {
-    echo "Step 1/5: Checking and installing essential dependencies..."
+    print_step 1 5 "Checking and installing essential dependencies"
     echo ""
 
     # Check if we're on macOS
     if [[ $OSTYPE != "darwin"* ]]; then
         die "ERROR: This script is designed for macOS only"
     fi
-    echo "✓ macOS environment confirmed"
+    print_success "macOS environment confirmed"
 
     # Check if Mac is using Apple Silicon and install Rosetta 2 if needed
     if [[ $(uname -m) == 'arm64' ]]; then
-        echo "  → Installing Rosetta 2 for Apple Silicon Mac..."
+        print_action "Installing Rosetta 2 for Apple Silicon Mac..."
         if sudo softwareupdate --install-rosetta --agree-to-license 2>/dev/null; then
-            echo "  ✓ Rosetta 2 installation completed"
+            print_success "Rosetta 2 installation completed"
         else
-            echo "  ✓ Rosetta 2 already installed or installation skipped"
+            print_success "Rosetta 2 already installed or installation skipped"
         fi
     else
-        echo "  ✓ Intel Mac detected - Rosetta 2 not needed"
+        print_success "Intel Mac detected - Rosetta 2 not needed"
     fi
 
     # Install Command Line Tools if not present (avoids popup)
     if ! xcode-select -p >/dev/null 2>&1; then
-        echo "  → Installing Xcode Command Line Tools..."
+        print_action "Installing Xcode Command Line Tools..."
         # Create a temporary file to trigger automatic installation
         touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
         # Find the latest Command Line Tools package
@@ -152,14 +150,14 @@ bootstrap_dependencies() {
         fi
         # Clean up the trigger file
         rm -f /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-        echo "  ✓ Command Line Tools installation completed"
+        print_success "Command Line Tools installation completed"
     else
-        echo "  ✓ Command Line Tools already installed"
+        print_success "Command Line Tools already installed"
     fi
 
     # Install Homebrew if it isn't installed already
     if ! command -v brew >/dev/null 2>&1; then
-        echo "  → Installing Homebrew..."
+        print_action "Installing Homebrew..."
         NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
         # Evaluate homebrew correctly for the current session
@@ -170,40 +168,38 @@ bootstrap_dependencies() {
             # Intel Mac
             eval "$(/usr/local/bin/brew shellenv)"
         fi
-        echo "  ✓ Homebrew installation completed"
+        print_success "Homebrew installation completed"
     else
-        echo "  ✓ Homebrew already installed"
+        print_success "Homebrew already installed"
     fi
 
     # Install GNU Stow if not available
     if ! command -v stow >/dev/null 2>&1; then
-        echo "  → Installing GNU Stow..."
+        print_action "Installing GNU Stow..."
         brew install stow
-        echo "  ✓ GNU Stow installation completed"
+        print_success "GNU Stow installation completed"
     else
-        echo "  ✓ GNU Stow already installed"
+        print_success "GNU Stow already installed"
     fi
 
     # Install jq for JSON processing if not available
     if ! command -v jq >/dev/null 2>&1; then
-        echo "  → Installing jq for JSON processing..."
+        print_action "Installing jq for JSON processing..."
         brew install jq
-        echo "  ✓ jq installation completed"
+        print_success "jq installation completed"
     else
-        echo "  ✓ jq already installed"
+        print_success "jq already installed"
     fi
 
     echo ""
-    echo "✓ Essential dependencies are ready!"
+    print_success "Essential dependencies are ready!"
     echo ""
 }
 
 # Install essential dependencies before proceeding
 bootstrap_dependencies
 
-echo "======================================================================"
-echo "                     Backup & File Management"
-echo "======================================================================"
+print_header "Backup & File Management"
 echo ""
 
 # Function to backup existing files before stow operations
@@ -222,7 +218,7 @@ backup_existing_files() {
 
     # Use stow simulation with verbose output to detect actual conflicts
     local stow_output
-    stow_output=$(stow -n -d "$PWD" -t "$HOME" home --verbose=3 2>&1)
+    stow_output=$(stow -n -d "$STOW_DIR" -t "$HOME" home --verbose=3 2>&1)
 
     # Filter files that are causing conflicts - catch both types of conflicts
     local stowing_conflicts
@@ -283,7 +279,7 @@ backup_existing_files() {
 {
   "metadata": {
     "backup_date": "$backup_date",
-    "repository_path": "$PWD",
+    "repository_path": "$STOW_DIR",
     "backup_version": "1.0"
   },
   "conflicts": {
@@ -404,26 +400,24 @@ EOF
 }
 
 # Backup existing files before stow operations
-echo "Step 2/5: Backing up existing files and linking dotfiles..."
+print_step 2 5 "Backing up existing files and linking dotfiles"
 backup_existing_files
 
 # Stow will handle all dotfile symlinking.
 # The home/ directory structure mirrors the $HOME directory structure
 echo "Linking dotfiles into $HOME/ using stow..."
-stow -d "$PWD" -t "$HOME" home --verbose=1
-echo "✓ Dotfiles linked successfully!"
+stow -d "$STOW_DIR" -t "$HOME" home --verbose=1
+print_success "Dotfiles linked successfully!"
 echo ""
 
-echo "======================================================================"
-echo "                      System Configuration"
-echo "======================================================================"
+print_header "System Configuration"
 echo ""
 
 # Make terminal authentication easier by using Touch ID instead of password, if Mac supports it.
-echo "Step 3/5: Configuring system authentication and user settings..."
+print_step 3 5 "Configuring system authentication and user settings"
 echo ""
 if [[ $(uname -m) == 'arm64' ]]; then
-    echo "  → Configuring Touch ID for sudo authentication on Apple Silicon Mac..."
+    print_action "Configuring Touch ID for sudo authentication on Apple Silicon Mac..."
     # Check if Touch ID line already exists to avoid duplicates
     if ! sudo grep -q "pam_tid.so" /etc/pam.d/sudo; then
         # Backup the original file before modifying
@@ -432,21 +426,21 @@ if [[ $(uname -m) == 'arm64' ]]; then
         sudo sed -i '' "3i\\
 auth       sufficient     pam_tid.so
 " /etc/pam.d/sudo
-        echo "  ✓ Touch ID authentication enabled for sudo commands"
+        print_success "Touch ID authentication enabled for sudo commands"
     else
-        echo "  ✓ Touch ID authentication already configured"
+        print_success "Touch ID authentication already configured"
     fi
 else
-    echo "  ✓ Skipping Touch ID configuration (Intel Mac detected)"
+    print_success "Skipping Touch ID configuration (Intel Mac detected)"
 fi
 
 # File to store any API keys in.
-echo "  → Creating API keys storage file..."
+print_action "Creating API keys storage file..."
 touch ~/.api_keys
-echo "  ✓ API keys file created at ~/.api_keys"
+print_success "API keys file created at ~/.api_keys"
 
 # Configure git.
-echo "  → Configuring Git with provided credentials..."
+print_action "Configuring Git with provided credentials..."
 git config --global user.email "$email"
 git config --global user.name "$name"
 git config --global core.editor "nvim"
@@ -461,29 +455,29 @@ git config --global color.ui true
 
 # Include delta configuration from separate file.
 git config --global include.path "~/.gitconfig-delta"
-echo "  ✓ Git configuration completed"
+print_success "Git configuration completed"
 
 # Create SSH key pair.
-echo "  → Generating SSH key pair..."
+print_action "Generating SSH key pair..."
 
 # Check if SSH keys already exist
 if [[ -f "$HOME/.ssh/id_ed25519" ]]; then
-    echo "  ✓ SSH key already exists at $HOME/.ssh/id_ed25519"
+    print_success "SSH key already exists at $HOME/.ssh/id_ed25519"
     echo "    Skipping key generation to avoid overwriting existing key"
 else
     # Generate SSH key non-interactively
     ssh-keygen -t ed25519 -C "$email" -f "$HOME/.ssh/id_ed25519" -N "" -q
-    
+
     # Verify SSH key generation was successful
     if [[ -f "$HOME/.ssh/id_ed25519" && -f "$HOME/.ssh/id_ed25519.pub" ]]; then
-        echo "  ✓ SSH key pair generated successfully"
-        
+        print_success "SSH key pair generated successfully"
+
         # Verify SSH directory permissions
         ssh_dir_perms=$(stat -f "%A" "$HOME/.ssh" 2>/dev/null || echo "unknown")
         if [[ "$ssh_dir_perms" == "700" ]]; then
-            echo "  ✓ SSH directory permissions are correct (700)"
+            print_success "SSH directory permissions are correct (700)"
         else
-            echo "  ⚠ Warning: SSH directory permissions may need adjustment"
+            print_warning "SSH directory permissions may need adjustment"
             echo "    Expected: 700, Current: $ssh_dir_perms"
         fi
     else
@@ -492,59 +486,55 @@ else
 fi
 echo ""
 
-echo "======================================================================"
-echo "                    Package Installation & Setup"
-echo "======================================================================"
+print_header "Package Installation & Setup"
 echo ""
 
 # Run installation scripts.
-echo "Step 4/5: Installing packages and configuring system components..."
+print_step 4 5 "Installing packages and configuring system components"
 echo ""
 
-echo "  → Installing Homebrew packages and development tools..."
-bash "$PWD/scripts/packages.sh"
-echo "  ✓ All packages installed successfully"
+print_action "Installing Homebrew packages and development tools..."
+bash "$STOW_DIR/scripts/packages.sh"
+print_success "All packages installed successfully"
 echo ""
 
 # Configure Tmux colors.
-echo "  → Configuring Tmux terminal colors..."
-tic -x "$PWD/utils/terminfo/xterm-256color-italic.terminfo"
-tic -x "$PWD/utils/terminfo/tmux-256color.terminfo"
-echo "  ✓ Tmux terminal colors configured"
+print_action "Configuring Tmux terminal colors..."
+tic -x "$STOW_DIR/utils/terminfo/xterm-256color-italic.terminfo"
+tic -x "$STOW_DIR/utils/terminfo/tmux-256color.terminfo"
+print_success "Tmux terminal colors configured"
 echo ""
 
 # Configure MacOS settings.
-echo "  → Applying macOS system preferences and settings..."
-bash "$PWD/scripts/macos.sh"
-echo "  ✓ macOS system settings configured"
+print_action "Applying macOS system preferences and settings..."
+bash "$STOW_DIR/scripts/macos.sh"
+print_success "macOS system settings configured"
 echo ""
 
-echo "======================================================================"
-echo "                      Installation Complete!"
-echo "======================================================================"
+print_header "Installation Complete!"
 echo ""
-echo "Step 5/5: Summary of completed installation..."
+print_step 5 5 "Summary of completed installation"
 echo ""
-echo "✓ Essential dependencies installed (Homebrew, Stow, Command Line Tools)"
+print_success "Essential dependencies installed (Homebrew, Stow, Command Line Tools)"
 if [[ $backup == 1 ]]; then
-    echo "✓ Existing dotfiles backed up (if any conflicts found)"
+    print_success "Existing dotfiles backed up (if any conflicts found)"
 else
-    echo "✓ Backup skipped as requested"
+    print_success "Backup skipped as requested"
 fi
-echo "✓ Dotfiles linked to home directory"
+print_success "Dotfiles linked to home directory"
 if [[ $(uname -m) == 'arm64' ]]; then
-    echo "✓ Touch ID configured for sudo authentication"
+    print_success "Touch ID configured for sudo authentication"
 else
-    echo "✓ Touch ID configuration skipped (Intel Mac)"
+    print_success "Touch ID configuration skipped (Intel Mac)"
 fi
-echo "✓ Git configured with user credentials ($name <$email>)"
-echo "✓ SSH key pair generated"
-echo "✓ API keys storage file created"
-echo "✓ Development packages and tools installed"
-echo "✓ Terminal colors configured for Tmux"
-echo "✓ macOS system preferences applied"
+print_success "Git configured with user credentials ($name <$email>)"
+print_success "SSH key pair generated"
+print_success "API keys storage file created"
+print_success "Development packages and tools installed"
+print_success "Terminal colors configured for Tmux"
+print_success "macOS system preferences applied"
 echo ""
-echo "🎉 Your macOS development environment is now ready!"
+print_celebration "Your macOS development environment is now ready!"
 echo ""
 echo "Next steps:"
 echo "  • Add your SSH public key to GitHub/GitLab"

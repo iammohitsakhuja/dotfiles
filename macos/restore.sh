@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
 
-# Helper function to exit the script.
-die() {
-    printf '%s\n' "$1" >&2
-    exit 1
-}
+# Source shared logging utilities
+source "$(dirname "$0")/utils/logging.sh"
 
 # Initialize option variables.
 list_backups=0
 backup_timestamp=""
 dry_run=0
-help=0
 
 show_help() {
     echo "Usage: ./restore.sh [-h | --help] [--list] [--backup <timestamp>] [--dry-run]"
@@ -66,12 +62,12 @@ while :; do
     esac
 done
 
-# Get the current working directory (should be the dotfiles repo).
-REPO_DIR=$(pwd)
+# Get the stow directory (directory containing this script).
+STOW_DIR=$(cd "$(dirname "$0")" && pwd)
 
-# Validate we're in a dotfiles repository
-if [[ ! -f "$REPO_DIR/macos/install.sh" ]]; then
-    die "ERROR: This script must be run from the dotfiles repository root directory"
+# Validate we found the correct directory with home/ package
+if [[ ! -d "$STOW_DIR/home" ]]; then
+    die "ERROR: Could not locate home/ directory for stow operations."
 fi
 
 # Validate stow is available
@@ -173,20 +169,25 @@ validate_backup() {
 cleanup_stow_symlinks() {
     local dry_run_flag="$1"
 
-    echo "Step 1: Cleaning up stow-managed symlinks..."
-    echo "============================================"
+    print_step 1 3 "Cleaning up stow-managed symlinks"
 
+    print_action "Removing stow-managed symlinks from $HOME..."
+
+    # Execute stow command with appropriate flags
     if [[ "$dry_run_flag" == "dry-run" ]]; then
-        echo "[DRY RUN] Would execute: stow -D -d '$REPO_DIR' -t '$HOME' home --verbose=2"
-        echo "[DRY RUN] This would remove symlinks created by previous stow operations"
+        # Use stow's native simulation mode - show all output
+        stow -n -D -d "$STOW_DIR" -t "$HOME" home --verbose=2
+        local exit_code=$?
     else
-        # Use stow to properly remove all symlinks from the home directory
-        echo "Removing stow-managed symlinks from $HOME..."
-        if stow -D -d "$REPO_DIR" -t "$HOME" home --verbose=2 2>/dev/null; then
-            echo "✓ Stow symlinks cleaned up successfully"
-        else
-            echo "⚠ Warning: Some stow symlinks could not be removed (this may be normal if installation was incomplete)"
-        fi
+        # Execute actual stow removal - show all output
+        stow -D -d "$STOW_DIR" -t "$HOME" home --verbose=2
+        local exit_code=$?
+    fi
+
+    if [[ $exit_code -eq 0 ]]; then
+        print_success "Stow symlinks cleaned up successfully"
+    else
+        print_warning "Some stow operations could not be completed (this may be normal if installation was incomplete)"
     fi
     echo ""
 }
@@ -205,14 +206,13 @@ restore_files() {
     local manifest_file="$2"
     local dry_run_flag="$3"
 
-    echo "Step 2: Restoring original files..."
-    echo "==================================="
+    print_step 2 3 "Restoring original files from backup"
 
     local files_to_restore
     files_to_restore=$(get_files_to_restore "$manifest_file")
 
     if [[ -z "$files_to_restore" ]]; then
-        echo "No files to restore from this backup."
+        print_warning "No files to restore from this backup"
         return 0
     fi
 
@@ -227,22 +227,25 @@ restore_files() {
 
         # Validate paths are safe
         if [[ "$relative_path" =~ ^/ ]] || [[ "$relative_path" =~ \.\. ]]; then
-            echo "⚠ Warning: Unsafe path detected, skipping: $relative_path"
+            print_warning "Unsafe path detected, skipping: $relative_path"
             ((files_failed++))
             continue
         fi
 
         # Check if backup file exists
         if [[ ! -f "$backup_file" ]]; then
-            echo "⚠ Warning: Backup file not found, skipping: $relative_path"
+            print_warning "Backup file not found, skipping: $relative_path"
             ((files_failed++))
             continue
         fi
 
+        # Show what file will be restored
+        print_action "Restoring: $relative_path"
+        echo "    From: $backup_file"
+        echo "    To: $target_file"
+
         if [[ "$dry_run_flag" == "dry-run" ]]; then
-            echo "[DRY RUN] Would restore: $relative_path"
-            echo "[DRY RUN]   From: $backup_file"
-            echo "[DRY RUN]   To: $target_file"
+            # In dry-run mode, just count and continue
             ((files_restored++))
         else
             # Create target directory if it doesn't exist
@@ -254,15 +257,15 @@ restore_files() {
 
             # Check if target file already exists
             if [[ -e "$target_file" ]]; then
-                echo "⚠ Warning: Target file already exists: $relative_path"
+                print_warning "Target file already exists: $relative_path"
                 echo "  Choose action: (r)eplace, (s)kip, (q)uit"
                 read -r action
                 case "$action" in
                     r|R|replace)
-                        echo "  Replacing existing file..."
+                        print_action "Replacing existing file..."
                         ;;
                     s|S|skip)
-                        echo "  Skipping file..."
+                        print_action "Skipping file..."
                         continue
                         ;;
                     q|Q|quit)
@@ -270,7 +273,7 @@ restore_files() {
                         exit 0
                         ;;
                     *)
-                        echo "  Invalid choice, skipping file..."
+                        print_action "Invalid choice, skipping file..."
                         continue
                         ;;
                 esac
@@ -278,20 +281,63 @@ restore_files() {
 
             # Move file back from backup (atomic operation - reverse of backup)
             if mv "$backup_file" "$target_file" 2>/dev/null; then
-                echo "✓ Restored: $relative_path"
+                print_success "Restored: $relative_path"
                 ((files_restored++))
             else
-                echo "✗ Failed to restore: $relative_path"
+                print_warning "Failed to restore: $relative_path"
                 ((files_failed++))
             fi
         fi
     done <<< "$files_to_restore"
 
     echo ""
-    echo "Restoration summary:"
-    echo "  Files restored: $files_restored"
+    echo "File restoration summary:"
+    print_config_item "Files restored" "$files_restored"
     if [[ $files_failed -gt 0 ]]; then
-        echo "  Files failed: $files_failed"
+        print_config_item "Files failed" "$files_failed"
+    fi
+    echo ""
+}
+
+# Function to show backup directory status and cleanup command
+show_backup_directory_status() {
+    local backup_dir="$1"
+    local dry_run_flag="$2"
+
+    # Only show for real mode (not dry-run)
+    if [[ "$dry_run_flag" == "dry-run" ]]; then
+        return 0
+    fi
+
+    echo "Backup directory status:"
+    print_config_item "Location" "$backup_dir"
+
+    # Check if backup directory exists and show contents
+    if [[ -d "$backup_dir" ]]; then
+        # Count dotfiles (excluding manifest) and total files
+        local dotfile_count=$(find "$backup_dir" -type f ! -name "backup-manifest.json" 2>/dev/null | wc -l)
+        local total_files=$(find "$backup_dir" -type f 2>/dev/null | wc -l)
+
+        if [[ $dotfile_count -eq 0 ]]; then
+            if [[ $total_files -eq 1 ]]; then
+                print_config_item "Remaining files" "(only manifest file - all dotfiles restored)"
+            elif [[ $total_files -eq 0 ]]; then
+                print_config_item "Remaining files" "(empty - all files restored)"
+            else
+                print_config_item "Remaining files" "(all dotfiles restored, $total_files metadata files remain)"
+            fi
+        else
+            print_config_item "Remaining files" "$dotfile_count dotfiles (plus manifest)"
+            echo ""
+            echo "Remaining dotfiles in backup directory:"
+            find "$backup_dir" -type f ! -name "backup-manifest.json" -exec basename {} \; 2>/dev/null | sort | sed 's/^/  /'
+        fi
+
+        echo ""
+        echo "To clean up the backup directory:"
+        echo "  rm -rf \"$backup_dir\""
+    else
+        print_config_item "Status" "(directory not found - may have been removed)"
     fi
     echo ""
 }
@@ -302,27 +348,50 @@ perform_restoration() {
     local manifest_file="$2"
     local dry_run_flag="$3"
 
-    echo "Starting restoration process..."
-    echo ""
-
     # Step 1: Clean up stow symlinks
     cleanup_stow_symlinks "$dry_run_flag"
 
     # Step 2: Restore original files
     restore_files "$backup_dir" "$manifest_file" "$dry_run_flag"
 
-    if [[ "$dry_run_flag" != "dry-run" ]]; then
-        echo "Restoration completed successfully!"
+    # Step 3: Final Summary and Completion
+    print_step 3 3 "Restoration summary and completion"
+
+    # Show summary
+    echo "Summary of restoration operations:"
+    echo ""
+    print_success "Stow-managed symlinks cleaned up from $HOME"
+    local file_count=$(jq -r '.summary.files_backed_up' "$manifest_file" 2>/dev/null || echo "0")
+    print_success "Original files restored from backup ($file_count files)"
+    print_success "Dotfiles restoration completed successfully"
+    echo ""
+    print_header "Restoration Complete!"
+    echo ""
+
+    if [[ "$dry_run_flag" == "dry-run" ]]; then
+        print_preview "Restoration preview completed successfully!"
         echo ""
-        echo "Your original dotfiles have been moved back from backup."
-        echo "Note: The backup directory may now be empty as files were moved"
-        echo "back to their original locations at: $backup_dir"
-        echo ""
-        echo "You can now re-run the installation script if desired, or keep"
-        echo "your restored configuration as-is."
+        print_warning "No changes were made to your system - this was a dry run"
     else
-        echo "Dry run completed. No changes were made to your system."
+        print_celebration "Your original dotfiles have been successfully restored!"
+        echo ""
+        print_warning "The backup directory may now be empty as files were moved back"
     fi
+
+    echo ""
+    echo "Operation details:"
+    print_config_item "Backup location" "$backup_dir"
+    print_config_item "Files restored" "$file_count"
+    print_config_item "Stow directory" "$STOW_DIR"
+    echo ""
+    echo "Next steps:"
+    echo "  • You can now re-run the installation script if desired"
+    echo "  • Or keep your restored configuration as-is"
+    echo "  • Consider backing up your current state before making changes"
+    echo ""
+
+    # Show backup directory status and cleanup command
+    show_backup_directory_status "$backup_dir" "$dry_run_flag"
 }
 
 # Main execution logic
@@ -334,8 +403,7 @@ main() {
 
     # If no specific backup timestamp provided, show available backups and prompt user
     if [[ -z "$backup_timestamp" ]]; then
-        echo "Disaster Recovery Mode - Restore Original Dotfiles"
-        echo "================================================="
+        print_header "Disaster Recovery Mode - Restore Original Dotfiles"
         echo ""
 
         if ! list_available_backups; then
@@ -362,24 +430,30 @@ main() {
     local manifest_file
     manifest_file=$(validate_backup "$backup_dir")
 
-    # Show backup details
+    # Show configuration details
     local backup_date=$(jq -r '.metadata.backup_date' "$manifest_file" 2>/dev/null || echo "Unknown")
     local file_count=$(jq -r '.summary.files_backed_up' "$manifest_file" 2>/dev/null || echo "0")
 
-    echo "Preparing to restore from backup: $backup_timestamp"
-    echo "Backup details:"
-    echo "  Date: $backup_date"
-    echo "  Files to restore: $file_count"
-    echo "  Location: $backup_dir"
+    print_header "Dotfiles Restoration Process"
+    echo ""
+    echo "Configuration:"
+    print_config_item "Stow directory" "$STOW_DIR"
+    print_config_item "Backup timestamp" "$backup_timestamp"
+    print_config_item "Backup date" "$backup_date"
+    print_config_item "Files to restore" "$file_count"
+    print_config_item "Backup location" "$backup_dir"
+    print_config_item "Dry run mode" "$(if [[ $dry_run -eq 1 ]]; then echo "Yes (preview only)"; else echo "No (actual restoration)"; fi)"
     echo ""
 
+    # Show warning about what will happen
+    print_warning "This will restore your original dotfiles and remove any stow-managed symlinks."
     if [[ $dry_run -eq 1 ]]; then
-        echo "DRY RUN MODE - No changes will be made"
-        echo "====================================="
-        echo ""
-        perform_restoration "$backup_dir" "$manifest_file" "dry-run"
-    else
-        echo "WARNING: This will restore your original dotfiles and remove any stow-managed symlinks."
+        print_warning "This is a preview mode - no changes will be made to your system"
+    fi
+    echo ""
+
+    # Get user confirmation for real mode
+    if [[ $dry_run -eq 0 ]]; then
         echo "Are you sure you want to continue? (y/N)"
         read -r confirmation
 
@@ -388,9 +462,10 @@ main() {
             exit 0
         fi
         echo ""
-
-        perform_restoration "$backup_dir" "$manifest_file" "real"
     fi
+
+    # Execute restoration
+    perform_restoration "$backup_dir" "$manifest_file" "$(if [[ $dry_run -eq 1 ]]; then echo "dry-run"; else echo "real"; fi)"
 }
 
 # Run main function
