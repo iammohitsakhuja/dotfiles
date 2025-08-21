@@ -76,6 +76,7 @@ hostname -I
 Note down the IP address for SSH access from your host machine. This is the only step that requires using the VM GUI - after getting the IP, you can manage everything via CLI.
 
 **Quick Reference:**
+
 - **VM Username**: Usually same as your host machine username
 - **VM IP Pattern**: UTM typically assigns IPs like `192.168.64.3`, `192.168.64.4`, etc.
 - **Example SSH**: `ssh $(whoami)@192.168.64.3`
@@ -156,6 +157,7 @@ For advanced VM management (snapshots, restore):
 ### Core Testing Principles
 
 **⚠️ NEVER test installation scripts on the host machine!** Always use VM environment to prevent:
+
 - Git configuration corruption
 - System setting changes
 - Unwanted file modifications
@@ -177,6 +179,7 @@ For advanced VM management (snapshots, restore):
    ```
 
 3. **SSH-Based Testing Pattern**:
+
    ```bash
    # Start VM
    utmctl start dotfiles-test
