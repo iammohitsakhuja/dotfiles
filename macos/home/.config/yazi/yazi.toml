@@ -9,4 +9,3 @@ max_width = 3000
 max_height = 2250
 image_filter = "lanczos3"
 image_quality = 90
-

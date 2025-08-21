@@ -8,8 +8,8 @@ set -e
 # Provides framework for automated testing of dotfiles installation
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-VM_MANAGER="$SCRIPT_DIR/../utils/vm-manager.sh"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+VM_MANAGER="${SCRIPT_DIR}/../utils/vm-manager.sh"
 
 # Helper function to exit the script
 die() {
@@ -19,11 +19,11 @@ die() {
 
 # Check prerequisites
 check_prerequisites() {
-    if [ ! -f "$VM_MANAGER" ]; then
-        die "ERROR: VM manager not found at $VM_MANAGER"
+    if [[ ! -f ${VM_MANAGER} ]]; then
+        die "ERROR: VM manager not found at ${VM_MANAGER}"
     fi
 
-    if ! command -v utmctl &> /dev/null; then
+    if ! command -v utmctl &>/dev/null; then
         die "ERROR: UTM not installed. Run setup-development.sh first."
     fi
 }
@@ -32,19 +32,19 @@ check_prerequisites() {
 test_installation() {
     local test_name="${1:-basic-install}"
 
-    echo "=== Running test: $test_name ==="
+    echo "=== Running test: ${test_name} ==="
 
     # Ensure VM is in clean state
     echo "Preparing clean test environment..."
-    "$VM_MANAGER" restore clean-state 2>/dev/null || {
+    "${VM_MANAGER}" restore clean-state 2>/dev/null || {
         echo "No clean-state snapshot found. Creating initial snapshot..."
-        "$VM_MANAGER" start
-        sleep 10  # Allow VM to boot
-        "$VM_MANAGER" snapshot clean-state
+        "${VM_MANAGER}" start
+        sleep 10 # Allow VM to boot
+        "${VM_MANAGER}" snapshot clean-state
     }
 
     echo "Starting VM for testing..."
-    "$VM_MANAGER" start
+    "${VM_MANAGER}" start
 
     echo "Test environment ready. Manual testing required:"
     echo "1. VM should be accessible via UTM interface"
@@ -57,8 +57,8 @@ test_installation() {
 # Cleanup after test
 cleanup_test() {
     echo "=== Cleaning up test environment ==="
-    "$VM_MANAGER" stop
-    "$VM_MANAGER" restore clean-state
+    "${VM_MANAGER}" stop
+    "${VM_MANAGER}" restore clean-state
     echo "Test environment reset to clean state."
 }
 
@@ -67,22 +67,22 @@ smoke_test() {
     echo "=== Running smoke tests ==="
 
     # Check if setup script exists and is executable
-    if [ ! -x "$PROJECT_ROOT/setup-development.sh" ]; then
+    if [[ ! -x "${PROJECT_ROOT}/setup-development.sh" ]]; then
         die "ERROR: setup-development.sh not found or not executable"
     fi
 
     # Check if VM manager works
-    "$VM_MANAGER" status || echo "VM not yet created (expected)"
+    "${VM_MANAGER}" status || echo "VM not yet created (expected)"
 
     # Check if required directories exist
-    [ -d "$PROJECT_ROOT/test/utils" ] || die "ERROR: test/utils directory missing"
-    [ -d "$PROJECT_ROOT/test/scripts" ] || die "ERROR: test/scripts directory missing"
+    [[ -d "${PROJECT_ROOT}/test/utils" ]] || die "ERROR: test/utils directory missing"
+    [[ -d "${PROJECT_ROOT}/test/scripts" ]] || die "ERROR: test/scripts directory missing"
 
     echo "✅ Smoke tests passed"
 }
 
 show_help() {
-    cat << EOF
+    cat <<EOF
 Usage: $0 [COMMAND]
 
 Test Commands:
@@ -105,21 +105,21 @@ EOF
 check_prerequisites
 
 case "${1:-}" in
-    "smoke-test")
-        smoke_test
-        ;;
-    "test-installation")
-        test_installation
-        ;;
-    "cleanup-test")
-        cleanup_test
-        ;;
-    "help"|"--help"|"-h"|"")
-        show_help
-        ;;
-    *)
-        echo "ERROR: Unknown command '$1'"
-        show_help
-        exit 1
-        ;;
+"smoke-test")
+    smoke_test
+    ;;
+"test-installation")
+    test_installation
+    ;;
+"cleanup-test")
+    cleanup_test
+    ;;
+"help" | "--help" | "-h" | "")
+    show_help
+    ;;
+*)
+    echo "ERROR: Unknown command '$1'"
+    show_help
+    exit 1
+    ;;
 esac

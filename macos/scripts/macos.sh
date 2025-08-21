@@ -102,8 +102,8 @@ defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/Desk
 # Set ~/Documents/screenshots as the default location for screenshots.
 # By default, it is ~/Desktop.
 # This helps keep the Desktop clean.
-mkdir -p ~/Documents/screenshots
-defaults write com.apple.screencapture location "~/Documents/screenshots"
+mkdir -p "${HOME}/Documents/screenshots"
+defaults write com.apple.screencapture location "${HOME}/Documents/screenshots"
 
 # Show icons for hard drives and removable media on the desktop.
 defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
@@ -354,7 +354,7 @@ defaults write com.googlecode.iterm2 PromptOnQuit -bool false
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
 # Disable local Time Machine backups.
-hash tmutil &> /dev/null && sudo tmutil disablelocal
+hash tmutil &>/dev/null && sudo tmutil disablelocal
 
 ###############################################################################
 # Activity Monitor                                                            #

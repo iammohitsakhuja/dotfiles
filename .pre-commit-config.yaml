@@ -1,0 +1,62 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  # Built-in hooks for universal validation
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: '\.patch$'
+      - id: end-of-file-fixer
+        exclude: '\.patch$'
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: detect-private-key
+      - id: check-json
+        files: \.json$
+      - id: check-yaml
+        files: \.ya?ml$
+      - id: pretty-format-json
+        args: ["--autofix", "--indent=4"]
+        exclude: ^macos/iterm/
+
+  # Shell script linting and formatting
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.11.0
+    hooks:
+      - id: shellcheck # Already runs in docker.
+        args: [--severity=style]
+        exclude: ^macos/home/\.startup_scripts/
+
+  # Shell script formatting (uses .editorconfig for 4-space indent)
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.12.0-2
+    hooks:
+      - id: shfmt-docker
+        args: [-w, -s, -i, "4"]
+        exclude: ^macos/home/\.startup_scripts/
+
+  # YAML formatting (2 spaces as per .editorconfig)
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.13.0
+    hooks:
+      - id: yamlfmt
+        args: ["-formatter", "indent=2,retain_line_breaks=true"]
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.45.0
+    hooks:
+      - id: markdownlint-docker
+        args: ["--fix"]
+
+exclude: |
+  (?x)^(
+    macos/themes/.*\.itermcolors|
+    macos/themes/.*\.terminal|
+    macos/iterm/.*\.plist|
+    macos/utils/terminfo/.*\.terminfo|
+    macos/utils/automator/.*\.workflow/.*|
+    \.git/.*
+  )$

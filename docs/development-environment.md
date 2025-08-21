@@ -26,6 +26,7 @@ The development environment uses UTM (Universal Turing Machine) to create macOS 
 ```
 
 This script will:
+
 - Install UTM and mist-cli if not present
 - Download the specified macOS IPSW firmware (or latest available)
 - Reuse existing IPSW files when possible to save time and bandwidth
@@ -163,12 +164,14 @@ For advanced VM management (snapshots, restore):
 ### Recommended Testing Process
 
 1. **Initial Setup**:
+
    ```bash
    ./setup-development.sh
    # Create VM manually in UTM as described above
    ```
 
 2. **Create Clean Snapshot**:
+
    ```bash
    ./test/utils/vm-manager.sh snapshot clean-state
    ```
@@ -194,6 +197,7 @@ For advanced VM management (snapshots, restore):
    ```
 
 4. **Reset for Next Test**:
+
    ```bash
    ./test/utils/vm-manager.sh restore clean-state
    ```

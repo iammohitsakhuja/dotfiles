@@ -1,0 +1,10 @@
+{
+    "permissions": {
+        "allow": [
+            "Bash(patch:*)",
+            "Bash(pre-commit:*)",
+            "Bash(shellcheck:*)"
+        ],
+        "deny": []
+    }
+}

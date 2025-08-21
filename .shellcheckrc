@@ -12,8 +12,8 @@ disable=SC2154  # Variable is referenced but not assigned (may be from environme
 # Enable all optional checks
 enable=all
 
-# Use bash shell dialect by default
-shell=bash
+# Detect shell
+shell=auto
 
 # Set severity level (error, warning, info, style)
 severity=style

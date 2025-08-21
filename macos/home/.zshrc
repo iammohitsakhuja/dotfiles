@@ -1,3 +1,6 @@
+# Disable shellcheck since it doesn't support Zsh
+# shellcheck disable=all
+
 ############################# Exports #############################
 source ~/.exports
 
