@@ -2,6 +2,7 @@
 
 # Source shared utilities
 source "$(dirname "$0")/utils/logging.sh"
+source "$(dirname "$0")/utils/platform.sh"
 source "$(dirname "$0")/utils/backup.sh"
 
 # Initialize option variables.

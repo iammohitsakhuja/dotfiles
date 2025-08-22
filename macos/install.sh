@@ -6,7 +6,12 @@ set -o pipefail # Fail on any command in a pipeline
 
 # Source shared utilities
 source "$(dirname "$0")/utils/logging.sh"
+source "$(dirname "$0")/utils/miscellaneous.sh"
+source "$(dirname "$0")/utils/platform.sh"
 source "$(dirname "$0")/utils/backup.sh"
+
+# Require Apple Silicon Mac - fail immediately if not supported
+require_apple_silicon
 
 # Get the stow directory (directory containing this script).
 STOW_DIR=$(cd "$(dirname "$0")" && pwd)
@@ -130,13 +135,8 @@ bootstrap_dependencies() {
     fi
     print_success "macOS environment confirmed"
 
-    # Install Rosetta 2.
-    print_action "Installing Rosetta 2 for Apple Silicon Mac..."
-    if sudo softwareupdate --install-rosetta --agree-to-license 2>/dev/null; then
-        print_success "Rosetta 2 installation completed"
-    else
-        print_success "Rosetta 2 already installed or installation skipped"
-    fi
+    # Install Rosetta 2 (required for Apple Silicon compatibility)
+    install_rosetta2
 
     # Install Command Line Tools if not present (avoids popup)
     if ! xcode-select -p >/dev/null 2>&1; then
@@ -162,35 +162,12 @@ bootstrap_dependencies() {
         print_success "Command Line Tools already installed"
     fi
 
-    # Install Homebrew if it isn't installed already
-    if ! command -v brew >/dev/null 2>&1; then
-        print_action "Installing Homebrew..."
-        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # Install Homebrew for Apple Silicon
+    install_homebrew
 
-        # Evaluate homebrew correctly for the current session on Apple Silicon Mac.
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-        print_success "Homebrew installation completed"
-    else
-        print_success "Homebrew already installed"
-    fi
-
-    # Install GNU Stow if not available
-    if ! command -v stow >/dev/null 2>&1; then
-        print_action "Installing GNU Stow..."
-        brew install stow
-        print_success "GNU Stow installation completed"
-    else
-        print_success "GNU Stow already installed"
-    fi
-
-    # Install jq for JSON processing if not available
-    if ! command -v jq >/dev/null 2>&1; then
-        print_action "Installing jq for JSON processing..."
-        brew install jq
-        print_success "jq installation completed"
-    else
-        print_success "jq already installed"
-    fi
+    # Install essential packages using utility function
+    install_package_if_missing "stow"
+    install_package_if_missing "jq"
 
     echo ""
     print_success "Essential dependencies are ready!"
@@ -200,25 +177,17 @@ bootstrap_dependencies() {
 # Install essential dependencies before proceeding
 bootstrap_dependencies
 
-print_header "Backup & File Management"
-echo ""
+# ==========================================
+# Backup-related Functions
+# ==========================================
 
-# Function to backup existing files before stow operations
-backup_existing_files() {
-    if [[ ${backup} == 0 ]]; then
-        echo "Skipping backup as requested..."
-        return 0
-    fi
-
-    echo "Checking for existing files that would be overwritten..."
-
-    # Create timestamped backup directory
-    local backup_timestamp=$(generate_backup_timestamp)
-    local backup_dir=$(get_backup_dir_by_timestamp "${backup_timestamp}")
-    local manifest_file=$(get_manifest_file_path "${backup_dir}")
+# Detect conflicts between stow and existing files
+detect_stow_conflicts() {
+    local stow_dir="$1"
+    local target_dir="$2"
 
     # Use stow simulation with verbose output to detect actual conflicts
-    local stow_output=$(stow -n -d "${STOW_DIR}" -t "${HOME}" home --verbose=3 2>&1)
+    local stow_output=$(stow -n -d "${stow_dir}" -t "${target_dir}" home --verbose=3 2>&1)
 
     # Filter files that are causing conflicts - catch both types of conflicts
     local stowing_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p')
@@ -227,10 +196,18 @@ backup_existing_files() {
     # Combine both types of conflicts
     local actual_conflicts=$(printf "%s\n%s" "${stowing_conflicts}" "${ownership_conflicts}" | grep -v '^$' | sort -u)
 
-    if [[ -z ${actual_conflicts} ]]; then
-        echo "No existing files would be overwritten. Proceeding without backup."
-        return 0
-    fi
+    # Return conflict information as a structured format
+    echo "${stowing_conflicts}|${ownership_conflicts}|${actual_conflicts}"
+}
+
+# Create backup directory structure and initialize manifest
+create_backup_manifest() {
+    local backup_dir="$1"
+    local stowing_conflicts="$2"
+    local ownership_conflicts="$3"
+    local actual_conflicts="$4"
+
+    local manifest_file=$(get_manifest_file_path "${backup_dir}")
 
     # Check available disk space (require at least 100MB free)
     local available_space
@@ -294,40 +271,30 @@ backup_existing_files() {
 }
 EOF
 
+    echo "${manifest_file}"
+}
+
+# Backup conflicting files to the backup directory
+backup_conflicting_files() {
+    local backup_dir="$1"
+    local manifest_file="$2"
+    local stowing_conflicts="$3"
+    local ownership_conflicts="$4"
+    local actual_conflicts="$5"
+
     local files_backed_up=0
     local files_failed=0
     local total_backup_size=0
-
-    # Helper function to add file entry to JSON manifest
-    add_file_to_manifest() {
-        local file_path="$1"
-        local status="$2"
-        local conflict_type="$3"
-        local file_size="$4"
-
-        # Create temporary file with new entry
-        local temp_manifest=$(mktemp)
-        jq --arg path "${file_path}" --arg status "${status}" --arg type "${conflict_type}" --argjson size "${file_size}" \
-            '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
-            "${manifest_file}" >"${temp_manifest}"
-        mv "${temp_manifest}" "${manifest_file}"
-    }
-
-    # Helper function to update manifest summary
-    update_manifest_summary() {
-        local temp_manifest=$(mktemp)
-        jq --argjson backed_up "${files_backed_up}" --argjson failed "${files_failed}" --argjson total_size "${total_backup_size}" \
-            '.summary.files_backed_up = $backed_up | .summary.files_failed = $failed | .summary.backup_size_total = $total_size' \
-            "${manifest_file}" >"${temp_manifest}"
-        mv "${temp_manifest}" "${manifest_file}"
-    }
 
     # Backup all conflicting files.
     for relative_path in ${actual_conflicts}; do
         # Validate paths are relative and safe
         if [[ ${relative_path} =~ ^/ ]] || [[ ${relative_path} =~ \.\. ]]; then
             echo "WARNING: Unsafe path detected: ${relative_path}"
-            add_file_to_manifest "${relative_path}" "unsafe_path" "unknown" 0
+            # shellcheck disable=SC2016
+            update_manifest_field "${manifest_file}" \
+                '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
+                --arg path "${relative_path}" --arg status "unsafe_path" --arg type "unknown" --argjson size 0
             ((files_failed++))
             continue
         fi
@@ -360,24 +327,88 @@ EOF
 
             # Move file to backup location (atomic operation)
             if mv "${target_file}" "${backup_file}" 2>/dev/null; then
-                add_file_to_manifest "${relative_path}" "moved_successfully" "${conflict_type}" "${file_size}"
+                # shellcheck disable=SC2016
+                update_manifest_field "${manifest_file}" \
+                    '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
+                    --arg path "${relative_path}" --arg status "moved_successfully" --arg type "${conflict_type}" --argjson size "${file_size}"
                 echo "Moved to backup: ${relative_path}"
                 ((files_backed_up++))
                 ((total_backup_size += file_size))
             else
-                add_file_to_manifest "${relative_path}" "move_failed" "${conflict_type}" 0
+                # shellcheck disable=SC2016
+                update_manifest_field "${manifest_file}" \
+                    '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
+                    --arg path "${relative_path}" --arg status "move_failed" --arg type "${conflict_type}" --argjson size 0
                 ((files_failed++))
                 die "ERROR: Failed to move ${relative_path} to backup - check permissions"
             fi
         else
-            add_file_to_manifest "${relative_path}" "target_missing" "${conflict_type}" 0
+            # shellcheck disable=SC2016
+            update_manifest_field "${manifest_file}" \
+                '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
+                --arg path "${relative_path}" --arg status "target_missing" --arg type "${conflict_type}" --argjson size 0
             ((files_failed++))
             die "ERROR: Conflict file ${relative_path} doesn't exist at target"
         fi
     done
 
+    # Return counts for summary update
+    echo "${files_backed_up}|${files_failed}|${total_backup_size}"
+}
+
+# Update the final backup summary in the manifest
+update_backup_manifest_summary() {
+    local manifest_file="$1"
+    local files_backed_up="$2"
+    local files_failed="$3"
+    local total_backup_size="$4"
+
+    # shellcheck disable=SC2016
+    update_manifest_field "${manifest_file}" \
+        '.summary.files_backed_up = $backed_up | .summary.files_failed = $failed | .summary.backup_size_total = $total_size' \
+        --argjson backed_up "${files_backed_up}" --argjson failed "${files_failed}" --argjson total_size "${total_backup_size}"
+}
+
+print_header "Backup & File Management"
+echo ""
+
+# Function to backup existing files before stow operations
+backup_existing_files() {
+    if [[ ${backup} == 0 ]]; then
+        echo "Skipping backup as requested..."
+        return 0
+    fi
+
+    echo "Checking for existing files that would be overwritten..."
+
+    # Create timestamped backup directory
+    local backup_timestamp=$(generate_backup_timestamp)
+    local backup_dir=$(get_backup_dir_by_timestamp "${backup_timestamp}")
+
+    # Detect conflicts between stow and existing files
+    local conflict_data=$(detect_stow_conflicts "${STOW_DIR}" "${HOME}")
+
+    # Parse conflict data (format: stowing_conflicts|ownership_conflicts|actual_conflicts)
+    local stowing_conflicts ownership_conflicts actual_conflicts
+    IFS='|' read -r stowing_conflicts ownership_conflicts actual_conflicts <<<"${conflict_data}"
+
+    if [[ -z ${actual_conflicts} ]]; then
+        echo "No existing files would be overwritten. Proceeding without backup."
+        return 0
+    fi
+
+    # Create backup manifest and directory structure
+    local manifest_file=$(create_backup_manifest "${backup_dir}" "${stowing_conflicts}" "${ownership_conflicts}" "${actual_conflicts}")
+
+    # Backup conflicting files
+    local backup_results=$(backup_conflicting_files "${backup_dir}" "${manifest_file}" "${stowing_conflicts}" "${ownership_conflicts}" "${actual_conflicts}")
+
+    # Parse backup results (format: files_backed_up|files_failed|total_backup_size)
+    local files_backed_up files_failed total_backup_size
+    IFS='|' read -r files_backed_up files_failed total_backup_size <<<"${backup_results}"
+
     # Update final summary in manifest
-    update_manifest_summary
+    update_backup_manifest_summary "${manifest_file}" "${files_backed_up}" "${files_failed}" "${total_backup_size}"
 
     if [[ ${files_backed_up} -gt 0 ]]; then
         # Store the backup directory for summary display
@@ -415,7 +446,7 @@ echo ""
 # Make terminal authentication easier by using Touch ID instead of password, if Mac supports it.
 print_step 3 5 "Configuring system authentication and user settings"
 echo ""
-print_action "Configuring Touch ID for sudo authentication on Apple Silicon Mac with compatible hardware..."
+print_action "Configuring Touch ID for sudo authentication on compatible hardware..."
 # Check if Touch ID line already exists to avoid duplicates
 if ! sudo grep -q "pam_tid.so" /etc/pam.d/sudo; then
     # Backup the original file before modifying

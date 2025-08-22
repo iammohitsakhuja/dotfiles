@@ -3,12 +3,6 @@
 # Shared logging and utility functions for dotfiles scripts
 # This file provides consistent logging patterns for scripts.
 
-# Helper function to exit the script with an error message
-die() {
-    printf '%s\n' "$1" >&2
-    exit 1
-}
-
 # Print a standardized header with 70-character width and centered title
 print_header() {
     local title="$1"

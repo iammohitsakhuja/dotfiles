@@ -4,7 +4,7 @@
 set -e          # Exit on any command failure
 set -o pipefail # Fail on any command in a pipeline
 
-source "$(dirname "$0")/macos/utils/logging.sh"
+source "$(dirname "$0")/macos/utils/platform.sh"
 
 # Validate version format (e.g., "15.0", "14.7.1")
 validate_version() {

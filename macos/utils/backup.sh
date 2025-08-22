@@ -3,8 +3,8 @@
 # Shared backup utilities for dotfiles scripts
 # This file provides consistent backup operations and path management.
 
-# Source logging utilities for die function
-source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
+# Source utilities for die function
+source "$(dirname "${BASH_SOURCE[0]}")/platform.sh"
 
 # Constants for backup operations
 readonly BACKUP_BASE_DIR="${HOME}/.backup/dotfiles"
