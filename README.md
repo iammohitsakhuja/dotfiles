@@ -15,9 +15,9 @@ know what that entails. Use at your own risk!
 To install, run the following:
 
 ```bash
-$ cd macos
-$ sudo chmod u+x install.sh
-$ ./install.sh --email "your@email.com" --name "Your Name"
+cd macos
+sudo chmod u+x install.sh
+./install.sh --email "your@email.com" --name "Your Name"
 ```
 
 You can use the `-h` or `--help` flag while running the above command to get

@@ -83,6 +83,7 @@ brew "rbenv"
 brew "clang-format"
 brew "google-java-format"
 brew "rust-analyzer"
+brew "shellcheck"
 brew "shfmt"
 
 # Container, Kubernetes & cloud tools.

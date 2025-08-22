@@ -3,17 +3,11 @@
 # Shared logging and utility functions for dotfiles scripts
 # This file provides consistent logging patterns for scripts.
 
-# Helper function to exit the script with an error message
-die() {
-    printf '%s\n' "$1" >&2
-    exit 1
-}
-
 # Print a standardized header with 70-character width and centered title
 print_header() {
     local title="$1"
     echo "======================================================================"
-    printf "%-70s\n" "$(printf "%*s" $(((70-${#title})/2)) '')$title"
+    printf "%-70s\n" "$(printf "%*s" $(((70 - ${#title}) / 2)) '')${title}"
     echo "======================================================================"
 }
 
@@ -23,7 +17,7 @@ print_step() {
     local total="$2"
     local description="$3"
     echo ""
-    echo "Step $current/$total: $description"
+    echo "Step ${current}/${total}: ${description}"
     printf "=%.0s" $(seq 1 $((${#description} + 15)))
     echo ""
 }
@@ -31,36 +25,36 @@ print_step() {
 # Print an action message with arrow indicator
 print_action() {
     local message="$1"
-    echo "  → $message"
+    echo "  → ${message}"
 }
 
 # Print a success message with checkmark
 print_success() {
     local message="$1"
-    echo "  ✓ $message"
+    echo "  ✓ ${message}"
 }
 
 # Print a warning message with warning symbol
 print_warning() {
     local message="$1"
-    echo "  ⚠ $message"
+    echo "  ⚠ ${message}"
 }
 
 # Print a configuration item in "• label: value" format
 print_config_item() {
     local label="$1"
     local value="$2"
-    echo "  • $label: $value"
+    echo "  • ${label}: ${value}"
 }
 
 # Print the final celebration message with consistent formatting
 print_celebration() {
     local message="$1"
-    echo "🎉 $message"
+    echo "🎉 ${message}"
 }
 
 # Print a preview/info message with magnifying glass
 print_preview() {
     local message="$1"
-    echo "🔍 $message"
+    echo "🔍 ${message}"
 }
