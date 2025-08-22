@@ -81,12 +81,11 @@ defaults write NSGlobalDomain AppleTemperatureUnit -string "Celsius"
 # Screen                                                                      #
 ###############################################################################
 
-# Fix for blurry fonts on non-Retina displays on MacOS Mojave.
-defaults write NSGlobalDomain CGFontRenderingFontSmoothingDisabled -bool NO
-
-# Enable subpixel font rendering on non-Apple LCDs.
-# defaults write NSGlobalDomain AppleFontSmoothing -int 2
-defaults write NSGlobalDomain AppleFontSmoothing -int 1
+# Fix for blurry fonts on non-Retina displays on MacOS Sequoia and above.
+# Uncomment to apply it during installation.
+# Or run it as a one-off command.
+# Possible values are: 0 (off), 1 (low), 2 (medium/default), 3 (high)
+# defaults -currentHost write -globalDomain AppleFontSmoothing -int 0
 
 ###############################################################################
 # Finder                                                                      #
