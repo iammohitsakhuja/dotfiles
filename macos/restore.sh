@@ -84,9 +84,11 @@ fi
 
 # Function to find and list available backup directories
 list_available_backups() {
-    # Convert backup directory paths to an array
     local backup_dirs=()
-    mapfile -t backup_dirs < <(find_backup_directories)
+    local dir
+    while IFS= read -r dir; do
+        backup_dirs+=("${dir}")
+    done < <(find_backup_directories)
 
     if ((${#backup_dirs[@]} == 0)); then
         echo "No backup directories found in $(get_backup_base_dir)"

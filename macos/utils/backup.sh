@@ -73,7 +73,11 @@ find_backup_directories() {
 # Check if any backup directories exist
 has_backup_directories() {
     local backup_dirs=()
-    mapfile -t backup_dirs < <(find_backup_directories)
+    local dir
+    while IFS= read -r dir; do
+        backup_dirs+=("${dir}")
+    done < <(find_backup_directories)
+
     ((${#backup_dirs[@]} > 0))
 }
 
