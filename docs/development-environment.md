@@ -12,6 +12,7 @@ The development environment uses UTM (Universal Turing Machine) to create macOS 
 - At least 8GB available RAM
 - 50GB+ available disk space
 - UTM installed (handled automatically by setup script)
+- Docker running (required for code quality tools: shellcheck, shfmt, markdownlint)
 
 ## Quick Setup
 
@@ -104,6 +105,33 @@ utmctl stop dotfiles-test
 Your VM is now ready for safe testing! See the **Testing Workflow** section below for comprehensive testing instructions.
 
 **⚠️ CRITICAL: Always test installation scripts in VM, never on host machine!**
+
+## Code Quality Tools
+
+The repository includes automated code quality tools that run as pre-commit hooks. These tools use Docker containers and require Docker to be running on your host system.
+
+### Available Tools
+
+- **Pre-commit hooks**: Automatic code quality checks on commit
+- **ShellCheck**: Shell script analysis and best practices (runs in Docker)
+- **shfmt**: Shell script formatting (runs in Docker)
+- **markdownlint**: Markdown file linting and formatting (runs in Docker)
+- **Additional formatters**: YAML and JSON formatting tools
+
+### Setup
+
+```bash
+# Install pre-commit hooks (one-time setup)
+pre-commit install
+
+# Run hooks manually on all files
+pre-commit run --all-files
+
+# Run hooks on specific files
+pre-commit run --files path/to/file.sh
+```
+
+**Note**: Ensure Docker is running before committing changes or running pre-commit commands, as the linting tools execute in Docker containers.
 
 ## VM Management
 
