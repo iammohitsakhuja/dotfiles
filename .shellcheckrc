@@ -8,6 +8,8 @@ disable=SC2034  # Variable appears unused (may be used in sourced files)
 disable=SC2059  # Don't use variables in printf format strings (sometimes intentional)
 disable=SC2086  # Double quote to prevent globbing and word splitting (sometimes intentional)
 disable=SC2154  # Variable is referenced but not assigned (may be from environment)
+disable=SC2155  # Declare and assign separately to avoid masking return values (sometimes intentional or acceptable)
+disable=SC2312  # Invoke the command separately to avoid masking its return value (sometimes intentional or acceptable)
 
 # Enable all optional checks
 enable=all

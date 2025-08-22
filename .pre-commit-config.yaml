@@ -27,7 +27,6 @@ repos:
     hooks:
       - id: shellcheck # Already runs in docker.
         args: [--severity=style]
-        exclude: ^macos/home/\.startup_scripts/
 
   # Shell script formatting (uses .editorconfig for 4-space indent)
   - repo: https://github.com/scop/pre-commit-shfmt
@@ -35,7 +34,6 @@ repos:
     hooks:
       - id: shfmt-docker
         args: [-w, -s, -i, "4"]
-        exclude: ^macos/home/\.startup_scripts/
 
   # YAML formatting (2 spaces as per .editorconfig)
   - repo: https://github.com/google/yamlfmt

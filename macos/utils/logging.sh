@@ -24,7 +24,7 @@ print_step() {
     local description="$3"
     echo ""
     echo "Step ${current}/${total}: ${description}"
-    printf "=%.0s" $(seq 1 $((${#description} + 15))) || true
+    printf "=%.0s" $(seq 1 $((${#description} + 15)))
     echo ""
 }
 

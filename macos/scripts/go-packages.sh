@@ -10,7 +10,7 @@ if ! command -v goenv &>/dev/null; then
 fi
 
 # Setup Goenv.
-eval "$(goenv init -)" || true
+eval "$(goenv init -)"
 
 # Install Go.
 goenv install "${GO_VERSION}"

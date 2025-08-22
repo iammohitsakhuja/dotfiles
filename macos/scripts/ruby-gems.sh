@@ -10,7 +10,7 @@ if ! command -v rbenv &>/dev/null; then
 fi
 
 # Setup Rbenv.
-eval "$(rbenv init -)" || true
+eval "$(rbenv init -)"
 
 # Install Ruby.
 rbenv install "${RUBY_VERSION}"

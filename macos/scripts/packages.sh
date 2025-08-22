@@ -10,8 +10,7 @@ if [[ ${OSTYPE} != "darwin"* ]]; then
 fi
 
 # Check if Mac is using Apple Silicon.
-arch=$(uname -m || echo "unknown") || true
-if [[ ${arch} == 'arm64' ]]; then
+if [[ $(uname -m) == 'arm64' ]]; then
     # Install Rosetta 2 for packages required henceforth.
     sudo softwareupdate --install-rosetta --agree-to-license
 fi
@@ -26,7 +25,7 @@ brew upgrade
 
 # Install/update Shell and its packages.
 echo "Installing/updating Shell and its packages..."
-bash "${SCRIPT_DIR}/shell-packages.sh" || true
+bash "${SCRIPT_DIR}/shell-packages.sh"
 echo -e "Done\n\n"
 
 # Install all packages specified in Brewfile.
@@ -47,25 +46,25 @@ echo -e "Done\n"
 
 # Install Go and its packages.
 echo "Installing Go and its packages..."
-bash "${SCRIPT_DIR}/go-packages.sh" || true
+bash "${SCRIPT_DIR}/go-packages.sh"
 echo -e "Done\n\n"
 
 # Install Node and its packages.
 echo "Installing Node and its packages..."
-bash "${SCRIPT_DIR}/node-packages.sh" || true
+bash "${SCRIPT_DIR}/node-packages.sh"
 echo -e "Done\n\n"
 
 # Install Python packages.
 echo "Installing Python packages..."
-bash "${SCRIPT_DIR}/python-packages.sh" || true
+bash "${SCRIPT_DIR}/python-packages.sh"
 echo -e "Done\n\n"
 
 # Install Ruby gems.
 echo "Installing Ruby gems..."
-bash "${SCRIPT_DIR}/ruby-gems.sh" || true
+bash "${SCRIPT_DIR}/ruby-gems.sh"
 echo -e "Done\n\n"
 
 # Install Vim packages.
 echo "Installing Vim and its packages..."
-bash "${SCRIPT_DIR}/vim-packages.sh" || true
+bash "${SCRIPT_DIR}/vim-packages.sh"
 echo -e "Done\n\n"

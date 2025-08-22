@@ -77,11 +77,7 @@ while :; do
         print_header "macOS Dotfiles Installation"
         echo ""
         echo "Configuration:"
-        if [[ ${backup} == 1 ]]; then
-            print_config_item "Backup existing files" "Yes"
-        else
-            print_config_item "Backup existing files" "No"
-        fi
+        print_config_item "Backup existing files" "$(if [[ ${backup} == 1 ]]; then echo "Yes"; else echo "No"; fi)"
         print_config_item "Email" "${email}"
         print_config_item "Name" "${name}"
         print_config_item "Stow directory" "${STOW_DIR}"
@@ -169,18 +165,10 @@ bootstrap_dependencies() {
     # Install Homebrew if it isn't installed already
     if ! command -v brew >/dev/null 2>&1; then
         print_action "Installing Homebrew..."
-        # Download installer with proper error handling
-        if ! install_script=$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh); then
-            die "ERROR: Failed to download Homebrew installer"
-        fi
-        NONINTERACTIVE=1 /bin/bash -c "${install_script}"
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-        # Evaluate homebrew for Apple Silicon Mac.
-        if ! shellenv_output=$(/opt/homebrew/bin/brew shellenv); then
-            print_warning "Failed to get Homebrew shell environment for Apple Silicon"
-        else
-            eval "${shellenv_output}"
-        fi
+        # Evaluate homebrew correctly for the current session on Apple Silicon Mac.
+        eval "$(/opt/homebrew/bin/brew shellenv)"
         print_success "Homebrew installation completed"
     else
         print_success "Homebrew already installed"
@@ -224,23 +212,20 @@ backup_existing_files() {
 
     echo "Checking for existing files that would be overwritten..."
 
-    # Declare variables to avoid masking return values
-    local backup_timestamp backup_dir manifest_file stow_output stowing_conflicts ownership_conflicts actual_conflicts
-
     # Create timestamped backup directory
-    backup_timestamp=$(generate_backup_timestamp)
-    backup_dir=$(get_backup_dir_by_timestamp "${backup_timestamp}")
-    manifest_file=$(get_manifest_file_path "${backup_dir}")
+    local backup_timestamp=$(generate_backup_timestamp)
+    local backup_dir=$(get_backup_dir_by_timestamp "${backup_timestamp}")
+    local manifest_file=$(get_manifest_file_path "${backup_dir}")
 
     # Use stow simulation with verbose output to detect actual conflicts
-    stow_output=$(stow -n -d "${STOW_DIR}" -t "${HOME}" home --verbose=3 2>&1)
+    local stow_output=$(stow -n -d "${STOW_DIR}" -t "${HOME}" home --verbose=3 2>&1)
 
     # Filter files that are causing conflicts - catch both types of conflicts
-    stowing_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p') || true
-    ownership_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*existing target is not owned by stow: \([^[:space:]]*\).*/\1/p') || true
+    local stowing_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p')
+    local ownership_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*existing target is not owned by stow: \([^[:space:]]*\).*/\1/p')
 
     # Combine both types of conflicts
-    actual_conflicts=$(printf "%s\n%s" "${stowing_conflicts}" "${ownership_conflicts}" | grep -v '^$' | sort -u) || true
+    local actual_conflicts=$(printf "%s\n%s" "${stowing_conflicts}" "${ownership_conflicts}" | grep -v '^$' | sort -u)
 
     if [[ -z ${actual_conflicts} ]]; then
         echo "No existing files would be overwritten. Proceeding without backup."
@@ -263,14 +248,14 @@ backup_existing_files() {
     echo "Manifest file path: ${manifest_file}"
 
     # Show conflict summary to user
-    local stowing_count ownership_count
-    stowing_count=$(echo "${stowing_conflicts}" | grep -c . 2>/dev/null || echo 0)
-    ownership_count=$(echo "${ownership_conflicts}" | grep -c . 2>/dev/null || echo 0)
+    local stowing_count=$(echo "${stowing_conflicts}" | grep -c . 2>/dev/null || echo 0)
+    local ownership_count=$(echo "${ownership_conflicts}" | grep -c . 2>/dev/null || echo 0)
     echo "Found conflicts: ${stowing_count} stowing conflicts, ${ownership_count} ownership conflicts"
 
     # Initialize JSON manifest file
-    local backup_date stowing_conflicts_json ownership_conflicts_json
-    backup_date=$(date -Iseconds)
+    local backup_date=$(date -Iseconds)
+    local stowing_conflicts_json
+    local ownership_conflicts_json
 
     # Convert conflicts to JSON arrays
     if [[ -n ${stowing_conflicts} ]]; then
@@ -285,8 +270,7 @@ backup_existing_files() {
         ownership_conflicts_json="[]"
     fi
 
-    local total_conflicts
-    total_conflicts=$(echo "${actual_conflicts}" | grep -c . 2>/dev/null || echo 0)
+    local total_conflicts=$(echo "${actual_conflicts}" | grep -c . 2>/dev/null || echo 0)
 
     # Create initial JSON structure
     cat >"${manifest_file}" <<EOF
@@ -322,8 +306,7 @@ EOF
         local file_size="$4"
 
         # Create temporary file with new entry
-        local temp_manifest
-        temp_manifest=$(mktemp)
+        local temp_manifest=$(mktemp)
         jq --arg path "${file_path}" --arg status "${status}" --arg type "${conflict_type}" --argjson size "${file_size}" \
             '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
             "${manifest_file}" >"${temp_manifest}"
@@ -332,8 +315,7 @@ EOF
 
     # Helper function to update manifest summary
     update_manifest_summary() {
-        local temp_manifest
-        temp_manifest=$(mktemp)
+        local temp_manifest=$(mktemp)
         jq --argjson backed_up "${files_backed_up}" --argjson failed "${files_failed}" --argjson total_size "${total_backup_size}" \
             '.summary.files_backed_up = $backed_up | .summary.files_failed = $failed | .summary.backup_size_total = $total_size' \
             "${manifest_file}" >"${temp_manifest}"
@@ -372,8 +354,7 @@ EOF
 
             # File exists and would conflict, backup it
             local backup_file="${backup_dir}/${relative_path}"
-            local backup_parent_dir
-            backup_parent_dir=$(dirname "${backup_file}")
+            local backup_parent_dir=$(dirname "${backup_file}")
 
             mkdir -p "${backup_parent_dir}"
 

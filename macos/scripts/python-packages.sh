@@ -10,7 +10,7 @@ if ! command -v pyenv &>/dev/null; then
 fi
 
 # Setup Pyenv.
-eval "$(pyenv init -)" || true
+eval "$(pyenv init -)"
 
 # Install Python.
 pyenv install "${PYTHON_VERSION}"

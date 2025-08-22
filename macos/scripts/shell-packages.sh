@@ -29,11 +29,7 @@ fi
 
 # Install oh-my-zsh.
 echo "Installing Oh-my-zsh..."
-if ! omz_install_script=$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh); then
-    echo "ERROR: Failed to download Oh-my-zsh installer" >&2
-    exit 1
-fi
-sh -c "${omz_install_script}" "" --unattended --keep-zshrc
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" "" --unattended --keep-zshrc
 echo -e "Oh-my-zsh installation successful!\n"
 
 # Install oh-my-zsh plugins.

@@ -10,7 +10,7 @@ if ! command -v nodenv &>/dev/null; then
 fi
 
 # Setup Nodenv.
-eval "$(nodenv init -)" || true
+eval "$(nodenv init -)"
 
 # Install Node.
 nodenv install "${NODE_VERSION}"

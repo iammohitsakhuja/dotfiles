@@ -64,7 +64,7 @@ find_backup_directories() {
     # Find backup directories and sort them (newest first)
     while IFS= read -r -d '' dir; do
         backup_dirs+=("${dir}")
-    done < <(find "${BACKUP_BASE_DIR}" -maxdepth 1 -type d -name "[0-9]*" -print0 2>/dev/null | sort -rz || true)
+    done < <(find "${BACKUP_BASE_DIR}" -maxdepth 1 -type d -name "[0-9]*" -print0 2>/dev/null | sort -rz)
 
     # Return array elements, one per line
     printf '%s\n' "${backup_dirs[@]}"
@@ -72,16 +72,15 @@ find_backup_directories() {
 
 # Check if any backup directories exist
 has_backup_directories() {
-    local backup_dirs
-    backup_dirs=$(find_backup_directories)
-    [[ -n ${backup_dirs} ]]
+    local backup_dirs=()
+    mapfile -t backup_dirs < <(find_backup_directories)
+    ((${#backup_dirs[@]} > 0))
 }
 
 # Validate that a backup directory exists and has a valid manifest
 validate_backup_directory() {
     local backup_dir="$1"
-    local manifest_file
-    manifest_file=$(get_manifest_file_path "${backup_dir}")
+    local manifest_file=$(get_manifest_file_path "${backup_dir}")
 
     if [[ ! -d ${backup_dir} ]]; then
         die "ERROR: Backup directory not found: ${backup_dir}"
@@ -97,8 +96,7 @@ validate_backup_directory() {
     fi
 
     # Check if any files were successfully backed up
-    local backed_up_count
-    backed_up_count=$(jq -r '.summary.files_backed_up' "${manifest_file}" 2>/dev/null || echo "0")
+    local backed_up_count=$(jq -r '.summary.files_backed_up' "${manifest_file}" 2>/dev/null || echo "0")
     if [[ ${backed_up_count} -eq 0 ]]; then
         die "ERROR: No successfully backed up files found in manifest"
     fi
@@ -136,5 +134,5 @@ get_backed_up_files() {
 # Remove empty backup directory if no files were backed up
 cleanup_empty_backup_dir() {
     local backup_dir="$1"
-    rmdir "${backup_dir}" 2>/dev/null || true
+    rmdir "${backup_dir}" 2>/dev/null
 }
