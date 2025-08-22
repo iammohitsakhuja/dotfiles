@@ -190,11 +190,11 @@ detect_stow_conflicts() {
     local stow_output=$(stow -n -d "${stow_dir}" -t "${target_dir}" home --verbose=3 2>&1)
 
     # Filter files that are causing conflicts - catch both types of conflicts
-    local stowing_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p')
-    local ownership_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*existing target is not owned by stow: \([^[:space:]]*\).*/\1/p')
+    local stowing_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p' | tr '\n' ',' | sed 's/,$//')
+    local ownership_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*existing target is not owned by stow: \([^[:space:]]*\).*/\1/p' | tr '\n' ',' | sed 's/,$//')
 
-    # Combine both types of conflicts
-    local actual_conflicts=$(printf "%s\n%s" "${stowing_conflicts}" "${ownership_conflicts}" | grep -v '^$' | sort -u)
+    # Combine both types of conflics.
+    local actual_conflicts=$(printf "%s\n%s" "${stowing_conflicts}" "${ownership_conflicts}" | grep -v '^$' | sort -u | tr '\n' ',' | sed 's/,$//')
 
     # Return conflict information as a structured format
     echo "${stowing_conflicts}|${ownership_conflicts}|${actual_conflicts}"
@@ -220,14 +220,15 @@ create_backup_manifest() {
     fi
 
     # Create backup directory structure.
-    echo "Creating backup directory: ${backup_dir}"
+    # Make sure that `echo` statements are directed to stderr and not returned by the function.
+    echo "Creating backup directory: ${backup_dir}" >&2
     ensure_backup_structure "${backup_dir}"
-    echo "Manifest file path: ${manifest_file}"
+    echo "Manifest file path: ${manifest_file}" >&2
 
     # Show conflict summary to user
-    local stowing_count=$(echo "${stowing_conflicts}" | grep -c . 2>/dev/null || echo 0)
-    local ownership_count=$(echo "${ownership_conflicts}" | grep -c . 2>/dev/null || echo 0)
-    echo "Found conflicts: ${stowing_count} stowing conflicts, ${ownership_count} ownership conflicts"
+    local stowing_count=$(echo "${stowing_conflicts}" | tr ',' '\n' | grep -c . 2>/dev/null || echo 0)
+    local ownership_count=$(echo "${ownership_conflicts}" | tr ',' '\n' | grep -c . 2>/dev/null || echo 0)
+    echo "Found conflicts: ${stowing_count} stowing conflicts, ${ownership_count} ownership conflicts" >&2
 
     # Initialize JSON manifest file
     local backup_date=$(date -Iseconds)
@@ -236,18 +237,18 @@ create_backup_manifest() {
 
     # Convert conflicts to JSON arrays
     if [[ -n ${stowing_conflicts} ]]; then
-        stowing_conflicts_json=$(echo "${stowing_conflicts}" | jq -R -s 'split("\n") | map(select(length > 0))')
+        stowing_conflicts_json=$(echo "${stowing_conflicts}" | tr ',' '\n' | jq -R -s 'split("\n") | map(select(length > 0))')
     else
         stowing_conflicts_json="[]"
     fi
 
     if [[ -n ${ownership_conflicts} ]]; then
-        ownership_conflicts_json=$(echo "${ownership_conflicts}" | jq -R -s 'split("\n") | map(select(length > 0))')
+        ownership_conflicts_json=$(echo "${ownership_conflicts}" | tr ',' '\n' | jq -R -s 'split("\n") | map(select(length > 0))')
     else
         ownership_conflicts_json="[]"
     fi
 
-    local total_conflicts=$(echo "${actual_conflicts}" | grep -c . 2>/dev/null || echo 0)
+    local total_conflicts=$(echo "${actual_conflicts}" | tr ',' '\n' | grep -c . 2>/dev/null || echo 0)
 
     # Create initial JSON structure
     cat >"${manifest_file}" <<EOF
@@ -287,10 +288,15 @@ backup_conflicting_files() {
     local total_backup_size=0
 
     # Backup all conflicting files.
-    for relative_path in ${actual_conflicts}; do
+    # Convert comma-separated conflicts back to array for processing
+    IFS=',' read -ra conflicts_array <<<"${actual_conflicts}"
+    for relative_path in "${conflicts_array[@]}"; do
+        # Skip empty entries
+        [[ -z ${relative_path} ]] && continue
         # Validate paths are relative and safe
         if [[ ${relative_path} =~ ^/ ]] || [[ ${relative_path} =~ \.\. ]]; then
-            echo "WARNING: Unsafe path detected: ${relative_path}"
+            # Make sure that `echo` statements are directed to stderr and not returned by the function.
+            echo "WARNING: Unsafe path detected: ${relative_path}" >&2
             # shellcheck disable=SC2016
             update_manifest_field "${manifest_file}" \
                 '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
@@ -303,9 +309,9 @@ backup_conflicting_files() {
 
         # Determine conflict type
         local conflict_type="unknown"
-        if echo "${stowing_conflicts}" | grep -q "^${relative_path}$"; then
+        if [[ ",${stowing_conflicts}," == *",${relative_path},"* ]]; then
             conflict_type="stowing"
-        elif echo "${ownership_conflicts}" | grep -q "^${relative_path}$"; then
+        elif [[ ",${ownership_conflicts}," == *",${relative_path},"* ]]; then
             conflict_type="ownership"
         fi
 
@@ -331,7 +337,7 @@ backup_conflicting_files() {
                 update_manifest_field "${manifest_file}" \
                     '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
                     --arg path "${relative_path}" --arg status "moved_successfully" --arg type "${conflict_type}" --argjson size "${file_size}"
-                echo "Moved to backup: ${relative_path}"
+                echo "Moved to backup: ${relative_path}" >&2
                 ((files_backed_up++))
                 ((total_backup_size += file_size))
             else
