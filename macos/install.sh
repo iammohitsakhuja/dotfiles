@@ -86,6 +86,8 @@ while :; do
         print_config_item "Name" "${name}"
         print_config_item "Stow directory" "${STOW_DIR}"
         echo ""
+
+        # Argument Validations.
         if [[ -z ${email} ]]; then
             die 'ERROR: "--email" is required.'
         fi
@@ -97,6 +99,7 @@ while :; do
     esac
 done
 
+# Other Validations.
 # Validate we found the correct directory with home/ package
 if [[ ! -d "${STOW_DIR}/home" ]]; then
     die "ERROR: Could not locate home/ directory for stow operations."
@@ -535,7 +538,7 @@ fi
 print_success "Dotfiles linked to home directory"
 print_success "Touch ID configured for sudo authentication"
 print_success "Git configured with user credentials (${name} <${email}>)"
-print_success "SSH key pair generated"
+print_success "SSH key pair generated (if not already present)"
 print_success "API keys storage file created"
 print_success "Development packages and tools installed"
 print_success "Terminal colors configured for Tmux"
