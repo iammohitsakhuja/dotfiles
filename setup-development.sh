@@ -4,7 +4,7 @@
 set -e          # Exit on any command failure
 set -o pipefail # Fail on any command in a pipeline
 
-source "$(dirname "$0")/utils/logging.sh"
+source "$(dirname "$0")/macos/utils/logging.sh"
 
 # Validate version format (e.g., "15.0", "14.7.1")
 validate_version() {
@@ -12,29 +12,6 @@ validate_version() {
     if [[ ! ${version} =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
         die "ERROR: Invalid version format '${version}'. Expected format: X.Y or X.Y.Z (e.g., '15.0' or '14.7.1')"
     fi
-}
-
-# Check available disk space for IPSW downloads
-check_disk_space() {
-    local available=$(df -BG "${CACHE_DIR}" | awk 'NR==2 {gsub(/G/, "", $4); print $4}')
-    [[ ${available} -gt 15 ]] || die "ERROR: Insufficient disk space. Need 15GB+, have ${available}GB available"
-}
-
-# Function to download macOS IPSW firmware
-download_ipsw() {
-    local target_version="$1"
-    echo "Downloading macOS IPSW firmware version ${target_version}..."
-
-    # Create cache directory if it doesn't exist
-    mkdir -p "${CACHE_DIR}"
-
-    # Check available disk space before downloading
-    check_disk_space
-
-    if ! mist download firmware "${target_version}" --output-directory "${CACHE_DIR}"; then
-        die "ERROR: Failed to download macOS IPSW version ${target_version}. Check if version is available."
-    fi
-    echo "IPSW download completed successfully."
 }
 
 # Initialize option variables.
@@ -112,6 +89,29 @@ else
     fi
     echo "Latest available version: ${TARGET_VERSION}"
 fi
+
+# Check available disk space for IPSW downloads
+check_disk_space() {
+    local available=$(df -BG "${CACHE_DIR}" | awk 'NR==2 {gsub(/G/, "", $4); print $4}')
+    [[ ${available} -gt 15 ]] || die "ERROR: Insufficient disk space. Need 15GB+, have ${available}GB available"
+}
+
+# Function to download macOS IPSW firmware
+download_ipsw() {
+    local target_version="$1"
+    echo "Downloading macOS IPSW firmware version ${target_version}..."
+
+    # Create cache directory if it doesn't exist
+    mkdir -p "${CACHE_DIR}"
+
+    # Check available disk space before downloading
+    check_disk_space
+
+    if ! mist download firmware "${target_version}" --output-directory "${CACHE_DIR}"; then
+        die "ERROR: Failed to download macOS IPSW version ${target_version}. Check if version is available."
+    fi
+    echo "IPSW download completed successfully."
+}
 
 # Check if any IPSW already exists first
 EXISTING_IPSW=$(find "${CACHE_DIR}" -name '*.ipsw' -type f 2>/dev/null | head -1)
