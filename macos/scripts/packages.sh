@@ -3,19 +3,7 @@
 # Get script directory for reliable script invocations
 SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-# Check if Homebrew can be installed.
-if [[ ${OSTYPE} != "darwin"* ]]; then
-    echo -e "Environment not recognized as macOS.\nQuitting..."
-    exit 1
-fi
-
-# Check if Mac is using Apple Silicon.
-if [[ $(uname -m) == 'arm64' ]]; then
-    # Install Rosetta 2 for packages required henceforth.
-    sudo softwareupdate --install-rosetta --agree-to-license
-fi
-
-# Homebrew installation is handled by install.sh - this script assumes brew is available
+# Rosetta & Homebrew installation is handled by install.sh - this script assumes they are available
 
 # Update Homebrew.
 brew update
