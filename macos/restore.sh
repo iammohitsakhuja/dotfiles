@@ -603,7 +603,7 @@ main() {
 
     print_header "Dotfiles Restoration Process"
     echo ""
-    echo "Configuration:"
+    print_subheader "Configuration"
     print_config_item "Stow directory" "${STOW_DIR}"
     print_config_item "Backup timestamp" "${backup_timestamp}"
     print_config_item "Backup date" "${backup_date}"

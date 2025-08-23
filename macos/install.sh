@@ -82,7 +82,7 @@ while :; do
     *) # Default case: No more options, so break out of the loop.
         print_header "macOS Dotfiles Installation"
         echo ""
-        echo "Configuration:"
+        print_subheader "Configuration:"
         print_config_item "Backup existing files" "$(if [[ ${backup} == 1 ]]; then echo "Yes"; else echo "No"; fi)"
         print_config_item "Email" "${email}"
         print_config_item "Name" "${name}"
@@ -191,7 +191,7 @@ print_action "Generating SSH key pair..."
 # Check if SSH keys already exist
 if [[ -f "${HOME}/.ssh/id_ed25519" ]]; then
     print_success "SSH key already exists at ${HOME}/.ssh/id_ed25519"
-    echo "    Skipping key generation to avoid overwriting existing key"
+    print_detail "Skipping key generation to avoid overwriting existing key" 3
 else
     # Generate SSH key non-interactively
     ssh-keygen -t ed25519 -C "${email}" -f "${HOME}/.ssh/id_ed25519" -N "" -q
