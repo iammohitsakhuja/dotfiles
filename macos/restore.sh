@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Enable strict error handling
+set -e          # Exit on any command failure
+set -o pipefail # Fail on any command in a pipeline
+
 # Source shared utilities
 source "$(dirname "$0")/utils/logging.sh"
 source "$(dirname "$0")/utils/platform.sh"
@@ -572,6 +576,7 @@ main() {
         print_header "Disaster Recovery Mode - Restore Original Dotfiles"
         echo ""
 
+        # shellcheck disable=SC2310
         if ! list_available_backups; then
             die "ERROR: No backups available for restoration"
         fi
