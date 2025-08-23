@@ -114,13 +114,20 @@ echo ""
 print_action "Requesting administrator authentication..."
 sudo -v
 
-# Keep `sudo` alive i.e. update existing time stamp until `./install.sh` has
-# finished.
-while true; do
-    sudo -n true
-    sleep 60
-    kill -0 "$$" || exit
-done 2>/dev/null &
+# Keep sudo alive with proper cleanup, i.e., update existing time stamp until `./install.sh` has finished.
+sudo_keepalive() {
+    while true; do
+        sudo -n true
+        sleep 50
+        kill -0 "$$" 2>/dev/null || exit
+    done &
+    SUDO_PID=$!
+    # Ensure cleanup on script exit
+    trap 'kill ${SUDO_PID} 2>/dev/null' EXIT
+}
+
+# Start the keepalive
+sudo_keepalive
 
 print_success "Administrator authentication confirmed"
 echo ""
