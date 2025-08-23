@@ -95,8 +95,7 @@ list_available_backups() {
         return 1
     fi
 
-    echo "Available backups:"
-    echo "=================="
+    print_subheader "Available backups"
 
     for backup_dir in "${backup_dirs[@]}"; do
         [[ -z ${backup_dir} ]] && continue
@@ -111,8 +110,8 @@ list_available_backups() {
             local total_count=$(get_total_file_count "${manifest_file}")
 
             echo "  ${timestamp} (Files backed up - Total: ${total_count} [Stow: ${stow_count}, Non-Stow: ${non_stow_count}])"
-            echo "    Date: ${backup_date}"
-            echo "    Location: ${backup_dir}"
+            print_detail "Date: ${backup_date}" 2
+            print_detail "Location: ${backup_dir}" 2
         else
             echo "  ${timestamp} (manifest file missing - backup may be incomplete)"
         fi
@@ -201,8 +200,8 @@ restore_stow_files() {
 
         # Show what file will be restored
         print_action "Restoring stow file: ${relative_path}" >&2
-        echo "    From: ${backup_file}" >&2
-        echo "    To: ${target_file}" >&2
+        print_detail "From: ${backup_file}" 3 >&2
+        print_detail "To: ${target_file}" 3 >&2
 
         if [[ ${dry_run_flag} == "dry-run" ]]; then
             # In dry-run mode, just count and continue
@@ -308,8 +307,8 @@ restore_non_stow_files() {
 
         # Show what file will be restored
         print_action "Restoring non-stow file: ${source_location}" >&2
-        echo "    From: ${backup_file}" >&2
-        echo "    To: ${target_file}" >&2
+        print_detail "From: ${backup_file}" 3 >&2
+        print_detail "To: ${target_file}" 3 >&2
 
         if [[ ${dry_run_flag} == "dry-run" ]]; then
             # In dry-run mode, just count and continue
@@ -519,17 +518,6 @@ perform_restoration() {
     print_header "Restoration Complete!"
     echo ""
 
-    if [[ ${dry_run_flag} == "dry-run" ]]; then
-        print_preview "Restoration preview completed successfully!"
-        echo ""
-        print_warning "No changes were made to your system - this was a dry run"
-    else
-        print_celebration "Your original dotfiles have been successfully restored!"
-        echo ""
-        print_warning "The backup directory may now be empty as files were moved back"
-    fi
-
-    echo ""
     echo "Operation details:"
     print_config_item "Backup location" "${backup_dir}"
     print_config_item "Stow files restored" "${actual_stow_restored}"
@@ -555,6 +543,21 @@ perform_restoration() {
 
     # Show backup directory status and cleanup command
     show_backup_directory_status "${backup_dir}" "${dry_run_flag}"
+
+    if [[ ${dry_run_flag} == "dry-run" ]]; then
+        print_warning "No changes were made to your system - this was a dry run"
+    else
+        print_warning "The backup directory may now be empty as files were moved back"
+    fi
+    echo ""
+
+    # Success message last
+    if [[ ${dry_run_flag} == "dry-run" ]]; then
+        print_preview "Restoration preview completed successfully!"
+    else
+        print_celebration "Your original dotfiles have been successfully restored!"
+    fi
+    echo ""
 }
 
 # Main execution logic
@@ -580,6 +583,7 @@ main() {
             echo "Restoration cancelled."
             exit 0
         fi
+        echo ""
 
         backup_timestamp="${user_choice}"
     fi

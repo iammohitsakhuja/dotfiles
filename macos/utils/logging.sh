@@ -68,6 +68,16 @@ print_header() {
     echo "${indent}${COLOR_BLUE}${COLOR_BOLD}======================================================================${COLOR_RESET}"
 }
 
+# Print a subheader with cyan color and underline separator
+print_subheader() {
+    local title="$1"
+    local indent_level="${2:-0}"
+    local indent=$(get_indent "${indent_level}")
+    echo "${indent}${COLOR_BOLD}${COLOR_CYAN}${title}${COLOR_RESET}"
+    printf "${indent}${COLOR_CYAN}=%.0s${COLOR_RESET}" $(seq 1 ${#title})
+    echo ""
+}
+
 # Print a step indicator with current/total progress and description
 print_step() {
     local current="$1"
@@ -128,4 +138,12 @@ print_preview() {
     local indent_level="${2:-0}"
     local indent=$(get_indent "${indent_level}")
     echo "${indent}${COLOR_BLUE}🔍 ${message}${COLOR_RESET}"
+}
+
+# Print detailed/secondary information in gray color
+print_detail() {
+    local message="$1"
+    local indent_level="${2:-2}"
+    local indent=$(get_indent "${indent_level}")
+    echo "${indent}${COLOR_GRAY}${message}${COLOR_RESET}"
 }
