@@ -104,11 +104,13 @@ list_available_backups() {
         local manifest_file=$(get_manifest_file_path "${backup_dir}")
 
         if [[ -f ${manifest_file} ]]; then
-            # Extract backup date and file count from JSON
+            # Extract backup date and detailed file counts from JSON
             local backup_date=$(get_backup_metadata "${manifest_file}" "date")
-            local file_count=$(get_backup_metadata "${manifest_file}" "file_count")
+            local stow_count=$(get_stow_file_count "${manifest_file}")
+            local non_stow_count=$(get_non_stow_file_count "${manifest_file}")
+            local total_count=$(get_total_file_count "${manifest_file}")
 
-            echo "  ${timestamp} (${file_count} files backed up)"
+            echo "  ${timestamp} (Files backed up - Total: ${total_count} [Stow: ${stow_count}, Non-Stow: ${non_stow_count}])"
             echo "    Date: ${backup_date}"
             echo "    Location: ${backup_dir}"
         else
@@ -147,47 +149,60 @@ cleanup_stow_symlinks() {
     echo ""
 }
 
-# Function to restore files from backup
-restore_files() {
+# Function to restore stow files from backup
+restore_stow_files() {
     local backup_dir="$1"
     local manifest_file="$2"
     local dry_run_flag="$3"
 
-    print_step 2 3 "Restoring original files from backup"
+    print_action "Restoring stow-managed files..." >&2
 
-    local files_to_restore=$(get_backed_up_files "${manifest_file}")
+    local files_to_restore=$(get_backed_up_stow_files "${manifest_file}")
     if [[ -z ${files_to_restore} ]]; then
-        print_warning "No files to restore from this backup"
+        print_warning "No stow files to restore from this backup" >&2
+        echo "0|0|0" # Return stow_restored|stow_failed|stow_skipped
         return 0
     fi
 
     local files_restored=0
     local files_failed=0
+    local files_skipped=0
 
-    while IFS= read -r relative_path; do
-        [[ -z ${relative_path} ]] && continue
+    # Process JSON objects line by line
+    while IFS= read -r json_entry; do
+        [[ -z ${json_entry} ]] && continue
 
-        local backup_file="${backup_dir}/${relative_path}"
+        # Extract path from JSON object
+        local relative_path=$(echo "${json_entry}" | jq -r '.path')
+
+        # Validate we got valid data
+        if [[ ${relative_path} == "null" ]]; then
+            print_warning "Invalid JSON entry, skipping" >&2
+            ((files_failed++))
+            continue
+        fi
+
+        local backup_file="${backup_dir}/stow/${relative_path}"
         local target_file="${HOME}/${relative_path}"
 
         # Validate paths are safe
         if [[ ${relative_path} =~ ^/ ]] || [[ ${relative_path} =~ \.\. ]]; then
-            print_warning "Unsafe path detected, skipping: ${relative_path}"
+            print_warning "Unsafe path detected, skipping: ${relative_path}" >&2
             ((files_failed++))
             continue
         fi
 
         # Check if backup file exists
         if [[ ! -f ${backup_file} ]]; then
-            print_warning "Backup file not found, skipping: ${relative_path}"
+            print_warning "Stow backup file not found, skipping: ${relative_path}" >&2
             ((files_failed++))
             continue
         fi
 
         # Show what file will be restored
-        print_action "Restoring: ${relative_path}"
-        echo "    From: ${backup_file}"
-        echo "    To: ${target_file}"
+        print_action "Restoring stow file: ${relative_path}" >&2
+        echo "    From: ${backup_file}" >&2
+        echo "    To: ${target_file}" >&2
 
         if [[ ${dry_run_flag} == "dry-run" ]]; then
             # In dry-run mode, just count and continue
@@ -201,23 +216,25 @@ restore_files() {
 
             # Check if target file already exists
             if [[ -e ${target_file} ]]; then
-                print_warning "Target file already exists: ${relative_path}"
-                echo "  Choose action: (r)eplace, (s)kip, (q)uit"
-                read -r action
+                print_warning "Target file already exists: ${relative_path}" >&2
+                echo -n "  Choose action - (r)eplace, (s)kip, (q)uit: " >&2
+                read -r action </dev/tty
                 case "${action}" in
                 r | R | replace)
-                    print_action "Replacing existing file..."
+                    print_action "Replacing existing file..." >&2
                     ;;
                 s | S | skip)
-                    print_action "Skipping file..."
+                    print_action "Skipping file..." >&2
+                    ((files_skipped++))
                     continue
                     ;;
                 q | Q | quit)
-                    echo "Restoration cancelled by user."
+                    echo "Restoration cancelled by user." >&2
                     exit 0
                     ;;
                 *)
-                    print_action "Invalid choice, skipping file..."
+                    print_action "Invalid choice, skipping file..." >&2
+                    ((files_skipped++))
                     continue
                     ;;
                 esac
@@ -225,22 +242,183 @@ restore_files() {
 
             # Move file back from backup (atomic operation - reverse of backup)
             if mv "${backup_file}" "${target_file}" 2>/dev/null; then
-                print_success "Restored: ${relative_path}"
+                print_success "Restored stow file: ${relative_path}" >&2
                 ((files_restored++))
             else
-                print_warning "Failed to restore: ${relative_path}"
+                print_warning "Failed to restore stow file: ${relative_path}" >&2
                 ((files_failed++))
             fi
         fi
     done <<<"${files_to_restore}"
 
-    echo ""
-    echo "File restoration summary:"
-    print_config_item "Files restored" "${files_restored}"
-    if [[ ${files_failed} -gt 0 ]]; then
-        print_config_item "Files failed" "${files_failed}"
+    # Return counts in format: restored|failed|skipped
+    echo "${files_restored}|${files_failed}|${files_skipped}"
+}
+
+# Function to restore non-stow files from backup
+restore_non_stow_files() {
+    local backup_dir="$1"
+    local manifest_file="$2"
+    local dry_run_flag="$3"
+
+    print_action "Restoring non-stow files..." >&2
+
+    local files_to_restore=$(get_backed_up_non_stow_files "${manifest_file}")
+    if [[ -z ${files_to_restore} ]]; then
+        print_warning "No non-stow files to restore from this backup" >&2
+        echo "0|0|0" # Return non_stow_restored|non_stow_failed|non_stow_skipped
+        return 0
     fi
-    echo ""
+
+    local files_restored=0
+    local files_failed=0
+    local files_skipped=0
+
+    # Process JSON objects line by line
+    while IFS= read -r json_entry; do
+        [[ -z ${json_entry} ]] && continue
+
+        # Extract path and source_location from JSON
+        local backup_path=$(echo "${json_entry}" | jq -r '.path')
+        local source_location=$(echo "${json_entry}" | jq -r '.source_location')
+
+        # Validate we got valid data
+        if [[ ${backup_path} == "null" ]] || [[ ${source_location} == "null" ]]; then
+            print_warning "Invalid JSON entry, skipping" >&2
+            ((files_failed++))
+            continue
+        fi
+
+        local backup_file="${backup_dir}/non_stow/${backup_path}"
+        local target_file="${source_location}"
+
+        # Validate paths are safe for source_location
+        if [[ ${source_location} =~ \.\. ]]; then
+            print_warning "Unsafe source location detected, skipping: ${source_location}" >&2
+            ((files_failed++))
+            continue
+        fi
+
+        # Check if backup file exists
+        if [[ ! -f ${backup_file} ]]; then
+            print_warning "Non-stow backup file not found, skipping: ${backup_path}" >&2
+            ((files_failed++))
+            continue
+        fi
+
+        # Show what file will be restored
+        print_action "Restoring non-stow file: ${source_location}" >&2
+        echo "    From: ${backup_file}" >&2
+        echo "    To: ${target_file}" >&2
+
+        if [[ ${dry_run_flag} == "dry-run" ]]; then
+            # In dry-run mode, just count and continue
+            ((files_restored++))
+        else
+            # Create target directory if it doesn't exist
+            local target_dir=$(dirname "${target_file}")
+            if [[ ! -d ${target_dir} ]]; then
+                mkdir -p "${target_dir}"
+            fi
+
+            # Check if target file already exists
+            if [[ -e ${target_file} ]]; then
+                print_warning "Target file already exists: ${source_location}" >&2
+                echo -n "  Choose action - (r)eplace, (s)kip, (q)uit: " >&2
+                read -r action </dev/tty
+                case "${action}" in
+                r | R | replace)
+                    print_action "Replacing existing file..." >&2
+                    ;;
+                s | S | skip)
+                    print_action "Skipping file..." >&2
+                    ((files_skipped++))
+                    continue
+                    ;;
+                q | Q | quit)
+                    echo "Restoration cancelled by user." >&2
+                    exit 0
+                    ;;
+                *)
+                    print_action "Invalid choice, skipping file..." >&2
+                    ((files_skipped++))
+                    continue
+                    ;;
+                esac
+            fi
+
+            # Move file back from backup (atomic operation - reverse of backup)
+            if mv "${backup_file}" "${target_file}" 2>/dev/null; then
+                print_success "Restored non-stow file: ${source_location}" >&2
+                ((files_restored++))
+            else
+                print_warning "Failed to restore non-stow file: ${source_location}" >&2
+                ((files_failed++))
+            fi
+        fi
+    done <<<"${files_to_restore}"
+
+    # Return counts in format: restored|failed|skipped
+    echo "${files_restored}|${files_failed}|${files_skipped}"
+}
+
+# Function to restore files from backup using dual workflow
+restore_files() {
+    local backup_dir="$1"
+    local manifest_file="$2"
+    local dry_run_flag="$3"
+
+    print_step 2 3 "Restoring original files from backup" >&2
+
+    # Get file counts for initial check
+    local stow_count=$(get_stow_file_count "${manifest_file}")
+    local non_stow_count=$(get_non_stow_file_count "${manifest_file}")
+    local total_count=$(get_total_file_count "${manifest_file}")
+
+    if [[ ${total_count} -eq 0 ]]; then
+        print_warning "No files to restore from this backup" >&2
+        return 0
+    fi
+
+    echo "Files to restore - Total: ${total_count} (Stow: ${stow_count}, Non-Stow: ${non_stow_count})" >&2
+    echo "" >&2
+
+    # Restore stow files first
+    local stow_results=$(restore_stow_files "${backup_dir}" "${manifest_file}" "${dry_run_flag}")
+    local stow_restored stow_failed stow_skipped
+    IFS='|' read -r stow_restored stow_failed stow_skipped <<<"${stow_results}"
+
+    echo "" >&2
+
+    # Restore non-stow files second
+    local non_stow_results=$(restore_non_stow_files "${backup_dir}" "${manifest_file}" "${dry_run_flag}")
+    local non_stow_restored non_stow_failed non_stow_skipped
+    IFS='|' read -r non_stow_restored non_stow_failed non_stow_skipped <<<"${non_stow_results}"
+
+    # Calculate totals
+    local total_restored=$((stow_restored + non_stow_restored))
+    local total_failed=$((stow_failed + non_stow_failed))
+    local total_skipped=$((stow_skipped + non_stow_skipped))
+
+    echo "" >&2
+    echo "File restoration summary:" >&2
+    print_config_item "Stow files restored" "${stow_restored}" >&2
+    print_config_item "Non-stow files restored" "${non_stow_restored}" >&2
+    print_config_item "Total files restored" "${total_restored}" >&2
+    if [[ ${total_failed} -gt 0 ]]; then
+        print_config_item "Stow files failed" "${stow_failed}" >&2
+        print_config_item "Non-stow files failed" "${non_stow_failed}" >&2
+        print_config_item "Total files failed" "${total_failed}" >&2
+    fi
+    if [[ ${total_skipped} -gt 0 ]]; then
+        print_config_item "Stow files skipped" "${stow_skipped}" >&2
+        print_config_item "Non-stow files skipped" "${non_stow_skipped}" >&2
+        print_config_item "Total files skipped" "${total_skipped}" >&2
+    fi
+    echo "" >&2
+
+    # Return actual restoration results: stow_restored|stow_failed|stow_skipped|non_stow_restored|non_stow_failed|non_stow_skipped|total_restored|total_failed|total_skipped
+    echo "${stow_restored}|${stow_failed}|${stow_skipped}|${non_stow_restored}|${non_stow_failed}|${non_stow_skipped}|${total_restored}|${total_failed}|${total_skipped}"
 }
 
 # Function to show backup directory status and cleanup command
@@ -258,23 +436,47 @@ show_backup_directory_status() {
 
     # Check if backup directory exists and show contents
     if [[ -d ${backup_dir} ]]; then
-        # Count dotfiles (excluding manifest) and total files
-        local dotfile_count=$(find "${backup_dir}" -type f ! -name "backup-manifest.json" 2>/dev/null | wc -l)
-        local total_files=$(find "${backup_dir}" -type f 2>/dev/null | wc -l)
+        # Count files in stow and non_stow subdirectories
+        local stow_files=0
+        local non_stow_files=0
+        local manifest_files=0
 
-        if [[ ${dotfile_count} -eq 0 ]]; then
-            if [[ ${total_files} -eq 1 ]]; then
+        if [[ -d "${backup_dir}/stow" ]]; then
+            stow_files=$(find "${backup_dir}/stow" -type f 2>/dev/null | wc -l | tr -d ' ')
+        fi
+
+        if [[ -d "${backup_dir}/non_stow" ]]; then
+            non_stow_files=$(find "${backup_dir}/non_stow" -type f 2>/dev/null | wc -l | tr -d ' ')
+        fi
+
+        if [[ -f "${backup_dir}/backup-manifest.json" ]]; then
+            manifest_files=1
+        fi
+
+        local total_dotfiles=$((stow_files + non_stow_files))
+
+        if [[ ${total_dotfiles} -eq 0 ]]; then
+            if [[ ${manifest_files} -eq 1 ]]; then
                 print_config_item "Remaining files" "(only manifest file - all dotfiles restored)"
-            elif [[ ${total_files} -eq 0 ]]; then
-                print_config_item "Remaining files" "(empty - all files restored)"
             else
-                print_config_item "Remaining files" "(all dotfiles restored, ${total_files} metadata files remain)"
+                print_config_item "Remaining files" "(empty - all files restored)"
             fi
         else
-            print_config_item "Remaining files" "${dotfile_count} dotfiles (plus manifest)"
-            echo ""
-            echo "Remaining dotfiles in backup directory:"
-            find "${backup_dir}" -type f ! -name "backup-manifest.json" -exec basename {} \; 2>/dev/null | sort | sed 's/^/  /'
+            print_config_item "Stow files remaining" "${stow_files}"
+            print_config_item "Non-stow files remaining" "${non_stow_files}"
+            print_config_item "Total files remaining" "${total_dotfiles} (plus manifest)"
+
+            if [[ ${stow_files} -gt 0 ]]; then
+                echo ""
+                echo "Remaining stow files:"
+                find "${backup_dir}/stow" -type f 2>/dev/null | sed "s|${backup_dir}/stow/||" | sort | sed 's/^/  /'
+            fi
+
+            if [[ ${non_stow_files} -gt 0 ]]; then
+                echo ""
+                echo "Remaining non-stow files:"
+                find "${backup_dir}/non_stow" -type f 2>/dev/null | sed "s|${backup_dir}/non_stow/||" | sort | sed 's/^/  /'
+            fi
         fi
 
         echo ""
@@ -296,7 +498,13 @@ perform_restoration() {
     cleanup_stow_symlinks "${dry_run_flag}"
 
     # Step 2: Restore original files
-    restore_files "${backup_dir}" "${manifest_file}" "${dry_run_flag}"
+    local restoration_results=$(restore_files "${backup_dir}" "${manifest_file}" "${dry_run_flag}")
+
+    # Parse restoration results: stow_restored|stow_failed|stow_skipped|non_stow_restored|non_stow_failed|non_stow_skipped|total_restored|total_failed|total_skipped
+    local actual_stow_restored actual_stow_failed actual_stow_skipped
+    local actual_non_stow_restored actual_non_stow_failed actual_non_stow_skipped
+    local actual_total_restored actual_total_failed actual_total_skipped
+    IFS='|' read -r actual_stow_restored actual_stow_failed actual_stow_skipped actual_non_stow_restored actual_non_stow_failed actual_non_stow_skipped actual_total_restored actual_total_failed actual_total_skipped <<<"${restoration_results}"
 
     # Step 3: Final Summary and Completion
     print_step 3 3 "Restoration summary and completion"
@@ -305,8 +513,7 @@ perform_restoration() {
     echo "Summary of restoration operations:"
     echo ""
     print_success "Stow-managed symlinks cleaned up from ${HOME}"
-    local file_count=$(get_backup_metadata "${manifest_file}" "file_count")
-    print_success "Original files restored from backup (${file_count} files)"
+    print_success "Original files restored from backup (${actual_stow_restored} stow + ${actual_non_stow_restored} non-stow = ${actual_total_restored} total files)"
     print_success "Dotfiles restoration completed successfully"
     echo ""
     print_header "Restoration Complete!"
@@ -325,7 +532,19 @@ perform_restoration() {
     echo ""
     echo "Operation details:"
     print_config_item "Backup location" "${backup_dir}"
-    print_config_item "Files restored" "${file_count}"
+    print_config_item "Stow files restored" "${actual_stow_restored}"
+    print_config_item "Non-stow files restored" "${actual_non_stow_restored}"
+    print_config_item "Total files restored" "${actual_total_restored}"
+    if [[ ${actual_total_failed} -gt 0 ]]; then
+        print_config_item "Stow files failed" "${actual_stow_failed}"
+        print_config_item "Non-stow files failed" "${actual_non_stow_failed}"
+        print_config_item "Total files failed" "${actual_total_failed}"
+    fi
+    if [[ ${actual_total_skipped} -gt 0 ]]; then
+        print_config_item "Stow files skipped" "${actual_stow_skipped}"
+        print_config_item "Non-stow files skipped" "${actual_non_stow_skipped}"
+        print_config_item "Total files skipped" "${actual_total_skipped}"
+    fi
     print_config_item "Stow directory" "${STOW_DIR}"
     echo ""
     echo "Next steps:"
@@ -354,7 +573,7 @@ main() {
             die "ERROR: No backups available for restoration"
         fi
 
-        echo "Enter the timestamp of the backup you want to restore (or 'q' to quit):"
+        echo -n "Enter the timestamp of the backup you want to restore (or 'q' to quit): "
         read -r user_choice
 
         if [[ ${user_choice} == "q" || ${user_choice} == "Q" ]]; then
@@ -374,7 +593,9 @@ main() {
 
     # Show configuration details
     local backup_date=$(get_backup_metadata "${manifest_file}" "date")
-    local file_count=$(get_backup_metadata "${manifest_file}" "file_count")
+    local stow_count=$(get_stow_file_count "${manifest_file}")
+    local non_stow_count=$(get_non_stow_file_count "${manifest_file}")
+    local total_count=$(get_total_file_count "${manifest_file}")
 
     print_header "Dotfiles Restoration Process"
     echo ""
@@ -382,7 +603,9 @@ main() {
     print_config_item "Stow directory" "${STOW_DIR}"
     print_config_item "Backup timestamp" "${backup_timestamp}"
     print_config_item "Backup date" "${backup_date}"
-    print_config_item "Files to restore" "${file_count}"
+    print_config_item "Stow files to restore" "${stow_count}"
+    print_config_item "Non-stow files to restore" "${non_stow_count}"
+    print_config_item "Total files to restore" "${total_count}"
     print_config_item "Backup location" "${backup_dir}"
     print_config_item "Dry run mode" "$(if [[ ${dry_run} -eq 1 ]]; then echo "Yes (preview only)"; else echo "No (actual restoration)"; fi)"
     echo ""
@@ -396,7 +619,7 @@ main() {
 
     # Get user confirmation for real mode
     if [[ ${dry_run} -eq 0 ]]; then
-        echo "Are you sure you want to continue? (y/N)"
+        echo -n "Are you sure you want to continue? (y/N): "
         read -r confirmation
 
         if [[ ! ${confirmation} =~ ^[Yy]$ ]]; then

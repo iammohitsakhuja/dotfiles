@@ -13,6 +13,12 @@ readonly BACKUP_BASE_DIR="${HOME}/.backup/dotfiles"
 readonly MANIFEST_FILENAME="backup-manifest.json"
 readonly TIMESTAMP_PATTERN="^[0-9]{8}-[0-9]{6}$"
 
+# Non-stow files to backup (absolute paths)
+readonly NON_STOW_FILES=(
+    "${HOME}/.gitconfig"
+    # Add more files as needed
+)
+
 # Get the base backup directory path
 get_backup_base_dir() {
     echo "${BACKUP_BASE_DIR}"
@@ -102,7 +108,7 @@ validate_backup_directory() {
     fi
 
     # Check if any files were successfully backed up
-    local backed_up_count=$(jq -r '.summary.files_backed_up' "${manifest_file}" 2>/dev/null || echo "0")
+    local backed_up_count=$(jq -r '.summary.total.files_backed_up' "${manifest_file}" 2>/dev/null || echo "0")
     if [[ ${backed_up_count} -eq 0 ]]; then
         die "ERROR: No successfully backed up files found in manifest"
     fi
@@ -120,7 +126,7 @@ get_backup_metadata() {
         jq -r '.metadata.backup_date' "${manifest_file}" 2>/dev/null || echo "Unknown"
         ;;
     "file_count")
-        jq -r '.summary.files_backed_up' "${manifest_file}" 2>/dev/null || echo "0"
+        jq -r '.summary.total.files_backed_up' "${manifest_file}" 2>/dev/null || echo "0"
         ;;
     "repository_path")
         jq -r '.metadata.repository_path' "${manifest_file}" 2>/dev/null || echo "Unknown"
@@ -131,10 +137,36 @@ get_backup_metadata() {
     esac
 }
 
-# Get list of files that were successfully backed up
-get_backed_up_files() {
+# Get list of stow files that were successfully backed up
+get_backed_up_stow_files() {
     local manifest_file="$1"
-    jq -r '.files[] | select(.status == "moved_successfully") | .path' "${manifest_file}"
+    # Output a compact JSON object to avoid splitting it across multiple lines.
+    jq -c '.files.stow[] | select(.status == "moved_successfully") | {path}' "${manifest_file}"
+}
+
+# Get list of non-stow files that were successfully backed up (with source locations)
+get_backed_up_non_stow_files() {
+    local manifest_file="$1"
+    # Output a compact JSON object to avoid splitting it across multiple lines.
+    jq -c '.files.non_stow[] | select(.status == "moved_successfully") | {path, source_location}' "${manifest_file}"
+}
+
+# Get count of successfully backed up stow files
+get_stow_file_count() {
+    local manifest_file="$1"
+    jq -r '.summary.stow.files_backed_up' "${manifest_file}" 2>/dev/null || echo "0"
+}
+
+# Get count of successfully backed up non-stow files
+get_non_stow_file_count() {
+    local manifest_file="$1"
+    jq -r '.summary.non_stow.files_backed_up' "${manifest_file}" 2>/dev/null || echo "0"
+}
+
+# Get total count of successfully backed up files
+get_total_file_count() {
+    local manifest_file="$1"
+    jq -r '.summary.total.files_backed_up' "${manifest_file}" 2>/dev/null || echo "0"
 }
 
 # Remove empty backup directory if no files were backed up
@@ -155,6 +187,7 @@ detect_stow_conflicts() {
     local stowing_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p' | tr '\n' ',' | sed 's/,$//')
     local ownership_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*existing target is not owned by stow: \([^[:space:]]*\).*/\1/p' | tr '\n' ',' | sed 's/,$//')
 
+    # TODO: Remove the need for `actual_conflicts` variable.
     # Combine both types of conflics.
     local actual_conflicts=$(printf "%s\n%s" "${stowing_conflicts}" "${ownership_conflicts}" | grep -v '^$' | sort -u | tr '\n' ',' | sed 's/,$//')
 
@@ -162,12 +195,29 @@ detect_stow_conflicts() {
     echo "${stowing_conflicts}|${ownership_conflicts}|${actual_conflicts}"
 }
 
+detect_non_stow_conflicts() {
+    local conflicts=()
+
+    # Accept array elements as positional parameters
+    for file_path in "$@"; do
+        # Check if file already exists at the path. If yes, then it will conflict.
+        if [[ -e ${file_path} ]]; then
+            conflicts+=("${file_path}")
+        fi
+    done
+
+    # TODO: Switch this to follow the same delimiter pattern: Comma-separated.
+    # Return pipe-separated list
+    local IFS='|'
+    echo "${conflicts[*]}"
+}
+
 # Create backup directory structure and initialize manifest
 create_backup_manifest() {
     local backup_dir="$1"
     local stowing_conflicts="$2"
     local ownership_conflicts="$3"
-    local actual_conflicts="$4"
+    local non_stow_conflicts="$4"
     local stow_dir="$5"
 
     local manifest_file=$(get_manifest_file_path "${backup_dir}")
@@ -188,17 +238,18 @@ create_backup_manifest() {
     ensure_backup_structure "${backup_dir}"
     echo "Manifest file path: ${manifest_file}" >&2
 
-    # Show conflict summary to user
+    # Count conflicts
     local stowing_count=$(echo "${stowing_conflicts}" | tr ',' '\n' | grep -c . 2>/dev/null || echo 0)
     local ownership_count=$(echo "${ownership_conflicts}" | tr ',' '\n' | grep -c . 2>/dev/null || echo 0)
-    echo "Found conflicts: ${stowing_count} stowing conflicts, ${ownership_count} ownership conflicts" >&2
+    local stow_count=$((stowing_count + ownership_count))
+    local non_stow_count=$(echo "${non_stow_conflicts}" | tr '|' '\n' | grep -c . 2>/dev/null || echo 0)
+    local total_conflicts=$((stow_count + non_stow_count))
 
-    # Initialize JSON manifest file
-    local backup_date=$(date -Iseconds)
-    local stowing_conflicts_json
-    local ownership_conflicts_json
+    echo "Found conflicts: ${stow_count} stow conflicts (Stowing: ${stowing_conflicts}, Ownership: ${ownership_conflicts}), ${non_stow_count} non-stow conflicts" >&2
 
     # Convert conflicts to JSON arrays
+    local stowing_conflicts_json ownership_conflicts_json non_stow_conflicts_json
+
     if [[ -n ${stowing_conflicts} ]]; then
         stowing_conflicts_json=$(echo "${stowing_conflicts}" | tr ',' '\n' | jq -R -s 'split("\n") | map(select(length > 0))')
     else
@@ -211,26 +262,52 @@ create_backup_manifest() {
         ownership_conflicts_json="[]"
     fi
 
-    local total_conflicts=$(echo "${actual_conflicts}" | tr ',' '\n' | grep -c . 2>/dev/null || echo 0)
+    if [[ -n ${non_stow_conflicts} ]]; then
+        non_stow_conflicts_json=$(echo "${non_stow_conflicts}" | tr '|' '\n' | jq -R -s 'split("\n") | map(select(length > 0))')
+    else
+        non_stow_conflicts_json="[]"
+    fi
 
     # Create initial JSON structure
     cat >"${manifest_file}" <<EOF
 {
   "metadata": {
-    "backup_date": "${backup_date}",
+    "backup_date": "$(date -Iseconds)",
     "repository_path": "${stow_dir}",
-    "backup_version": "1.0"
+    "backup_version": "2.0"
   },
   "conflicts": {
-    "stowing_conflicts": ${stowing_conflicts_json},
-    "ownership_conflicts": ${ownership_conflicts_json},
+    "stow": {
+      "stowing_conflict_files": ${stowing_conflicts_json},
+      "ownership_conflict_files": ${ownership_conflicts_json},
+      "total_count": ${stow_count}
+    },
+    "non_stow": {
+      "conflict_files": ${non_stow_conflicts_json},
+      "total_count": ${non_stow_count}
+    },
     "total_count": ${total_conflicts}
   },
-  "files": [],
+  "files": {
+    "stow": [],
+    "non_stow": []
+  },
   "summary": {
-    "files_backed_up": 0,
-    "files_failed": 0,
-    "backup_size_total": 0
+    "stow": {
+      "files_backed_up": 0,
+      "files_failed": 0,
+      "backup_size_total": 0
+    },
+    "non_stow": {
+      "files_backed_up": 0,
+      "files_failed": 0,
+      "backup_size_total": 0
+    },
+    "total": {
+      "files_backed_up": 0,
+      "files_failed": 0,
+      "backup_size_total": 0
+    }
   }
 }
 EOF
@@ -244,16 +321,19 @@ backup_conflicting_files() {
     local manifest_file="$2"
     local stowing_conflicts="$3"
     local ownership_conflicts="$4"
-    local actual_conflicts="$5"
+    local non_stow_conflicts="$5"
 
-    local files_backed_up=0
-    local files_failed=0
-    local total_backup_size=0
+    # TODO: Separate functions for stow and non-stow backups.
 
-    # Backup all conflicting files.
-    # Convert comma-separated conflicts back to array for processing
-    IFS=',' read -ra conflicts_array <<<"${actual_conflicts}"
-    for relative_path in "${conflicts_array[@]}"; do
+    # Counters for each type
+    local stow_backed_up=0 stow_failed=0 stow_size=0
+    local non_stow_backed_up=0 non_stow_failed=0 non_stow_size=0
+
+    # Process stow conflicts (relative paths from $HOME)
+    local all_stow_conflicts="${stowing_conflicts},${ownership_conflicts}"
+    IFS=',' read -ra stow_array <<<"${all_stow_conflicts}"
+
+    for relative_path in "${stow_array[@]}"; do
         # Skip empty entries
         [[ -z ${relative_path} ]] && continue
         # Validate paths are relative and safe
@@ -262,9 +342,9 @@ backup_conflicting_files() {
             echo "WARNING: Unsafe path detected: ${relative_path}" >&2
             # shellcheck disable=SC2016
             update_manifest_field "${manifest_file}" \
-                '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
+                '.files.stow += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
                 --arg path "${relative_path}" --arg status "unsafe_path" --arg type "unknown" --argjson size 0
-            ((files_failed++))
+            ((stow_failed++))
             continue
         fi
 
@@ -281,15 +361,11 @@ backup_conflicting_files() {
         # Check if target file exists
         if [[ -e ${target_file} ]]; then
             # Get file size
-            local file_size
-            if [[ -f ${target_file} ]]; then
-                file_size=$(stat -f%z "${target_file}" 2>/dev/null || echo 0)
-            else
-                file_size=0
-            fi
+            local file_size=0
+            [[ -f ${target_file} ]] && file_size=$(stat -f%z "${target_file}" 2>/dev/null || echo 0)
 
             # File exists and would conflict, backup it
-            local backup_file="${backup_dir}/${relative_path}"
+            local backup_file="${backup_dir}/stow/${relative_path}"
             local backup_parent_dir=$(dirname "${backup_file}")
 
             mkdir -p "${backup_parent_dir}"
@@ -298,44 +374,111 @@ backup_conflicting_files() {
             if mv "${target_file}" "${backup_file}" 2>/dev/null; then
                 # shellcheck disable=SC2016
                 update_manifest_field "${manifest_file}" \
-                    '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
+                    '.files.stow += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
                     --arg path "${relative_path}" --arg status "moved_successfully" --arg type "${conflict_type}" --argjson size "${file_size}"
-                echo "Moved to backup: ${relative_path}" >&2
-                ((files_backed_up++))
-                ((total_backup_size += file_size))
+                echo "Moved stow file to backup: ${relative_path}" >&2
+                ((stow_backed_up++))
+                ((stow_size += file_size))
             else
                 # shellcheck disable=SC2016
                 update_manifest_field "${manifest_file}" \
-                    '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
+                    '.files.stow += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
                     --arg path "${relative_path}" --arg status "move_failed" --arg type "${conflict_type}" --argjson size 0
-                ((files_failed++))
-                die "ERROR: Failed to move ${relative_path} to backup - check permissions"
+                ((stow_failed++))
+                die "ERROR: Failed to move ${relative_path} to backup"
             fi
         else
             # shellcheck disable=SC2016
             update_manifest_field "${manifest_file}" \
-                '.files += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
+                '.files.stow += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
                 --arg path "${relative_path}" --arg status "target_missing" --arg type "${conflict_type}" --argjson size 0
-            ((files_failed++))
+            ((stow_failed++))
             die "ERROR: Conflict file ${relative_path} doesn't exist at target"
         fi
     done
 
-    # Return counts for summary update
-    echo "${files_backed_up}|${files_failed}|${total_backup_size}"
+    # Process non-stow conflicts (absolute paths)
+    IFS='|' read -ra non_stow_array <<<"${non_stow_conflicts}"
+
+    for absolute_path in "${non_stow_array[@]}"; do
+        # Skip empty entries
+        [[ -z ${absolute_path} ]] && continue
+
+        # Check if target file exists
+        if [[ -e ${absolute_path} ]]; then
+            # Get file size
+            local file_size=0
+            [[ -f ${absolute_path} ]] && file_size=$(stat -f%z "${absolute_path}" 2>/dev/null || echo 0)
+
+            # Create relative path for backup storage
+            local backup_relative="${absolute_path#/}"
+            local backup_file="${backup_dir}/non_stow/${backup_relative}"
+            local backup_parent_dir=$(dirname "${backup_file}")
+            mkdir -p "${backup_parent_dir}"
+
+            if mv "${absolute_path}" "${backup_file}" 2>/dev/null; then
+                # shellcheck disable=SC2016
+                update_manifest_field "${manifest_file}" \
+                    '.files.non_stow += [{"path": $path, "status": $status, "source_location": $source, "backup_size": $size}]' \
+                    --arg path "${backup_relative}" --arg status "moved_successfully" --arg source "${absolute_path}" --argjson size "${file_size}"
+                echo "Moved non-stow file to backup: ${absolute_path}" >&2
+                ((non_stow_backed_up++))
+                ((non_stow_size += file_size))
+            else
+                # shellcheck disable=SC2016
+                update_manifest_field "${manifest_file}" \
+                    '.files.non_stow += [{"path": $path, "status": $status, "source_location": $source, "backup_size": $size}]' \
+                    --arg path "${backup_relative}" --arg status "move_failed" --arg source "${absolute_path}" --argjson size 0
+                ((non_stow_failed++))
+                die "ERROR: Failed to move ${absolute_path} to backup"
+            fi
+        else
+            # File does not exist now whereas it did when computing conflicts. Should not happen.
+            # TODO: Register this in the manifest, throw an error and kill execution.
+            continue
+        fi
+    done
+
+    # Return all counts
+    echo "${stow_backed_up}|${stow_failed}|${stow_size}|${non_stow_backed_up}|${non_stow_failed}|${non_stow_size}"
 }
 
 # Update the final backup summary in the manifest
 update_backup_manifest_summary() {
     local manifest_file="$1"
-    local files_backed_up="$2"
-    local files_failed="$3"
-    local total_backup_size="$4"
+    local stow_backed_up="$2"
+    local stow_failed="$3"
+    local stow_size="$4"
+    local non_stow_backed_up="$5"
+    local non_stow_failed="$6"
+    local non_stow_size="$7"
 
+    # Calculate totals
+    local total_backed_up=$((stow_backed_up + non_stow_backed_up))
+    local total_failed=$((stow_failed + non_stow_failed))
+    local total_size=$((stow_size + non_stow_size))
+
+    # Update all summary sections
     # shellcheck disable=SC2016
     update_manifest_field "${manifest_file}" \
-        '.summary.files_backed_up = $backed_up | .summary.files_failed = $failed | .summary.backup_size_total = $total_size' \
-        --argjson backed_up "${files_backed_up}" --argjson failed "${files_failed}" --argjson total_size "${total_backup_size}"
+        '.summary.stow.files_backed_up = $stow_backed_up |
+         .summary.stow.files_failed = $stow_failed |
+         .summary.stow.backup_size_total = $stow_size |
+         .summary.non_stow.files_backed_up = $non_stow_backed_up |
+         .summary.non_stow.files_failed = $non_stow_failed |
+         .summary.non_stow.backup_size_total = $non_stow_size |
+         .summary.total.files_backed_up = $total_backed_up |
+         .summary.total.files_failed = $total_failed |
+         .summary.total.backup_size_total = $total_size' \
+        --argjson stow_backed_up "${stow_backed_up}" \
+        --argjson stow_failed "${stow_failed}" \
+        --argjson stow_size "${stow_size}" \
+        --argjson non_stow_backed_up "${non_stow_backed_up}" \
+        --argjson non_stow_failed "${non_stow_failed}" \
+        --argjson non_stow_size "${non_stow_size}" \
+        --argjson total_backed_up "${total_backed_up}" \
+        --argjson total_failed "${total_failed}" \
+        --argjson total_size "${total_size}"
 }
 
 # Main function to backup existing files before stow operations
@@ -357,37 +500,45 @@ backup_existing_files() {
     local backup_timestamp=$(generate_backup_timestamp)
     local backup_dir=$(get_backup_dir_by_timestamp "${backup_timestamp}")
 
-    # Detect conflicts between stow and existing files
-    local conflict_data=$(detect_stow_conflicts "${stow_dir}" "${HOME}")
+    # Detect stow conflicts
+    local stow_conflict_data=$(detect_stow_conflicts "${stow_dir}" "${HOME}")
+    local stowing_conflicts ownership_conflicts actual_stow_conflicts
+    IFS='|' read -r stowing_conflicts ownership_conflicts actual_stow_conflicts <<<"${stow_conflict_data}"
 
-    # Parse conflict data (format: stowing_conflicts|ownership_conflicts|actual_conflicts)
-    local stowing_conflicts ownership_conflicts actual_conflicts
-    IFS='|' read -r stowing_conflicts ownership_conflicts actual_conflicts <<<"${conflict_data}"
+    # Detect non-stow conflicts
+    local non_stow_conflicts=$(detect_non_stow_conflicts "${NON_STOW_FILES[@]}")
 
-    if [[ -z ${actual_conflicts} ]]; then
+    # Check if any conflicts exist
+    if [[ -z ${actual_stow_conflicts} ]] && [[ -z ${non_stow_conflicts} ]]; then
         echo "No existing files would be overwritten. Proceeding without backup." >&2
         echo "" # Return empty string for no backup
         return 0
     fi
 
-    # Create backup manifest and directory structure
-    local manifest_file=$(create_backup_manifest "${backup_dir}" "${stowing_conflicts}" "${ownership_conflicts}" "${actual_conflicts}" "${stow_dir}")
+    # Create backup manifest and backup directory structure
+    local manifest_file=$(create_backup_manifest "${backup_dir}" "${stowing_conflicts}" "${ownership_conflicts}" "${non_stow_conflicts}" "${stow_dir}")
 
-    # Backup conflicting files
-    local backup_results=$(backup_conflicting_files "${backup_dir}" "${manifest_file}" "${stowing_conflicts}" "${ownership_conflicts}" "${actual_conflicts}")
+    # Backup all conflicting files
+    local backup_results=$(backup_conflicting_files "${backup_dir}" "${manifest_file}" "${stowing_conflicts}" "${ownership_conflicts}" "${non_stow_conflicts}")
 
-    # Parse backup results (format: files_backed_up|files_failed|total_backup_size)
-    local files_backed_up files_failed total_backup_size
-    IFS='|' read -r files_backed_up files_failed total_backup_size <<<"${backup_results}"
+    # Parse backup results: stow_backed_up|stow_failed|stow_size|non_stow_backed_up|non_stow_failed|non_stow_size
+    local stow_backed_up stow_failed stow_size non_stow_backed_up non_stow_failed non_stow_size
+    IFS='|' read -r stow_backed_up stow_failed stow_size non_stow_backed_up non_stow_failed non_stow_size <<<"${backup_results}"
 
-    # Update final summary in manifest
-    update_backup_manifest_summary "${manifest_file}" "${files_backed_up}" "${files_failed}" "${total_backup_size}"
+    # Update manifest summary
+    update_backup_manifest_summary "${manifest_file}" \
+        "${stow_backed_up}" "${stow_failed}" "${stow_size}" \
+        "${non_stow_backed_up}" "${non_stow_failed}" "${non_stow_size}"
 
-    if [[ ${files_backed_up} -gt 0 ]]; then
+    local total_backed_up=$((stow_backed_up + non_stow_backed_up))
+
+    if [[ ${total_backed_up} -gt 0 ]]; then
         echo "" >&2
         echo "Backup completed successfully!" >&2
         echo "  Location: ${backup_dir}" >&2
-        echo "  Files backed up: ${files_backed_up}" >&2
+        echo "  Stow files backed up: ${stow_backed_up}" >&2
+        echo "  Non-stow files backed up: ${non_stow_backed_up}" >&2
+        echo "  Total files: ${total_backed_up}" >&2
         echo "  Manifest: ${manifest_file}" >&2
         echo "" >&2
         # Return the backup directory path to stdout
