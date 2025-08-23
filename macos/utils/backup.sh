@@ -433,9 +433,12 @@ backup_conflicting_files() {
                 die "ERROR: Failed to move ${absolute_path} to backup"
             fi
         else
-            # File does not exist now whereas it did when computing conflicts. Should not happen.
-            # TODO: Register this in the manifest, throw an error and kill execution.
-            continue
+            # shellcheck disable=SC2016
+            update_manifest_field "${manifest_file}" \
+                '.files.non_stow += [{"path": $path, "status": $status, "source_location": $source, "backup_size": $size}]' \
+                --arg path "${backup_relative}" --arg status "target_missing" --arg source "${absolute_path}" --argjson size 0
+            ((non_stow_failed++))
+            die "ERROR: Conflict file ${absolute_path} doesn't exist at target"
         fi
     done
 
