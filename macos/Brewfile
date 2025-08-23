@@ -40,6 +40,7 @@ brew "pre-commit"
 brew "ack"
 brew "eza" # Modern replacement for `ls` command.
 brew "fd" # Faster alternative to `find` command.
+brew "stow" # Symlink manager for dotfiles.
 brew "tree"
 brew "yazi" # Terminal file manager.
 
@@ -82,6 +83,7 @@ brew "rbenv"
 brew "clang-format"
 brew "google-java-format"
 brew "rust-analyzer"
+brew "shellcheck"
 brew "shfmt"
 
 # Container, Kubernetes & cloud tools.

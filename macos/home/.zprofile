@@ -1,3 +1,6 @@
+# Disable shellcheck since it doesn't support Zsh
+# shellcheck disable=all
+
 # Link homebrew in this manner only if terminal is running in native mode.
 # Possible values are:
 #   0 -> Running in native mode.

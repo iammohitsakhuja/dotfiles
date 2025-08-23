@@ -8,9 +8,9 @@ BREW_PREFIX="$(brew --prefix)"
 echo "Installing/updating Bash..."
 brew install bash
 echo "Done"
-if ! fgrep -q "$BREW_PREFIX/bin/bash" /etc/shells; then
+if ! grep -F -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
     echo "Adding Bash to /etc/shells... "
-    echo "$BREW_PREFIX/bin/bash" | sudo tee -a /etc/shells
+    echo "${BREW_PREFIX}/bin/bash" | sudo tee -a /etc/shells
     echo -e "Done\n\n"
 fi
 
@@ -19,11 +19,11 @@ fi
 echo "Installing/updating Zsh..."
 brew install zsh
 echo "Done"
-if ! fgrep -q "$BREW_PREFIX/bin/zsh" /etc/shells; then
+if ! grep -F -q "${BREW_PREFIX}/bin/zsh" /etc/shells; then
     echo "Adding Zsh to /etc/shells... "
-    echo "$BREW_PREFIX/bin/zsh" | sudo tee -a /etc/shells
+    echo "${BREW_PREFIX}/bin/zsh" | sudo tee -a /etc/shells
     echo -e "Done\nChanging default shell to Zsh... "
-    chsh -s $BREW_PREFIX/bin/zsh
+    chsh -s ${BREW_PREFIX}/bin/zsh
     echo -e "Done\n\n"
 fi
 
