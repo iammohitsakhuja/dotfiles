@@ -1,0 +1,15 @@
+# markdownlint configuration
+# See https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md
+
+# Disable line length rule for documentation
+MD013: false
+
+# Allow duplicate headers (common in documentation)
+MD024:
+  siblings_only: true
+
+# Allow raw HTML (useful for complex formatting)
+MD033: false
+
+# Allow emphasis used instead of a header
+MD036: false

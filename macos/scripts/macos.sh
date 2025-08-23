@@ -81,12 +81,11 @@ defaults write NSGlobalDomain AppleTemperatureUnit -string "Celsius"
 # Screen                                                                      #
 ###############################################################################
 
-# Fix for blurry fonts on non-Retina displays on MacOS Mojave.
-defaults write NSGlobalDomain CGFontRenderingFontSmoothingDisabled -bool NO
-
-# Enable subpixel font rendering on non-Apple LCDs.
-# defaults write NSGlobalDomain AppleFontSmoothing -int 2
-defaults write NSGlobalDomain AppleFontSmoothing -int 1
+# Fix for blurry fonts on non-Retina displays on MacOS Sequoia and above.
+# Uncomment to apply it during installation.
+# Or run it as a one-off command.
+# Possible values are: 0 (off), 1 (low), 2 (medium/default), 3 (high)
+# defaults -currentHost write -globalDomain AppleFontSmoothing -int 0
 
 ###############################################################################
 # Finder                                                                      #
@@ -102,8 +101,8 @@ defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/Desk
 # Set ~/Documents/screenshots as the default location for screenshots.
 # By default, it is ~/Desktop.
 # This helps keep the Desktop clean.
-mkdir -p ~/Documents/screenshots
-defaults write com.apple.screencapture location "~/Documents/screenshots"
+mkdir -p "${HOME}/Documents/screenshots"
+defaults write com.apple.screencapture location "${HOME}/Documents/screenshots"
 
 # Show icons for hard drives and removable media on the desktop.
 defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
@@ -236,6 +235,9 @@ defaults write ~/Library/Preferences/ByHost/com.apple.controlcenter.plist Batter
 defaults write -globalDomain NSStatusItemSpacing -int 12
 defaults write -globalDomain NSStatusItemSelectionPadding 8
 
+# Automatically hide and show the Menu Bar.
+defaults write NSGlobalDomain _HIHideMenuBar -bool true
+
 ###############################################################################
 # QuickLook                                                                   #
 ###############################################################################
@@ -351,7 +353,7 @@ defaults write com.googlecode.iterm2 PromptOnQuit -bool false
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
 # Disable local Time Machine backups.
-hash tmutil &> /dev/null && sudo tmutil disablelocal
+hash tmutil &>/dev/null && sudo tmutil disablelocal
 
 ###############################################################################
 # Activity Monitor                                                            #

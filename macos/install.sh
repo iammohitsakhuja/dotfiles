@@ -1,10 +1,24 @@
 #!/usr/bin/env bash
 
-# Helper function to exit the script.
-die() {
-    printf '%s\n' "$1" >&2
-    exit 1
-}
+# Enable strict error handling
+set -e          # Exit on any command failure
+set -o pipefail # Fail on any command in a pipeline
+
+# Source shared utilities
+source "$(dirname "$0")/utils/logging.sh"
+source "$(dirname "$0")/utils/miscellaneous.sh"
+source "$(dirname "$0")/utils/platform.sh"
+source "$(dirname "$0")/utils/backup.sh"
+source "$(dirname "$0")/utils/bootstrap.sh"
+
+# Require Apple Silicon Mac - fail immediately if not supported
+require_apple_silicon
+
+# Get the stow directory (directory containing this script).
+STOW_DIR=$(cd "$(dirname "$0")" && pwd)
+
+# Actual backup directory path (set by backup function)
+BACKUP_DIR=""
 
 # Initialise the option variables.
 # This ensures we are not contaminated by variables from the environment.
@@ -17,10 +31,9 @@ show_help() {
     echo "Usage: ./install.sh [-h | --help] [--no-backup] [-e | --email] [-n | --name]"
     echo "       -h, --help     | Show this help."
     echo "       --no-backup    | Skip backing up existing files before stow operations."
-    echo "       -e, --email    | The email that you would like to use for setting up things like git, ssh e.g. \"abc@example.com\"."
-    echo "       -n, --name     | The name that you would like to use for setting up things like git e.g. \"John Doe\"."
+    echo '       -e, --email    | The email that you would like to use for setting up things like git, ssh e.g. "abc@example.com".'
+    echo '       -n, --name     | The name that you would like to use for setting up things like git e.g. "John Doe".'
     echo ""
-    echo "To remove the files that you don't need, simply open this installation script and delete their names."
 }
 
 # Ensure proper usage.
@@ -36,11 +49,11 @@ while :; do
         ;;
     -e | --email)
         # TODO: Handle the case where the next argument to email is another option e.g. `-e -c`.
-        if [[ "$2" ]]; then
+        if [[ -n $2 ]]; then
             email=$2
             shift 2
         else
-            die "ERROR: \"--email\" requires a non-empty option argument."
+            die 'ERROR: "--email" requires a non-empty option argument.'
         fi
         ;;
     --email=?*)
@@ -48,15 +61,15 @@ while :; do
         shift
         ;;
     --email=) # Handle the case of an empty --email=.
-        die "ERROR: \"--email\" requires a non-empty option argument."
+        die 'ERROR: "--email" requires a non-empty option argument.'
         ;;
     -n | --name)
         # TODO: Handle the case where the next argument to name is another option e.g. `-n -c`.
-        if [[ "$2" ]]; then
+        if [[ -n $2 ]]; then
             name=$2
             shift 2
         else
-            die "ERROR: \"--name\" requires a non-empty option argument."
+            die 'ERROR: "--name" requires a non-empty option argument.'
         fi
         ;;
     --name=?*)
@@ -64,180 +77,107 @@ while :; do
         shift
         ;;
     --name=) # Handle the case of an empty --name=.
-        die "ERROR: \"--name\" requires a non-empty option argument."
+        die 'ERROR: "--name" requires a non-empty option argument.'
         ;;
     *) # Default case: No more options, so break out of the loop.
-        echo "Backup = $backup"
-        echo "Email = $email"
-        echo "Name = $name"
+        print_header "macOS Dotfiles Installation"
         echo ""
-        if ! [[ $email ]]; then
-            die "ERROR: \"--email\" is required."
+        print_subheader "Configuration:"
+        print_config_item "Backup existing files" "$(if [[ ${backup} == 1 ]]; then echo "Yes"; else echo "No"; fi)"
+        print_config_item "Email" "${email}"
+        print_config_item "Name" "${name}"
+        print_config_item "Stow directory" "${STOW_DIR}"
+        echo ""
+
+        # Argument Validations.
+        if [[ -z ${email} ]]; then
+            die 'ERROR: "--email" is required.'
         fi
-        if ! [[ $name ]]; then
-            die "ERROR: \"--name\" is required."
+        if [[ -z ${name} ]]; then
+            die 'ERROR: "--name" is required.'
         fi
         break
         ;;
     esac
 done
 
-# Get the current working directory.
-PWD=$(pwd)
-
-# Validate stow is available
-if ! command -v stow >/dev/null 2>&1; then
-    die "ERROR: GNU Stow is required but not installed"
+# Other Validations.
+# Validate we found the correct directory with home/ package
+if [[ ! -d "${STOW_DIR}/home" ]]; then
+    die "ERROR: Could not locate home/ directory for stow operations."
 fi
 
-# Function to backup existing files before stow operations
-backup_existing_files() {
-    if [[ $backup == 0 ]]; then
-        echo "Skipping backup as requested..."
-        return 0
-    fi
+print_header "Authentication & Dependencies"
+echo ""
 
-    echo "Checking for existing files that would be overwritten..."
+# Ask for administrator password upfront.
+print_action "Requesting administrator authentication..."
+sudo -v
 
-    # Create timestamped backup directory
-    local backup_timestamp=$(date +%Y%m%d-%H%M%S)
-    local backup_dir="$HOME/.dotfiles-backup-$backup_timestamp"
-    local manifest_file="$backup_dir/backup-manifest.txt"
-
-    # Use stow simulation with verbose output to detect actual conflicts
-    local stow_output
-    stow_output=$(stow -n -d "$PWD" -t "$HOME" home --verbose=3 2>&1)
-
-    # Filter files that are causing conflicts.
-    local actual_conflicts
-    actual_conflicts=$(echo "$stow_output" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p')
-
-    if [[ -z "$actual_conflicts" ]]; then
-        echo "No existing files would be overwritten. Proceeding without backup."
-        return 0
-    fi
-
-    # Check available disk space (require at least 100MB free)
-    local available_space
-    available_space=$(df "$HOME" | awk 'NR==2 {print $4}')
-    # $available_space is in `KB`
-    if [[ $available_space -lt 102400 ]]; then
-        die "ERROR: Insufficient disk space for backup. At least 100MB required."
-    fi
-
-    echo "Creating backup directory: $backup_dir"
-    mkdir -p "$backup_dir"
-    echo "Manifest file path: $manifest_file"
-
-    # Initialize manifest file
-    echo "Backup created on: $(date)" > "$manifest_file"
-    echo "Original dotfiles repository: $PWD" >> "$manifest_file"
-    echo "" >> "$manifest_file"
-    echo "Files that would be overwritten:" >> "$manifest_file"
-    echo "$actual_conflicts" >> "$manifest_file"
-    echo "" >> "$manifest_file"
-    echo "Files backed up:" >> "$manifest_file"
-
-    local files_backed_up=0
-
-    # Backup all conflicting files.
-    for relative_path in $actual_conflicts; do
-        # Validate paths are relative and safe
-        if [[ "$relative_path" =~ ^/ ]] || [[ "$relative_path" =~ \.\. ]]; then
-            echo "WARNING: Unsafe path detected: $relative_path"
-            echo "  ✗ $relative_path (unsafe path)" >> "$manifest_file"
-            continue
-        fi
-
-        local target_file="$HOME/$relative_path"
-
-        # Check if target file exists
-        if [[ -e "$target_file" ]]; then
-            # File exists and would conflict, backup it
-            local backup_file="$backup_dir/$relative_path"
-            local backup_parent_dir
-            backup_parent_dir=$(dirname "$backup_file")
-
-            mkdir -p "$backup_parent_dir"
-
-            # Copy file preserving permissions and metadata.
-            if cp -p "$target_file" "$backup_file" 2>/dev/null; then
-                # Verify backup file exists before removing original
-                if [[ -f "$backup_file" ]]; then
-                    # Remove the original file to prevent stow conflicts
-                    if rm "$target_file" 2>/dev/null; then
-                        echo "  ✓ $relative_path (backed up and removed)" >> "$manifest_file"
-                        echo "Backed up and removed: $relative_path"
-                        ((files_backed_up++))
-                    else
-                        echo "  ⚠ $relative_path (backed up but removal failed)" >> "$manifest_file"
-                        die "ERROR: Failed to remove $relative_path after backup - check permissions"
-                    fi
-                else
-                    echo "  ✗ $relative_path (backup verification failed)" >> "$manifest_file"
-                    die "ERROR: Backup verification failed for $relative_path"
-                fi
-            else
-                echo "  ✗ $relative_path (copy failed)" >> "$manifest_file"
-                die "ERROR: Failed to backup $relative_path - check permissions for $(dirname "$backup_file")"
-            fi
-        else
-            die "ERROR: Conflict file $relative_path doesn't exist at target"
-        fi
-    done
-
-    if [[ $files_backed_up -gt 0 ]]; then
-        echo ""
-        echo "Backup completed successfully!"
-        echo "  Location: $backup_dir"
-        echo "  Files backed up: $files_backed_up"
-        echo "  Manifest: $manifest_file"
-        echo ""
-    else
-        # Remove empty backup directory if no files were actually backed up
-        rmdir "$backup_dir" 2>/dev/null || true
-        echo "No files needed backup. Proceeding with installation."
-        echo ""
-    fi
-
-    return 0
+# Keep sudo alive with proper cleanup, i.e., update existing time stamp until `./install.sh` has finished.
+sudo_keepalive() {
+    while true; do
+        sudo -n true
+        sleep 50
+        kill -0 "$$" 2>/dev/null || exit
+    done &
+    SUDO_PID=$!
+    # Ensure cleanup on script exit
+    trap 'kill ${SUDO_PID} 2>/dev/null' EXIT
 }
 
+# Start the keepalive
+sudo_keepalive
+
+print_success "Administrator authentication confirmed"
+echo ""
+
+# Install essential dependencies before proceeding
+bootstrap_dependencies
+
+print_header "Backup & File Management"
+echo ""
+
 # Backup existing files before stow operations
-backup_existing_files
+print_step 2 5 "Backing up existing files and linking dotfiles"
+BACKUP_DIR=$(backup_existing_files "${backup}" "${STOW_DIR}")
 
 # Stow will handle all dotfile symlinking.
 # The home/ directory structure mirrors the $HOME directory structure
-echo "Linking dotfiles into $HOME/ using stow ..."
-stow -d $PWD -t $HOME home --verbose=1
+echo "Linking dotfiles into ${HOME}/ using stow..."
+stow -d "${STOW_DIR}" -t "${HOME}" home --verbose=1
+print_success "Dotfiles linked successfully!"
+echo ""
 
-
-# Ask for administrator password.
-echo -e "\nInstallation requires administrator authentication..."
-sudo -v
-
-# Keep `sudo` alive i.e. update existing time stamp until `./install.sh` has
-# finished.
-while true; do
-    sudo -n true
-    sleep 60
-    kill -0 "$$" || exit
-done 2>/dev/null &
+print_header "System Configuration"
+echo ""
 
 # Make terminal authentication easier by using Touch ID instead of password, if Mac supports it.
-# TODO: Add support for Intel Macs with Touch ID.
-if [[ $(uname -m) == 'arm64' ]]; then
-    # Backup the original file.
+print_step 3 5 "Configuring system authentication and user settings"
+echo ""
+print_action "Configuring Touch ID for sudo authentication on compatible hardware..."
+# Check if Touch ID line already exists to avoid duplicates
+if ! sudo grep -q "pam_tid.so" /etc/pam.d/sudo; then
+    # Backup the original file before modifying
     sudo cp /etc/pam.d/sudo /etc/pam.d/sudo.backup
-    sudo sed -i "3i auth       sufficient     pam_tid.so" /etc/pam.d/sudo
+    # This syntax is required to work properly with macOS's inbuilt version of `sed`
+    sudo sed -i '' '3i\
+auth       sufficient     pam_tid.so
+' /etc/pam.d/sudo
+    print_success "Touch ID authentication enabled for sudo commands"
+else
+    print_success "Touch ID authentication already configured"
 fi
 
 # File to store any API keys in.
+print_action "Creating API keys storage file..."
 touch ~/.api_keys
+print_success "API keys file created at ~/.api_keys"
 
 # Configure git.
-git config --global user.email "$email"
-git config --global user.name "$name"
+print_action "Configuring Git with provided credentials..."
+git config --global user.email "${email}"
+git config --global user.name "${name}"
 git config --global core.editor "nvim"
 git config --global core.filemode false
 git config --global status.showuntrackedfiles all
@@ -249,25 +189,94 @@ git config --global merge.conflictstyle "zdiff3"
 git config --global color.ui true
 
 # Include delta configuration from separate file.
-git config --global include.path "~/.gitconfig-delta"
+git config --global include.path "${HOME}/.gitconfig-delta"
+print_success "Git configuration completed"
 
 # Create SSH key pair.
-ssh-keygen -t ed25519 -C "$email"
+print_action "Generating SSH key pair..."
+
+# Check if SSH keys already exist
+if [[ -f "${HOME}/.ssh/id_ed25519" ]]; then
+    print_success "SSH key already exists at ${HOME}/.ssh/id_ed25519"
+    print_detail "Skipping key generation to avoid overwriting existing key" 3
+else
+    # Generate SSH key non-interactively
+    ssh-keygen -t ed25519 -C "${email}" -f "${HOME}/.ssh/id_ed25519" -N "" -q
+
+    # Verify SSH key generation was successful
+    if [[ -f "${HOME}/.ssh/id_ed25519" && -f "${HOME}/.ssh/id_ed25519.pub" ]]; then
+        print_success "SSH key pair generated successfully"
+
+        # Verify SSH directory permissions
+        ssh_dir_perms=$(stat -f "%A" "${HOME}/.ssh" 2>/dev/null || echo "unknown")
+        if [[ ${ssh_dir_perms} == "700" ]]; then
+            print_success "SSH directory permissions are correct (700)"
+        else
+            print_warning "SSH directory permissions may need adjustment"
+            echo "    Expected: 700, Current: ${ssh_dir_perms}"
+        fi
+    else
+        die "ERROR: SSH key generation failed - key files not found"
+    fi
+fi
+echo ""
+
+print_header "Package Installation & Setup"
+echo ""
 
 # Run installation scripts.
-echo -e "\nRunning installation scripts..."
+print_step 4 5 "Installing packages and configuring system components"
+echo ""
 
-echo "Installing packages..."
-bash $PWD/scripts/packages.sh
-echo -e "Packages installed successfully!\n"
+print_action "Installing Homebrew packages and development tools..."
+bash "${STOW_DIR}/scripts/packages.sh"
+print_success "All packages installed successfully"
+echo ""
 
 # Configure Tmux colors.
-echo "Configuring Tmux colors..."
-tic -x $PWD/utils/terminfo/xterm-256color-italic.terminfo
-tic -x $PWD/utils/terminfo/tmux-256color.terminfo
-echo -e "Tmux colors configured successfully!\n"
+print_action "Configuring Tmux terminal colors..."
+tic -x "${STOW_DIR}/utils/terminfo/xterm-256color-italic.terminfo"
+tic -x "${STOW_DIR}/utils/terminfo/tmux-256color.terminfo"
+print_success "Tmux terminal colors configured"
+echo ""
 
 # Configure MacOS settings.
-echo "Configuring MacOS settings..."
-bash $PWD/scripts/macos.sh
-echo -e "MacOS settings configured successfully!\n"
+print_action "Applying macOS system preferences and settings..."
+bash "${STOW_DIR}/scripts/macos.sh"
+print_success "macOS system settings configured"
+echo ""
+
+print_header "Installation Complete!"
+echo ""
+print_step 5 5 "Summary of completed installation"
+echo ""
+print_success "Essential dependencies installed (Homebrew, Stow, Command Line Tools)"
+if [[ ${backup} == 1 ]]; then
+    print_success "Existing dotfiles backed up (if any conflicts found)"
+else
+    print_success "Backup skipped as requested"
+fi
+print_success "Dotfiles linked to home directory"
+print_success "Touch ID configured for sudo authentication"
+print_success "Git configured with user credentials (${name} <${email}>)"
+print_success "SSH key pair generated (if not already present)"
+print_success "API keys storage file created"
+print_success "Development packages and tools installed"
+print_success "Terminal colors configured for Tmux"
+print_success "macOS system preferences applied"
+echo ""
+print_celebration "Your macOS development environment is now ready!"
+echo ""
+echo "Next steps:"
+echo "  • Add your SSH public key to GitHub/GitLab"
+echo "  • Restart your terminal or run 'source ~/.zshrc'"
+echo "  • Review installed applications and configure as needed"
+echo ""
+echo "SSH public key location: ${HOME}/.ssh/id_ed25519.pub"
+if [[ -n ${BACKUP_DIR} ]]; then
+    echo "Dotfiles backup location: ${BACKUP_DIR}"
+else
+    echo "Dotfiles backup location: No backup created"
+fi
+echo ""
+echo "======================================================================"

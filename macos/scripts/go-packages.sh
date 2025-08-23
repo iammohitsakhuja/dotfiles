@@ -3,7 +3,7 @@
 GO_VERSION=1.24.4
 
 # Make sure `goenv` is installed.
-if ! [[ $(which goenv) ]]; then
+if ! command -v goenv &>/dev/null; then
     echo "Installing Goenv..."
     brew install goenv
     echo -e "Goenv installation successful!\n"
@@ -13,12 +13,12 @@ fi
 eval "$(goenv init -)"
 
 # Install Go.
-goenv install ${GO_VERSION}
-goenv global ${GO_VERSION}
+goenv install "${GO_VERSION}"
+goenv global "${GO_VERSION}"
 echo -e "Go installation successful!\n"
 
 # Install Go packages.
-if [[ $(which go) ]]; then
+if command -v go &>/dev/null; then
     echo "Installing Go packages..."
     # Uncomment the following line, and add package names to install global go packages.
     # go install
