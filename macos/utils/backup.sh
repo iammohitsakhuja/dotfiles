@@ -195,6 +195,7 @@ detect_stow_conflicts() {
     echo "${stowing_conflicts}|${ownership_conflicts}|${actual_conflicts}"
 }
 
+# Detect non-stow conflicts (files not managed by stow)
 detect_non_stow_conflicts() {
     local conflicts=()
 
@@ -206,9 +207,8 @@ detect_non_stow_conflicts() {
         fi
     done
 
-    # TODO: Switch this to follow the same delimiter pattern: Comma-separated.
-    # Return pipe-separated list
-    local IFS='|'
+    # Return comma-separated list
+    local IFS=','
     echo "${conflicts[*]}"
 }
 
@@ -242,7 +242,7 @@ create_backup_manifest() {
     local stowing_count=$(echo "${stowing_conflicts}" | tr ',' '\n' | grep -c . 2>/dev/null || echo 0)
     local ownership_count=$(echo "${ownership_conflicts}" | tr ',' '\n' | grep -c . 2>/dev/null || echo 0)
     local stow_count=$((stowing_count + ownership_count))
-    local non_stow_count=$(echo "${non_stow_conflicts}" | tr '|' '\n' | grep -c . 2>/dev/null || echo 0)
+    local non_stow_count=$(echo "${non_stow_conflicts}" | tr ',' '\n' | grep -c . 2>/dev/null || echo 0)
     local total_conflicts=$((stow_count + non_stow_count))
 
     echo "Found conflicts: ${stow_count} stow conflicts (Stowing: ${stowing_conflicts}, Ownership: ${ownership_conflicts}), ${non_stow_count} non-stow conflicts" >&2
@@ -263,7 +263,7 @@ create_backup_manifest() {
     fi
 
     if [[ -n ${non_stow_conflicts} ]]; then
-        non_stow_conflicts_json=$(echo "${non_stow_conflicts}" | tr '|' '\n' | jq -R -s 'split("\n") | map(select(length > 0))')
+        non_stow_conflicts_json=$(echo "${non_stow_conflicts}" | tr ',' '\n' | jq -R -s 'split("\n") | map(select(length > 0))')
     else
         non_stow_conflicts_json="[]"
     fi
@@ -398,7 +398,7 @@ backup_conflicting_files() {
     done
 
     # Process non-stow conflicts (absolute paths)
-    IFS='|' read -ra non_stow_array <<<"${non_stow_conflicts}"
+    IFS=',' read -ra non_stow_array <<<"${non_stow_conflicts}"
 
     for absolute_path in "${non_stow_array[@]}"; do
         # Skip empty entries
