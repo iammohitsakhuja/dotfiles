@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Exit immediately on error and handle pipes correctly
+set -e
+set -o pipefail
+
 # Source shared utilities
 source "$(dirname "$0")/utils/logging.sh"
 source "$(dirname "$0")/utils/platform.sh"
