@@ -315,19 +315,47 @@ EOF
     echo "${manifest_file}"
 }
 
-# Backup conflicting files to the backup directory
-backup_conflicting_files() {
+add_stow_file_to_manifest() {
+    local manifest_file="$1"
+    local path="$2"
+    local status="$3"
+    local conflict_type="$4"
+    local backup_size="$5"
+
+    # shellcheck disable=SC2016
+    update_manifest_field "${manifest_file}" \
+        '.files.stow += [{"path": $path, "status": $status, "conflict_type": $conflict_type, "backup_size": $backup_size}]' \
+        --arg path "${path}" \
+        --arg status "${status}" \
+        --arg conflict_type "${conflict_type}" \
+        --argjson backup_size "${backup_size}"
+}
+
+add_non_stow_file_to_manifest() {
+    local manifest_file="$1"
+    local path="$2"
+    local status="$3"
+    local source_location="$4"
+    local backup_size="$5"
+
+    # shellcheck disable=SC2016
+    update_manifest_field "${manifest_file}" \
+        '.files.non_stow += [{"path": $path, "status": $status, "source_location": $source_location, "backup_size": $backup_size}]' \
+        --arg path "${path}" \
+        --arg status "${status}" \
+        --arg source_location "${source_location}" \
+        --argjson backup_size "${backup_size}"
+}
+
+# Backup conflicting stow files to the backup directory
+backup_conflicting_stow_files() {
     local backup_dir="$1"
     local manifest_file="$2"
     local stowing_conflicts="$3"
     local ownership_conflicts="$4"
-    local non_stow_conflicts="$5"
 
-    # TODO: Separate functions for stow and non-stow backups.
-
-    # Counters for each type
-    local stow_backed_up=0 stow_failed=0 stow_size=0
-    local non_stow_backed_up=0 non_stow_failed=0 non_stow_size=0
+    # Counters
+    local backed_up=0 failed=0 size=0
 
     # Process stow conflicts (relative paths from $HOME)
     local all_stow_conflicts="${stowing_conflicts},${ownership_conflicts}"
@@ -336,15 +364,13 @@ backup_conflicting_files() {
     for relative_path in "${stow_array[@]}"; do
         # Skip empty entries
         [[ -z ${relative_path} ]] && continue
+
         # Validate paths are relative and safe
         if [[ ${relative_path} =~ ^/ ]] || [[ ${relative_path} =~ \.\. ]]; then
             # Make sure that `echo` statements are directed to stderr and not returned by the function.
             echo "WARNING: Unsafe path detected: ${relative_path}" >&2
-            # shellcheck disable=SC2016
-            update_manifest_field "${manifest_file}" \
-                '.files.stow += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
-                --arg path "${relative_path}" --arg status "unsafe_path" --arg type "unknown" --argjson size 0
-            ((stow_failed++))
+            add_stow_file_to_manifest "${manifest_file}" "${relative_path}" "unsafe_path" "unknown" 0
+            ((failed++))
             continue
         fi
 
@@ -364,38 +390,40 @@ backup_conflicting_files() {
             local file_size=0
             [[ -f ${target_file} ]] && file_size=$(stat -f%z "${target_file}" 2>/dev/null || echo 0)
 
-            # File exists and would conflict, backup it
+            # Create path for backup storage
             local backup_file="${backup_dir}/stow/${relative_path}"
             local backup_parent_dir=$(dirname "${backup_file}")
-
             mkdir -p "${backup_parent_dir}"
 
             # Move file to backup location (atomic operation)
             if mv "${target_file}" "${backup_file}" 2>/dev/null; then
-                # shellcheck disable=SC2016
-                update_manifest_field "${manifest_file}" \
-                    '.files.stow += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
-                    --arg path "${relative_path}" --arg status "moved_successfully" --arg type "${conflict_type}" --argjson size "${file_size}"
+                add_stow_file_to_manifest "${manifest_file}" "${relative_path}" "moved_successfully" "${conflict_type}" "${file_size}"
                 echo "Moved stow file to backup: ${relative_path}" >&2
-                ((stow_backed_up++))
-                ((stow_size += file_size))
+                ((backed_up++))
+                ((size += file_size))
             else
-                # shellcheck disable=SC2016
-                update_manifest_field "${manifest_file}" \
-                    '.files.stow += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
-                    --arg path "${relative_path}" --arg status "move_failed" --arg type "${conflict_type}" --argjson size 0
-                ((stow_failed++))
+                add_stow_file_to_manifest "${manifest_file}" "${relative_path}" "move_failed" "${conflict_type}" 0
+                ((failed++))
                 die "ERROR: Failed to move ${relative_path} to backup"
             fi
         else
-            # shellcheck disable=SC2016
-            update_manifest_field "${manifest_file}" \
-                '.files.stow += [{"path": $path, "status": $status, "conflict_type": $type, "backup_size": $size}]' \
-                --arg path "${relative_path}" --arg status "target_missing" --arg type "${conflict_type}" --argjson size 0
-            ((stow_failed++))
+            add_stow_file_to_manifest "${manifest_file}" "${relative_path}" "target_missing" "${conflict_type}" 0
+            ((failed++))
             die "ERROR: Conflict file ${relative_path} doesn't exist at target"
         fi
     done
+
+    echo "${backed_up}|${failed}|${size}"
+}
+
+# Backup conflicting non-stow files to the backup directory
+backup_conflicting_non_stow_files() {
+    local backup_dir="$1"
+    local manifest_file="$2"
+    local non_stow_conflicts="$3"
+
+    # Counters
+    local backed_up=0 failed=0 size=0
 
     # Process non-stow conflicts (absolute paths)
     IFS=',' read -ra non_stow_array <<<"${non_stow_conflicts}"
@@ -417,30 +445,42 @@ backup_conflicting_files() {
             mkdir -p "${backup_parent_dir}"
 
             if mv "${absolute_path}" "${backup_file}" 2>/dev/null; then
-                # shellcheck disable=SC2016
-                update_manifest_field "${manifest_file}" \
-                    '.files.non_stow += [{"path": $path, "status": $status, "source_location": $source, "backup_size": $size}]' \
-                    --arg path "${backup_relative}" --arg status "moved_successfully" --arg source "${absolute_path}" --argjson size "${file_size}"
+                add_non_stow_file_to_manifest "${manifest_file}" "${backup_relative}" "moved_successfully" "${absolute_path}" "${file_size}"
                 echo "Moved non-stow file to backup: ${absolute_path}" >&2
-                ((non_stow_backed_up++))
-                ((non_stow_size += file_size))
+                ((backed_up++))
+                ((size += file_size))
             else
-                # shellcheck disable=SC2016
-                update_manifest_field "${manifest_file}" \
-                    '.files.non_stow += [{"path": $path, "status": $status, "source_location": $source, "backup_size": $size}]' \
-                    --arg path "${backup_relative}" --arg status "move_failed" --arg source "${absolute_path}" --argjson size 0
-                ((non_stow_failed++))
+                add_non_stow_file_to_manifest "${manifest_file}" "${backup_relative}" "move_failed" "${absolute_path}" 0
+                ((failed++))
                 die "ERROR: Failed to move ${absolute_path} to backup"
             fi
         else
-            # shellcheck disable=SC2016
-            update_manifest_field "${manifest_file}" \
-                '.files.non_stow += [{"path": $path, "status": $status, "source_location": $source, "backup_size": $size}]' \
-                --arg path "${backup_relative}" --arg status "target_missing" --arg source "${absolute_path}" --argjson size 0
-            ((non_stow_failed++))
+            add_non_stow_file_to_manifest "${manifest_file}" "${backup_relative}" "target_missing" "${absolute_path}" 0
+            ((failed++))
             die "ERROR: Conflict file ${absolute_path} doesn't exist at target"
         fi
     done
+
+    echo "${backed_up}|${failed}|${size}"
+}
+
+# Backup conflicting files to the backup directory
+backup_conflicting_files() {
+    local backup_dir="$1"
+    local manifest_file="$2"
+    local stowing_conflicts="$3"
+    local ownership_conflicts="$4"
+    local non_stow_conflicts="$5"
+
+    # Backup stow conflicts
+    local stow_conflicts_result=$(backup_conflicting_stow_files "${backup_dir}" "${manifest_file}" "${stowing_conflicts}" "${ownership_conflicts}" "${non_stow_conflicts}")
+    local stow_backed_up stow_failed stow_size
+    IFS='|' read -r stow_backed_up stow_failed stow_size <<<"${stow_conflicts_result}"
+
+    # Backup non-stow conflicts
+    local non_stow_conflicts_result=$(backup_conflicting_non_stow_files "${backup_dir}" "${manifest_file}" "${non_stow_conflicts}")
+    local non_stow_backed_up non_stow_failed non_stow_size
+    IFS='|' read -r non_stow_backed_up non_stow_failed non_stow_size <<<"${non_stow_conflicts_result}"
 
     # Return all counts
     echo "${stow_backed_up}|${stow_failed}|${stow_size}|${non_stow_backed_up}|${non_stow_failed}|${non_stow_size}"
