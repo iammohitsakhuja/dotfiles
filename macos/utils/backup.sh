@@ -238,11 +238,16 @@ create_backup_manifest() {
     ensure_backup_structure "${backup_dir}"
     print_detail "Manifest file path: ${manifest_file}" 3 >&2
 
-    # Count conflicts
-    local stowing_count=$(echo "${stowing_conflicts}" | tr ',' '\n' | grep -c . 2>/dev/null || echo 0)
-    local ownership_count=$(echo "${ownership_conflicts}" | tr ',' '\n' | grep -c . 2>/dev/null || echo 0)
+    # Count conflicts (handle empty strings properly)
+    local stowing_count=0
+    [[ -n ${stowing_conflicts} ]] && stowing_count=$(echo "${stowing_conflicts}" | tr ',' '\n' | grep -c .)
+    echo "Stowing conflicts: ${stowing_conflicts}" >&2
+    local ownership_count=0
+    [[ -n ${ownership_conflicts} ]] && ownership_count=$(echo "${ownership_conflicts}" | tr ',' '\n' | grep -c .)
+    echo "Ownership conflicts: ${ownership_conflicts}" >&2
     local stow_count=$((stowing_count + ownership_count))
-    local non_stow_count=$(echo "${non_stow_conflicts}" | tr ',' '\n' | grep -c . 2>/dev/null || echo 0)
+    local non_stow_count=0
+    [[ -n ${non_stow_conflicts} ]] && non_stow_count=$(echo "${non_stow_conflicts}" | tr ',' '\n' | grep -c .)
     local total_conflicts=$((stow_count + non_stow_count))
 
     print_action "Found conflicts: ${stow_count} stow conflicts (Stowing: ${stowing_conflicts}, Ownership: ${ownership_conflicts}), ${non_stow_count} non-stow conflicts" >&2
