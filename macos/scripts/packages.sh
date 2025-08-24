@@ -17,7 +17,7 @@ bash "${SCRIPT_DIR}/shell-packages.sh"
 echo -e "Done\n\n"
 
 # Install all packages specified in Brewfile.
-brew bundle
+brew bundle --file "${SCRIPT_DIR}/../Brewfile"
 echo -e "Packages installed successfully\n"
 
 # Set up Perl correctly. Any other changes are in `.zshrc`.
