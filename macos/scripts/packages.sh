@@ -16,9 +16,23 @@ echo "Installing/updating Shell and its packages..."
 bash "${SCRIPT_DIR}/shell-packages.sh"
 echo -e "Done\n\n"
 
-# Install all packages specified in Brewfile.
+# Install all packages from main Brewfile (this excludes Mac App Store apps).
+echo "Installing Homebrew packages (excluding Mac App Store apps)..."
 brew bundle --file "${SCRIPT_DIR}/../Brewfile"
-echo -e "Packages installed successfully\n"
+echo "Homebrew packages (excluding Mac App Store apps) installed successfully"
+
+# Handle Mac App Store apps separately with login check
+echo "Installing Mac App Store apps..."
+bash "${SCRIPT_DIR}/install-mas-apps.sh"
+mas_exit_code=$?
+
+case ${mas_exit_code} in
+0) echo "Mac App Store apps installed successfully" ;;
+1) echo "WARNING: Mac App Store apps installation failed - continuing with other packages" ;;
+2) echo "Mac App Store apps installation skipped by user" ;;
+*) echo "WARNING: Unexpected exit code from Mac App Store installation: ${mas_exit_code}" ;;
+esac
+echo ""
 
 # Set up Perl correctly. Any other changes are in `.zshrc`.
 # TODO: Automate this setup without asking for confirmation on autoconfiguration.
