@@ -1,0 +1,40 @@
+# Ignore patterns for stow
+# This prevents stow from creating symlinks for these patterns
+# Uses Perl regex patterns
+
+# macOS specific
+\.DS_Store
+
+# Ignore any .bak or .backup files
+.*\.bak$
+.*\.backup$
+.*\.old$
+.*~$
+
+# Ignore swap files
+.*\.swp$
+.*\.swo$
+
+# Log files
+.*\.log$
+
+# Cache directories
+.*cache.*
+.*Cache.*
+
+# Temporary files
+.*\.tmp$
+.*\.temp$
+
+# Ignore git files (if accidentally they are inside the stow package)
+\.git
+\.gitignore
+
+# Ignore auto-generated config directories
+\.config/coc
+\.config/gh
+\.config/htop
+\.config/iterm2
+
+# Ignore yazi auto-generated backup files with timestamps
+\.config/yazi/yazi\.toml-\d+$
