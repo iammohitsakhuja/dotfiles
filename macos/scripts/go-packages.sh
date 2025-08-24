@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-GO_VERSION=1.24.4
-
 # Make sure `goenv` is installed.
 if ! command -v goenv &>/dev/null; then
     echo "Installing Goenv..."
@@ -12,8 +10,11 @@ fi
 # Setup Goenv.
 eval "$(goenv init -)"
 
+# Use the latest Go version
+GO_VERSION=latest
+
 # Install Go.
-goenv install "${GO_VERSION}"
+goenv install "${GO_VERSION}" --skip-existing
 goenv global "${GO_VERSION}"
 echo -e "Go installation successful!\n"
 

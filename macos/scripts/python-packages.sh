@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-PYTHON_VERSION=3.11.5
-
 # Make sure `pyenv` is installed.
 if ! command -v pyenv &>/dev/null; then
     echo "Installing Pyenv..."
@@ -12,8 +10,19 @@ fi
 # Setup Pyenv.
 eval "$(pyenv init -)"
 
+# Get the latest stable Python version from pyenv
+PYTHON_VERSION=$(pyenv install -l | grep -E '^\s*[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 | sed 's/^[[:space:]]*//')
+
+# Fallback to a known stable version if detection fails
+if [[ -z ${PYTHON_VERSION} ]]; then
+    PYTHON_VERSION="3.13.7"
+    echo "Warning: Could not detect latest Python version, using fallback: ${PYTHON_VERSION}"
+fi
+
+echo "Using Python version: ${PYTHON_VERSION}"
+
 # Install Python.
-pyenv install "${PYTHON_VERSION}"
+pyenv install "${PYTHON_VERSION}" --skip-existing
 pyenv global "${PYTHON_VERSION}"
 echo -e "Python installation successful!\n"
 

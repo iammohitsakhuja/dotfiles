@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-RUBY_VERSION=3.2.2
+# Get the latest stable Ruby version from rbenv (will be set after rbenv is available)
 
 # Make sure `rbenv` is installed.
 if ! command -v rbenv &>/dev/null; then
@@ -12,8 +12,19 @@ fi
 # Setup Rbenv.
 eval "$(rbenv init -)"
 
+# Get the latest stable Ruby version from rbenv
+RUBY_VERSION=$(rbenv install -l | grep -E '^\s*[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 | sed 's/^[[:space:]]*//')
+
+# Fallback to a known stable version if detection fails
+if [[ -z ${RUBY_VERSION} ]]; then
+    RUBY_VERSION="3.4.5"
+    echo "Warning: Could not detect latest Ruby version, using fallback: ${RUBY_VERSION}"
+fi
+
+echo "Using Ruby version: ${RUBY_VERSION}"
+
 # Install Ruby.
-rbenv install "${RUBY_VERSION}"
+rbenv install "${RUBY_VERSION}" --skip-existing
 rbenv global "${RUBY_VERSION}"
 echo -e "Ruby installation successful!\n"
 
