@@ -216,7 +216,7 @@ utmctl list
 **⚠️ CRITICAL: NEVER test installation scripts on host machine - always use VM via SSH**
 
 1. **Get VM IP**: Use UTM GUI initially to get IP address from VM Terminal (typically `192.168.64.3`)
-2. **SSH Testing**: `ssh $(whoami)@192.168.64.3 "cd /Volumes/My\ Shared\ Files/dotfiles && ./script.sh [params]"`
+2. **SSH Testing**: `ssh $(whoami)@192.168.64.3 "cd /Volumes/dotfiles && ./script.sh [params]"`
 3. **Verify Results**: `ssh $(whoami)@192.168.64.3 "verification_commands"`
 
 **Quick Reference**: VM username usually same as host user, UTM IPs typically `192.168.64.x`
@@ -225,7 +225,7 @@ See `docs/development-environment.md` for comprehensive testing instructions.
 
 ### Testing Environment Architecture
 
-- **VM Shared Directory**: `/Volumes/My Shared Files/dotfiles` (within VM)
+- **VM Shared Directory**: `/Volumes/dotfiles` (within VM)
 - **Host Repository**: Shared with VM for live testing
 - **IPSW Cache**: `$HOME/.cache/dotfiles/` for reusing firmware downloads
 
