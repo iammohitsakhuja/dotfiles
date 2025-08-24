@@ -166,7 +166,6 @@ cask "notion"
 
 # Quick-look plugins.
 cask "qlcolorcode"
-cask "qlimagesize"
 cask "qlmarkdown"
 cask "qlstephen"
 cask "qlvideo"
