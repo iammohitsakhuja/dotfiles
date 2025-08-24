@@ -22,7 +22,7 @@ echo -e "Packages installed successfully\n"
 
 # Set up Perl correctly. Any other changes are in `.zshrc`.
 # TODO: Automate this setup without asking for confirmation on autoconfiguration.
-PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5" cpan local::lib
+PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5" PERL_MM_USE_DEFAULT=1 cpan local::lib
 
 # Set up FZF autocompletion and keybindings.
 "$(brew --prefix)/opt/fzf/install" --key-bindings --completion --no-update-rc
