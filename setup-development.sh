@@ -65,6 +65,11 @@ done
 
 echo "Setting up UTM for dotfiles testing..."
 
+# Check if brew is present
+if ! command -v brew &>/dev/null; then
+    die "ERROR: Homebrew is required but not installed. Please install Homebrew first: https://brew.sh/"
+fi
+
 # Install UTM if not present
 if ! command -v utmctl &>/dev/null; then
     echo "Installing UTM..."
@@ -150,7 +155,6 @@ echo "Next steps:"
 echo "1. Open UTM and create a new macOS VM"
 echo "2. Name the VM 'dotfiles-test' for CLI management"
 echo "3. Use the IPSW file at: ${IPSW_PATH}"
-echo "4. Configure shared directory to: $(pwd)"
-echo "5. Complete VM setup following docs/development-environment.md"
+echo "4. Complete VM setup following docs/development-environment.md"
 echo ""
 echo "For detailed setup instructions, see: docs/development-environment.md"
