@@ -35,7 +35,6 @@ esac
 echo ""
 
 # Set up Perl correctly. Any other changes are in `.zshrc`.
-# TODO: Automate this setup without asking for confirmation on autoconfiguration.
 PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5" PERL_MM_USE_DEFAULT=1 cpan local::lib
 
 # Set up FZF autocompletion and keybindings.
