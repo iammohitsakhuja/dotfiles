@@ -22,7 +22,15 @@ This is a macOS dotfiles repository with the following structure:
 
 ## Key Installation Commands
 
+**⚠️ CRITICAL: NEVER test installation scripts on host machine - always use VM via SSH**
+
 ### Primary Installation
+
+**Requirements:**
+
+- Apple Silicon Mac (script enforces this requirement)
+- Can run from any directory, but recommended from repository root
+- Requires `--email` and `--name` parameters (mandatory for git/SSH config)
 
 ```bash
 # Make executable and run with required parameters
@@ -31,6 +39,7 @@ sudo chmod u+x macos/install.sh
 
 # Options:
 ./macos/install.sh --no-backup  # Skip backup of existing files (backup is default)
+./macos/install.sh --help       # Show usage help
 ```
 
 ### Package Management Commands
@@ -125,6 +134,40 @@ When modifying shell configurations:
 - Terminal color configuration for tmux compatibility
 - Extensive Homebrew package management with GUI applications
 
+## Code Quality and Linting
+
+### Available Tools
+
+- **Pre-commit hooks**: Automatic code quality checks on commit (requires Docker)
+- **ShellCheck**: Shell script analysis and best practices (runs in Docker)
+- **shfmt**: Shell script formatting (runs in Docker)
+- **markdownlint**: Markdown file linting and formatting (runs in Docker)
+- **Additional formatters**: YAML and JSON formatting tools
+
+### Running Quality Checks
+
+**Prefer IDE-integrated tools when available**, fallback to command-line when needed:
+
+```bash
+# Install pre-commit hooks (one-time setup)
+pre-commit install
+
+# Run hooks manually on all files
+pre-commit run --all-files
+
+# Run hooks on specific files
+pre-commit run --files path/to/file.sh
+
+# Run shellcheck on scripts (if installed locally)
+shellcheck macos/scripts/*.sh
+
+# Run shfmt formatting (matches pre-commit config)
+shfmt -d -s -i 4 .          # Check formatting differences
+shfmt -w -s -i 4 .          # Format files in place
+```
+
+**Note**: Ensure Docker is running before committing or running pre-commit commands.
+
 ## GitHub Actions Integration
 
 ### Claude Code Automation
@@ -185,3 +228,5 @@ See `docs/development-environment.md` for comprehensive testing instructions.
 - **VM Shared Directory**: `/Volumes/My Shared Files/dotfiles` (within VM)
 - **Host Repository**: Shared with VM for live testing
 - **IPSW Cache**: `$HOME/.cache/dotfiles/` for reusing firmware downloads
+
+- For commit messages, avoid mentioning actual methods/files that have changed. Prefer describing what has changed, why it has changed - and try to provide context around it, rather than implementation details. Avoid making commit descriptions too long, be concise but thorough.
