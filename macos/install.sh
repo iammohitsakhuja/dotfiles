@@ -143,9 +143,10 @@ print_step 2 5 "Backing up existing files and linking dotfiles"
 BACKUP_DIR=$(backup_existing_files "${backup}" "${STOW_DIR}")
 
 # Stow will handle all dotfile symlinking.
-# The home/ directory structure mirrors the $HOME directory structure
+# The home/ directory structure mirrors the $HOME directory structure.
+# Do not fold the tree.
 echo "Linking dotfiles into ${HOME}/ using stow..."
-stow -d "${STOW_DIR}" -t "${HOME}" home --verbose=1
+stow -d "${STOW_DIR}" -t "${HOME}" --no-folding home --verbose=1
 print_success "Dotfiles linked successfully!"
 echo ""
 

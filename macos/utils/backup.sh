@@ -180,8 +180,8 @@ detect_stow_conflicts() {
     local stow_dir="$1"
     local target_dir="$2"
 
-    # Use stow simulation with verbose output to detect actual conflicts
-    local stow_output=$(stow -n -d "${stow_dir}" -t "${target_dir}" home --verbose=3 2>&1)
+    # Use stow simulation with verbose output to detect actual conflicts. Do not fold the tree.
+    local stow_output=$(stow -n -d "${stow_dir}" -t "${target_dir}" --no-folding home --verbose=3 2>&1)
 
     # Filter files that are causing conflicts - catch both types of conflicts
     local stowing_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p' | tr '\n' ',' | sed 's/,$//')

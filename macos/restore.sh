@@ -136,11 +136,11 @@ cleanup_stow_symlinks() {
     # Execute stow command with appropriate flags
     if [[ ${dry_run_flag} == "dry-run" ]]; then
         # Use stow's native simulation mode - show all output
-        stow -n -D -d "${STOW_DIR}" -t "${HOME}" home --verbose=2
+        stow -n -D -d "${STOW_DIR}" -t "${HOME}" --no-folding home --verbose=2
         local exit_code=$?
     else
         # Execute actual stow removal - show all output
-        stow -D -d "${STOW_DIR}" -t "${HOME}" home --verbose=2
+        stow -D -d "${STOW_DIR}" -t "${HOME}" --no-folding home --verbose=2
         local exit_code=$?
     fi
 
