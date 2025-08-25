@@ -31,7 +31,11 @@ echo -e "Ruby installation successful!\n"
 # Install Ruby gems.
 if command -v gem &>/dev/null; then
     echo "Installing Gems..."
-    gem manpages --update-all
+    # Uncomment the following line, and add gem names to install global gems.
+    # gem install
+    # Uncomment the following to add man pages support to installed gems.
+    # gem manpages --update-all
+
     echo -e "Gems installed successfully!\n"
 else
     echo -e "Gem command not found! Skipping gems' installation...\n"
