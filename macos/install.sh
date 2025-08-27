@@ -13,6 +13,7 @@ source "$(dirname "$0")/utils/bootstrap.sh"
 
 # Require Apple Silicon Mac - fail immediately if not supported
 require_apple_silicon
+print_success "macOS environment confirmed and Apple Silicon Mac detected"
 
 # Get the stow directory (directory containing this script).
 STOW_DIR=$(cd "$(dirname "$0")" && pwd)

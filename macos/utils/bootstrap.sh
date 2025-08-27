@@ -12,12 +12,6 @@ bootstrap_dependencies() {
     print_step 1 5 "Checking and installing essential dependencies"
     echo ""
 
-    # Check if we're on macOS
-    if [[ ${OSTYPE} != "darwin"* ]]; then
-        die "ERROR: This script is designed for macOS only"
-    fi
-    print_success "macOS environment confirmed"
-
     # Install Rosetta 2 (required for Apple Silicon compatibility)
     install_rosetta2
 

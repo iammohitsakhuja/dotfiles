@@ -14,13 +14,14 @@ die() {
 
 # Check if running on Apple Silicon Mac
 is_apple_silicon() {
-    [[ $(uname -m) == 'arm64' ]]
+    # Check the OS is macOS and the architecture is arm64
+    [[ ${OSTYPE} == 'darwin'* && $(uname -m) == 'arm64' ]]
 }
 
 # Require Apple Silicon Mac and fail if not
 require_apple_silicon() {
     if ! is_apple_silicon; then
-        die "ERROR: These dotfiles only support Apple Silicon Macs. Intel Macs are not supported."
+        die "ERROR: These dotfiles only support Apple Silicon Macs. Other Operating Systems and Intel Macs are not supported."
     fi
 }
 
