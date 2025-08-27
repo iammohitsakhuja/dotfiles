@@ -3,7 +3,15 @@
 # Get script directory for reliable script invocations
 SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-# Rosetta & Homebrew installation is handled by install.sh - this script assumes they are available
+# Source required utilities
+source "${SCRIPT_DIR}/../utils/logging.sh"
+source "${SCRIPT_DIR}/../utils/platform.sh"
+
+# Install Homebrew for Apple Silicon
+install_homebrew
+
+# Evaluate Homebrew environment to ensure brew command is available
+evaluate_homebrew_environment
 
 # Update Homebrew.
 brew update

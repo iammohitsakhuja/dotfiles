@@ -5,7 +5,6 @@
 
 # Source shared utilities
 source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/platform.sh"
 
 # Function to install essential dependencies needed for the installation
 bootstrap_dependencies() {
@@ -38,13 +37,6 @@ bootstrap_dependencies() {
     else
         print_success "Command Line Tools already installed"
     fi
-
-    # Install Homebrew for Apple Silicon
-    install_homebrew
-
-    # Install essential packages using utility function
-    install_package_if_missing "stow"
-    install_package_if_missing "jq"
 
     echo ""
     print_success "Essential dependencies are ready!"
