@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
+# Source platform utilities for consistent package installation
+source "$(dirname "${BASH_SOURCE[0]}")/../utils/platform.sh"
+
 # Make sure `goenv` is installed.
-if ! command -v goenv &>/dev/null; then
-    echo "Installing Goenv..."
-    brew install goenv
-    echo -e "Goenv installation successful!\n"
-fi
+install_package_if_missing "goenv"
 
 # Setup Goenv.
 eval "$(goenv init -)"

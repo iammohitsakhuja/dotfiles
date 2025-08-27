@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
+# Source platform utilities for consistent package installation
+source "$(dirname "${BASH_SOURCE[0]}")/../utils/platform.sh"
+
 # Make sure `pyenv` is installed.
-if ! command -v pyenv &>/dev/null; then
-    echo "Installing Pyenv..."
-    brew install pyenv
-    echo -e "Pyenv installation successful!\n"
-fi
+install_package_if_missing "pyenv"
 
 # Setup Pyenv.
 eval "$(pyenv init -)"

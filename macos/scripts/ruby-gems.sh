@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 
-# Get the latest stable Ruby version from rbenv (will be set after rbenv is available)
+# Source platform utilities for consistent package installation
+source "$(dirname "${BASH_SOURCE[0]}")/../utils/platform.sh"
 
 # Make sure `rbenv` is installed.
-if ! command -v rbenv &>/dev/null; then
-    echo "Installing Rbenv..."
-    brew install rbenv
-    echo -e "Rbenv installation successful!\n"
-fi
+install_package_if_missing "rbenv"
 
 # Setup Rbenv.
 eval "$(rbenv init -)"

@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
+# Source platform utilities for consistent package installation
+source "$(dirname "${BASH_SOURCE[0]}")/../utils/platform.sh"
+
 # Make sure `nodenv` is installed.
-if ! command -v nodenv &>/dev/null; then
-    echo "Installing Nodenv..."
-    brew install nodenv
-    echo -e "Nodenv installation successful!\n"
-fi
+install_package_if_missing "nodenv"
 
 # Setup Nodenv.
 eval "$(nodenv init -)"
