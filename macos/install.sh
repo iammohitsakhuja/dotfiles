@@ -114,19 +114,7 @@ echo ""
 print_action "Requesting administrator authentication..."
 sudo -v
 
-# Keep sudo alive with proper cleanup, i.e., update existing time stamp until `./install.sh` has finished.
-sudo_keepalive() {
-    while true; do
-        sudo -n true
-        sleep 50
-        kill -0 "$$" 2>/dev/null || exit
-    done &
-    SUDO_PID=$!
-    # Ensure cleanup on script exit
-    trap 'kill ${SUDO_PID} 2>/dev/null' EXIT
-}
-
-# Start the keepalive
+# Start the sudo keepalive.
 sudo_keepalive
 
 print_success "Administrator authentication confirmed"
@@ -249,8 +237,10 @@ echo ""
 
 print_header "Installation Complete!"
 echo ""
+
 print_step 5 5 "Summary of completed installation"
 echo ""
+
 print_success "Essential dependencies installed (Homebrew, Stow, Command Line Tools)"
 if [[ ${backup} == 1 ]]; then
     print_success "Existing dotfiles backed up (if any conflicts found)"
