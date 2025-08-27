@@ -6,6 +6,7 @@ SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
 # Source required utilities
 source "${SCRIPT_DIR}/../utils/logging.sh"
 source "${SCRIPT_DIR}/../utils/platform.sh"
+source "${SCRIPT_DIR}/../utils/mas_installer.sh"
 source "${SCRIPT_DIR}/../utils/package_installers.sh"
 
 # Install Homebrew for Apple Silicon
@@ -27,15 +28,14 @@ brew bundle --file "${SCRIPT_DIR}/../Brewfile"
 print_success "Homebrew packages installed successfully"
 
 # Handle Mac App Store apps separately with login check
-print_action "Installing Mac App Store apps"
-bash "${SCRIPT_DIR}/install-mas-apps.sh"
-mas_exit_code=$?
+handle_mas_installation "${SCRIPT_DIR}"
+mas_return_code=$?
 
-case ${mas_exit_code} in
+case ${mas_return_code} in
 0) print_success "Mac App Store apps installed successfully" ;;
 1) print_warning "Mac App Store apps installation failed - continuing with other packages" ;;
 2) print_detail "Mac App Store apps installation skipped by user" ;;
-*) print_warning "Unexpected exit code from Mac App Store installation: ${mas_exit_code}" ;;
+*) print_warning "Unexpected exit code from Mac App Store installation: ${mas_return_code}" ;;
 esac
 
 # Cleanup the cellar

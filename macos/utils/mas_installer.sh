@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 
-# Enable strict error handling
-set -e          # Exit on any command failure
-set -o pipefail # Fail on any command in a pipeline
+# Mac App Store installation utilities for dotfiles
+# This file provides functions for handling Mac App Store app installations via mas command.
+# Functions handle Apple ID authentication and app installation with user interaction.
 
-# Get script directory for reliable script invocations
-SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
-
-# Source utilities
-source "${SCRIPT_DIR}/../utils/logging.sh"
-source "${SCRIPT_DIR}/../utils/platform.sh"
+# Source shared utilities
+source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/platform.sh"
 
 # Function to check if current user is signed into Apple ID
 # Returns 0 if signed in, 1 if not
@@ -62,32 +59,36 @@ prompt_apple_account_login() {
             return 0
         else
             print_warning "Still not signed in. Skipping Mac App Store apps."
-            exit 2
+            return 2
         fi
         ;;
     2)
         print_warning "Skipping Mac App Store apps installation."
-        exit 2
+        return 2
         ;;
     *)
         print_warning "Invalid choice. Skipping Mac App Store apps."
-        exit 2
+        return 2
         ;;
     esac
 }
 
 # Function to install MAS apps from Brewfile
 install_mas_apps() {
+    local script_dir="${1:-$(dirname "${BASH_SOURCE[0]}")/../scripts}"
+
     print_action "Installing Mac App Store apps..."
-    if ! brew bundle --file "${SCRIPT_DIR}/../Brewfile.mas"; then
-        print_error "Failed to install Mac App Store apps"
-        exit 1
+    if ! brew bundle --file "${script_dir}/../Brewfile.mas"; then
+        print_warning "Failed to install Mac App Store apps"
+        return 1
     fi
     print_success "Mac App Store apps installation completed!"
 }
 
-# Main execution
-main() {
+# Main orchestration function for Mac App Store installation
+handle_mas_installation() {
+    local script_dir="${1:-$(dirname "${BASH_SOURCE[0]}")/../scripts}"
+
     # Ensure mas is installed
     install_package_if_missing "mas"
 
@@ -96,24 +97,21 @@ main() {
     # shellcheck disable=SC2310
     if is_signed_into_apple_id; then
         print_success "Already signed into Apple ID"
-        install_mas_apps
-        exit 0
+        install_mas_apps "${script_dir}"
+        return 0
     else
         print_warning "Not signed into Apple ID"
 
         # Prompt user for action
         if prompt_apple_account_login; then
-            install_mas_apps
-            exit 0
+            install_mas_apps "${script_dir}"
+            return 0
         else
             echo ""
             print_warning "Mac App Store apps skipped. You can install them later by running:"
-            echo "    ${SCRIPT_DIR}/install-mas-apps.sh"
+            echo "    ${script_dir}/install-mas-apps.sh"
             echo ""
-            exit 2
+            return 2
         fi
     fi
 }
-
-# Run main function
-main "$@"
