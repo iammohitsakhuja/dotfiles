@@ -155,86 +155,13 @@ echo ""
 print_header "System Configuration"
 echo ""
 
-# Make terminal authentication easier by using Touch ID instead of password, if Mac supports it.
-print_step 3 5 "Configuring system authentication and user settings"
-echo ""
-print_action "Configuring Touch ID for sudo authentication on compatible hardware..."
-# Check if Touch ID line already exists to avoid duplicates
-if ! sudo grep -q "pam_tid.so" /etc/pam.d/sudo; then
-    # Backup the original file before modifying
-    sudo cp /etc/pam.d/sudo /etc/pam.d/sudo.backup
-    # This syntax is required to work properly with macOS's inbuilt version of `sed`
-    sudo sed -i '' '3i\
-auth       sufficient     pam_tid.so
-' /etc/pam.d/sudo
-    print_success "Touch ID authentication enabled for sudo commands"
-else
-    print_success "Touch ID authentication already configured"
-fi
-
-# File to store any API keys in.
-print_action "Creating API keys storage file..."
-touch ~/.api_keys
-print_success "API keys file created at ~/.api_keys"
-
-# Configure git.
-print_action "Configuring Git with provided credentials..."
-git config --global user.email "${email}"
-git config --global user.name "${name}"
-git config --global core.editor "nvim"
-git config --global core.filemode false
-git config --global status.showuntrackedfiles all
-git config --global status.submodulessummary 1
-git config --global pull.rebase false
-git config --global init.defaultBranch main
-git config --global push.autoSetupRemote true
-git config --global merge.conflictstyle "zdiff3"
-git config --global color.ui true
-
-# Include delta configuration from separate file.
-git config --global include.path "${HOME}/.gitconfig-delta"
-print_success "Git configuration completed"
-
-# Create SSH key pair.
-print_action "Generating SSH key pair..."
-
-# Check if SSH keys already exist
-if [[ -f "${HOME}/.ssh/id_ed25519" ]]; then
-    print_success "SSH key already exists at ${HOME}/.ssh/id_ed25519"
-    print_detail "Skipping key generation to avoid overwriting existing key" 3
-else
-    # Generate SSH key non-interactively
-    ssh-keygen -t ed25519 -C "${email}" -f "${HOME}/.ssh/id_ed25519" -N "" -q
-
-    # Verify SSH key generation was successful
-    if [[ -f "${HOME}/.ssh/id_ed25519" && -f "${HOME}/.ssh/id_ed25519.pub" ]]; then
-        print_success "SSH key pair generated successfully"
-
-        # Verify SSH directory permissions
-        ssh_dir_perms=$(stat -f "%A" "${HOME}/.ssh" 2>/dev/null || echo "unknown")
-        if [[ ${ssh_dir_perms} == "700" ]]; then
-            print_success "SSH directory permissions are correct (700)"
-        else
-            print_warning "SSH directory permissions may need adjustment"
-            echo "    Expected: 700, Current: ${ssh_dir_perms}"
-        fi
-    else
-        die "ERROR: SSH key generation failed - key files not found"
-    fi
-fi
+# Configure system and user settings.
+print_step 4 5 "Configuring system and user settings"
 echo ""
 
-# Configure Tmux colors.
-print_action "Configuring Tmux terminal colors..."
-tic -x "${STOW_DIR}/utils/terminfo/xterm-256color-italic.terminfo"
-tic -x "${STOW_DIR}/utils/terminfo/tmux-256color.terminfo"
-print_success "Tmux terminal colors configured"
-echo ""
-
-# Configure MacOS settings.
-print_action "Applying macOS system preferences and settings..."
-bash "${STOW_DIR}/scripts/macos.sh"
-print_success "macOS system settings configured"
+print_action "Running system configuration script..."
+bash "${STOW_DIR}/scripts/system-configuration.sh" "${email}" "${name}" "${STOW_DIR}" "${BREW_PREFIX}"
+print_success "System configuration completed"
 echo ""
 
 print_header "Installation Complete!"

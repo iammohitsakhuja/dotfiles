@@ -1,31 +1,6 @@
 #!/usr/bin/env bash
 
-BREW_PREFIX="$(brew --prefix)"
-
-# Install Bash 4. MacOS' Bash is severely outdated.
-# Install this because Bash is needed once in a while.
-# Then add `$BREW_PREFIX/bin/bash` to `/etc/shells`.
-echo "Installing/updating Bash..."
-brew install bash
-echo "Done"
-if ! grep -F -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
-    echo "Adding Bash to /etc/shells... "
-    echo "${BREW_PREFIX}/bin/bash" | sudo tee -a /etc/shells
-    echo -e "Done\n\n"
-fi
-
-# Install ZSH - our primary shell.
-# Then add `$BREW_PREFIX/bin/zsh` to `/etc/shells`.
-echo "Installing/updating Zsh..."
-brew install zsh
-echo "Done"
-if ! grep -F -q "${BREW_PREFIX}/bin/zsh" /etc/shells; then
-    echo "Adding Zsh to /etc/shells... "
-    echo "${BREW_PREFIX}/bin/zsh" | sudo tee -a /etc/shells
-    echo -e "Done\nChanging default shell to Zsh... "
-    chsh -s ${BREW_PREFIX}/bin/zsh
-    echo -e "Done\n\n"
-fi
+# Shell packages and plugins installation.
 
 # Install oh-my-zsh.
 echo "Installing Oh-my-zsh..."

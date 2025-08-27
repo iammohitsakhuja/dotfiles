@@ -37,12 +37,6 @@ case ${mas_exit_code} in
 esac
 echo ""
 
-# Set up Perl correctly. Any other changes are in `.zshrc`.
-PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5" PERL_MM_USE_DEFAULT=1 cpan local::lib
-
-# Set up FZF autocompletion and keybindings.
-"$(brew --prefix)/opt/fzf/install" --key-bindings --completion --no-update-rc
-
 # Cleanup the cellar.
 echo "Doing some cleanup..."
 brew cleanup && brew autoremove
