@@ -124,11 +124,24 @@ echo ""
 # Install essential dependencies before proceeding
 bootstrap_dependencies
 
+print_header "Package Installation & Setup"
+echo ""
+
+# Run installation scripts.
+print_step 2 5 "Installing packages and applications"
+echo ""
+
+print_action "Installing Homebrew packages, applications and plugins..."
+bash "${STOW_DIR}/scripts/packages.sh"
+BREW_PREFIX=$(brew --prefix)
+print_success "Package and application installation complete!"
+echo ""
+
 print_header "Backup & File Management"
 echo ""
 
 # Backup existing files before stow operations
-print_step 2 5 "Backing up existing files and linking dotfiles"
+print_step 3 5 "Backing up existing files and linking dotfiles"
 BACKUP_DIR=$(backup_existing_files "${backup}" "${STOW_DIR}")
 
 # Stow will handle all dotfile symlinking.
@@ -209,18 +222,6 @@ else
         die "ERROR: SSH key generation failed - key files not found"
     fi
 fi
-echo ""
-
-print_header "Package Installation & Setup"
-echo ""
-
-# Run installation scripts.
-print_step 4 5 "Installing packages and configuring system components"
-echo ""
-
-print_action "Installing Homebrew packages and development tools..."
-bash "${STOW_DIR}/scripts/packages.sh"
-print_success "All packages installed successfully"
 echo ""
 
 # Configure Tmux colors.
