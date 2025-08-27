@@ -6,6 +6,7 @@ SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
 # Source required utilities
 source "${SCRIPT_DIR}/../utils/logging.sh"
 source "${SCRIPT_DIR}/../utils/platform.sh"
+source "${SCRIPT_DIR}/../utils/package_installers.sh"
 
 # Install Homebrew for Apple Silicon
 install_homebrew
@@ -19,59 +20,35 @@ brew update
 # Upgrade any previously installed packages.
 brew upgrade
 
-# Install all packages from main Brewfile (this excludes Mac App Store apps).
-echo "Installing Homebrew packages (excluding Mac App Store apps)..."
+# Install all packages from main Brewfile (this excludes Mac App Store apps)
+print_action "Installing Homebrew packages (excluding Mac App Store apps)"
+print_detail "You may be prompted for your password by sudo if any packages require elevated permissions"
 brew bundle --file "${SCRIPT_DIR}/../Brewfile"
-echo "Homebrew packages (excluding Mac App Store apps) installed successfully"
+print_success "Homebrew packages installed successfully"
 
 # Handle Mac App Store apps separately with login check
-echo "Installing Mac App Store apps..."
+print_action "Installing Mac App Store apps"
 bash "${SCRIPT_DIR}/install-mas-apps.sh"
 mas_exit_code=$?
 
 case ${mas_exit_code} in
-0) echo "Mac App Store apps installed successfully" ;;
-1) echo "WARNING: Mac App Store apps installation failed - continuing with other packages" ;;
-2) echo "Mac App Store apps installation skipped by user" ;;
-*) echo "WARNING: Unexpected exit code from Mac App Store installation: ${mas_exit_code}" ;;
+0) print_success "Mac App Store apps installed successfully" ;;
+1) print_warning "Mac App Store apps installation failed - continuing with other packages" ;;
+2) print_detail "Mac App Store apps installation skipped by user" ;;
+*) print_warning "Unexpected exit code from Mac App Store installation: ${mas_exit_code}" ;;
 esac
-echo ""
 
-# Cleanup the cellar.
-echo "Doing some cleanup..."
+# Cleanup the cellar
+print_action "Cleaning up Homebrew cache and removing unused packages"
 brew cleanup && brew autoremove
-echo -e "Done\n"
+print_success "Homebrew cleanup completed"
 
-## Install language related stuff
+print_subheader "Language Environments & Packages"
+install_go_packages
+install_node_packages
+install_python_packages
+install_ruby_gems
 
-# Install Go and its packages.
-echo "Installing Go and its packages..."
-bash "${SCRIPT_DIR}/go-packages.sh"
-echo -e "Done\n\n"
-
-# Install Node and its packages.
-echo "Installing Node and its packages..."
-bash "${SCRIPT_DIR}/node-packages.sh"
-echo -e "Done\n\n"
-
-# Install Python and its packages.
-echo "Installing Python and its packages..."
-bash "${SCRIPT_DIR}/python-packages.sh"
-echo -e "Done\n\n"
-
-# Install Ruby and its gems.
-echo "Installing Ruby and its gems..."
-bash "${SCRIPT_DIR}/ruby-gems.sh"
-echo -e "Done\n\n"
-
-## Install any required plugins.
-
-# Install shell packages.
-echo "Installing shell packages..."
-bash "${SCRIPT_DIR}/shell-packages.sh"
-echo -e "Done\n\n"
-
-# Install Vim packages.
-echo "Installing Vim and its packages..."
-bash "${SCRIPT_DIR}/vim-packages.sh"
-echo -e "Done\n\n"
+print_subheader "Shell & Editor Plugins"
+install_shell_packages
+install_vim_packages
