@@ -9,6 +9,7 @@ SCRIPT_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
 # Source utilities
 source "${SCRIPT_DIR}/../utils/logging.sh"
+source "${SCRIPT_DIR}/../utils/platform.sh"
 
 # Function to check if current user is signed into Apple ID
 # Returns 0 if signed in, 1 if not
@@ -87,14 +88,8 @@ install_mas_apps() {
 
 # Main execution
 main() {
-    # Check if mas is installed
-    if ! command -v mas &>/dev/null; then
-        print_action "Installing mas CLI..."
-        if ! brew install mas; then
-            print_error "Failed to install mas CLI"
-            exit 1
-        fi
-    fi
+    # Ensure mas is installed
+    install_package_if_missing "mas"
 
     # Check if signed into Apple ID
     print_action "Checking Apple ID sign-in status..."
