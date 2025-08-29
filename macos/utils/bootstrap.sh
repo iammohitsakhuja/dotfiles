@@ -5,6 +5,7 @@
 
 # Source shared utilities
 source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/platform.sh"
 
 # Function to install essential dependencies needed for the installation
 bootstrap_dependencies() {
