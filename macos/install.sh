@@ -10,6 +10,7 @@ source "$(dirname "$0")/utils/miscellaneous.sh"
 source "$(dirname "$0")/utils/platform.sh"
 source "$(dirname "$0")/utils/backup.sh"
 source "$(dirname "$0")/utils/bootstrap.sh"
+source "$(dirname "$0")/utils/system_config.sh"
 
 # Require Apple Silicon Mac - fail immediately if not supported
 require_apple_silicon
@@ -174,8 +175,8 @@ echo ""
 print_step 4 5 "Configuring system and user settings"
 echo ""
 
-print_action "Running system configuration script..."
-bash "${STOW_DIR}/scripts/system-configuration.sh" "${email}" "${name}" "${STOW_DIR}" "${BREW_PREFIX}"
+print_action "Configuring system settings..."
+configure_system_settings "${email}" "${name}" "${STOW_DIR}" "${BREW_PREFIX}"
 print_success "System configuration completed"
 echo ""
 
