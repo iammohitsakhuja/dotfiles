@@ -13,7 +13,9 @@ source "$(dirname "$0")/utils/bootstrap.sh"
 
 # Require Apple Silicon Mac - fail immediately if not supported
 require_apple_silicon
+echo ""
 print_success "macOS environment confirmed and Apple Silicon Mac detected"
+echo ""
 
 # Get the stow directory (directory containing this script).
 STOW_DIR=$(cd "$(dirname "$0")" && pwd)
@@ -111,8 +113,8 @@ fi
 print_header "Authentication & Dependencies"
 echo ""
 
-# Ask for administrator password upfront.
-print_action "Requesting administrator authentication..."
+# Ask for administrator password upfront (we will need to ask for this again explicitly once after homebrew operations are done).
+print_action "Requesting administrator authentication (1 of 2)..."
 sudo -v
 
 # Start the sudo keepalive.
@@ -122,7 +124,11 @@ print_success "Administrator authentication confirmed"
 echo ""
 
 # Install essential dependencies before proceeding
+print_step 1 5 "Checking and installing essential dependencies"
 bootstrap_dependencies
+echo ""
+print_success "Essential dependencies are ready!"
+echo ""
 
 print_header "Package Installation & Setup"
 echo ""
@@ -131,13 +137,22 @@ echo ""
 print_step 2 5 "Installing packages and applications"
 echo ""
 
-print_action "Installing Homebrew packages, applications and plugins..."
 bash "${STOW_DIR}/scripts/packages.sh"
 BREW_PREFIX=$(brew --prefix)
 print_success "Package and application installation complete!"
 echo ""
 
 print_header "Backup & File Management"
+echo ""
+
+# Ask for administrator password upfront (we will need to ask for this again explicitly once after homebrew operations are done).
+print_action "Requesting administrator authentication (2 of 2)..."
+sudo -v
+
+# Start the sudo keepalive.
+sudo_keepalive
+
+print_success "Administrator authentication confirmed"
 echo ""
 
 # Backup existing files before stow operations

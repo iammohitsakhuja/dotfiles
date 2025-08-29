@@ -9,9 +9,6 @@ source "$(dirname "${BASH_SOURCE[0]}")/platform.sh"
 
 # Function to install essential dependencies needed for the installation
 bootstrap_dependencies() {
-    print_step 1 5 "Checking and installing essential dependencies"
-    echo ""
-
     # Install Rosetta 2 (required for Apple Silicon compatibility)
     install_rosetta2
 
@@ -38,8 +35,4 @@ bootstrap_dependencies() {
     else
         print_success "Command Line Tools already installed"
     fi
-
-    echo ""
-    print_success "Essential dependencies are ready!"
-    echo ""
 }
