@@ -75,10 +75,8 @@ prompt_apple_account_login() {
 
 # Function to install MAS apps from Brewfile
 install_mas_apps() {
-    local script_dir="${1:-$(dirname "${BASH_SOURCE[0]}")/../scripts}"
-
     print_action "Installing Mac App Store apps..."
-    if ! brew bundle --file "${script_dir}/../Brewfile.mas"; then
+    if ! brew bundle --file "$(dirname "${BASH_SOURCE[0]}")/../Brewfile.mas"; then
         print_warning "Failed to install Mac App Store apps"
         return 1
     fi
@@ -87,8 +85,6 @@ install_mas_apps() {
 
 # Main orchestration function for Mac App Store installation
 handle_mas_installation() {
-    local script_dir="${1:-$(dirname "${BASH_SOURCE[0]}")/../scripts}"
-
     # Ensure mas is installed
     install_package_if_missing "mas"
 
@@ -97,19 +93,18 @@ handle_mas_installation() {
     # shellcheck disable=SC2310
     if is_signed_into_apple_id; then
         print_success "Already signed into Apple ID"
-        install_mas_apps "${script_dir}"
+        install_mas_apps
         return 0
     else
         print_warning "Not signed into Apple ID"
 
         # Prompt user for action
         if prompt_apple_account_login; then
-            install_mas_apps "${script_dir}"
+            install_mas_apps
             return 0
         else
             echo ""
-            print_warning "Mac App Store apps skipped. You can install them later by running:"
-            echo "    ${script_dir}/install-mas-apps.sh"
+            print_warning "Mac App Store apps skipped."
             echo ""
             return 2
         fi
