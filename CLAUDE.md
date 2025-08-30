@@ -10,13 +10,16 @@ This is a macOS dotfiles repository with the following structure:
 
 - `macos/` - Main configuration directory containing:
   - `home/` - Dotfiles and configurations managed with GNU Stow (includes `.startup_scripts/` subdirectory)
-  - `scripts/` - Installation scripts for packages, languages, and tools
   - `install.sh` - Main installation orchestrator
+  - `restore.sh` - Backup restoration utility
   - `Brewfile` - Homebrew package definitions
   - `iterm/` - iTerm2 configuration files
   - `themes/` - Color themes for iTerm and Terminal
-  - `utils/` - Utility files (terminfo, automator workflows)
+  - `utils/` - Utility modules (logging, platform detection, package installers, system config)
   - `extras/` - Additional utilities
+
+**Note**: Repository has transitioned from individual script architecture to utility-based modules located in `macos/utils/`.
+
 - `.github/workflows/` - GitHub Actions for Claude Code integration
 - `.claude/` - Claude Code working files and todos (not version controlled)
 
@@ -44,20 +47,15 @@ sudo chmod u+x macos/install.sh
 
 ### Package Management Commands
 
+Package installation and system configuration are now handled through utility-based architecture:
+
 ```bash
-# Install all packages via Homebrew
-bash macos/scripts/packages.sh
+# Primary installation (includes all packages and system config)
+./macos/install.sh --email "your@email.com" --name "Your Name"
 
-# Individual package types
-bash macos/scripts/node-packages.sh
-bash macos/scripts/python-packages.sh
-bash macos/scripts/ruby-gems.sh
-bash macos/scripts/go-packages.sh
-bash macos/scripts/vim-packages.sh
-bash macos/scripts/shell-packages.sh
-
-# Configure macOS system settings
-bash macos/scripts/macos.sh
+# Restore from backup if needed
+./macos/restore.sh --list           # List available backups
+./macos/restore.sh --backup <timestamp>  # Restore specific backup
 ```
 
 ## Shell Environment Architecture
@@ -81,14 +79,14 @@ bash macos/scripts/macos.sh
 Files are installed via symlinks using GNU Stow:
 
 - Dotfiles in `macos/home/` are stowed to `$HOME/`
-- Neovim config goes to `$HOME/.config/nvim/`
-- Bat config goes to `$HOME/.config/bat/`
-- Startup scripts go to `$HOME/.startup_scripts/` (organized subdirectory)
+- `.config/` subdirectories: nvim/, bat/, lazygit/, yazi/
+- Starship prompt config via `starship.toml`
+- Startup scripts go to `$HOME/.startup_scripts/` (includes greeting.sh)
 - Use `stow` command directly for selective package management
 
 ## System Configuration Automation
 
-### macOS System Settings (`macos/scripts/macos.sh`)
+### macOS System Settings (via utils/system_config.sh)
 
 Comprehensive macOS defaults configuration covering:
 
@@ -117,6 +115,7 @@ Includes:
 - Creates SSH keys and configures git with provided credentials
 - Handles missing directories and creates them as needed
 - Configures Touch ID for sudo authentication on Apple Silicon Macs
+- Includes backup functionality with restore.sh for recovery from failed installations
 
 ### Shell Configuration Modifications
 
@@ -159,7 +158,7 @@ pre-commit run --all-files
 pre-commit run --files path/to/file.sh
 
 # Run shellcheck on scripts (if installed locally)
-shellcheck macos/scripts/*.sh
+shellcheck macos/*.sh macos/utils/*.sh
 
 # Run shfmt formatting (matches pre-commit config)
 shfmt -d -s -i 4 .          # Check formatting differences
@@ -230,3 +229,5 @@ See `docs/development-environment.md` for comprehensive testing instructions.
 - **IPSW Cache**: `$HOME/.cache/dotfiles/` for reusing firmware downloads
 
 - For commit messages, avoid mentioning actual methods/files that have changed. Prefer describing what has changed, why it has changed - and try to provide context around it, rather than implementation details. Avoid making commit descriptions too long, be concise but thorough.
+- In comments, don't mention where a particular method is defined. Instead, try to describe where certain functionality resides.
+- End comments with a '.'
