@@ -5,12 +5,13 @@ set -e          # Exit on any command failure
 set -o pipefail # Fail on any command in a pipeline
 
 # Source shared utilities
-source "$(dirname "$0")/utils/logging.sh"
-source "$(dirname "$0")/utils/miscellaneous.sh"
-source "$(dirname "$0")/utils/platform.sh"
-source "$(dirname "$0")/utils/backup.sh"
-source "$(dirname "$0")/utils/bootstrap.sh"
-source "$(dirname "$0")/utils/system_config.sh"
+INSTALL_SCRIPT_DIR=$(dirname "$0")
+source "${INSTALL_SCRIPT_DIR}/utils/logging.sh"
+source "${INSTALL_SCRIPT_DIR}/utils/miscellaneous.sh"
+source "${INSTALL_SCRIPT_DIR}/utils/platform.sh"
+source "${INSTALL_SCRIPT_DIR}/utils/backup.sh"
+source "${INSTALL_SCRIPT_DIR}/utils/bootstrap.sh"
+source "${INSTALL_SCRIPT_DIR}/utils/system_config.sh"
 
 # Require Apple Silicon Mac - fail immediately if not supported
 require_apple_silicon

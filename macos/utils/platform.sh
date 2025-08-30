@@ -4,7 +4,12 @@
 # This file provides platform detection, dependency management, and system-specific operations.
 
 # Source shared utilities for logging functions
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/logging.sh"
+PLATFORM_SCRIPT_DIR="${BASH_SOURCE[0]%/*}"
+if [[ ! -d ${PLATFORM_SCRIPT_DIR} ]] || [[ ${PLATFORM_SCRIPT_DIR} == "${BASH_SOURCE[0]}" ]]; then
+    # Fallback: assume we're being sourced from repo root
+    PLATFORM_SCRIPT_DIR="macos/utils"
+fi
+source "${PLATFORM_SCRIPT_DIR}/logging.sh"
 
 # Helper function to exit the script with an error message
 die() {

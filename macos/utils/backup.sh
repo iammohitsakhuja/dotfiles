@@ -4,9 +4,14 @@
 # This file provides consistent backup operations and path management.
 
 # Source utilities for die function
-source "$(dirname "${BASH_SOURCE[0]}")/platform.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/miscellaneous.sh"
+BACKUP_SCRIPT_DIR="${BASH_SOURCE[0]%/*}"
+if [[ ! -d ${BACKUP_SCRIPT_DIR} ]] || [[ ${BACKUP_SCRIPT_DIR} == "${BASH_SOURCE[0]}" ]]; then
+    # Fallback: assume we're being sourced from repo root
+    BACKUP_SCRIPT_DIR="macos/utils"
+fi
+source "${BACKUP_SCRIPT_DIR}/platform.sh"
+source "${BACKUP_SCRIPT_DIR}/logging.sh"
+source "${BACKUP_SCRIPT_DIR}/miscellaneous.sh"
 
 # Constants for backup operations
 readonly BACKUP_BASE_DIR="${HOME}/.backup/dotfiles"

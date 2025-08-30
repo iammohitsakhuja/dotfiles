@@ -4,8 +4,13 @@
 # This file provides system setup functions with consistent error handling.
 
 # Source shared utilities
-source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/platform.sh"
+SYSTEM_SCRIPT_DIR="${BASH_SOURCE[0]%/*}"
+if [[ ! -d ${SYSTEM_SCRIPT_DIR} ]] || [[ ${SYSTEM_SCRIPT_DIR} == "${BASH_SOURCE[0]}" ]]; then
+    # Fallback: assume we're being sourced from repo root
+    SYSTEM_SCRIPT_DIR="macos/utils"
+fi
+source "${SYSTEM_SCRIPT_DIR}/logging.sh"
+source "${SYSTEM_SCRIPT_DIR}/platform.sh"
 
 # Function to configure system authentication and user settings
 configure_system_settings() {

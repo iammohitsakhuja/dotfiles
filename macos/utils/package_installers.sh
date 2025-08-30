@@ -5,8 +5,13 @@
 # Functions convert standalone scripts to reusable utility functions with consistent error handling.
 
 # Source shared utilities
-source "$(dirname "${BASH_SOURCE[0]}")/platform.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
+PACKAGE_SCRIPT_DIR="${BASH_SOURCE[0]%/*}"
+if [[ ! -d ${PACKAGE_SCRIPT_DIR} ]] || [[ ${PACKAGE_SCRIPT_DIR} == "${BASH_SOURCE[0]}" ]]; then
+    # Fallback: assume we're being sourced from repo root
+    PACKAGE_SCRIPT_DIR="macos/utils"
+fi
+source "${PACKAGE_SCRIPT_DIR}/platform.sh"
+source "${PACKAGE_SCRIPT_DIR}/logging.sh"
 
 # Install Go packages and setup goenv
 install_go_packages() {

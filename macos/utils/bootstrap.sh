@@ -4,8 +4,13 @@
 # This file contains functions to install essential dependencies needed for the installation process
 
 # Source shared utilities
-source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/platform.sh"
+BOOTSTRAP_SCRIPT_DIR="${BASH_SOURCE[0]%/*}"
+if [[ ! -d ${BOOTSTRAP_SCRIPT_DIR} ]] || [[ ${BOOTSTRAP_SCRIPT_DIR} == "${BASH_SOURCE[0]}" ]]; then
+    # Fallback: assume we're being sourced from repo root
+    BOOTSTRAP_SCRIPT_DIR="macos/utils"
+fi
+source "${BOOTSTRAP_SCRIPT_DIR}/logging.sh"
+source "${BOOTSTRAP_SCRIPT_DIR}/platform.sh"
 
 # Function to install essential dependencies needed for the installation
 bootstrap_dependencies() {

@@ -5,9 +5,10 @@ set -e          # Exit on any command failure
 set -o pipefail # Fail on any command in a pipeline
 
 # Source shared utilities
-source "$(dirname "$0")/utils/logging.sh"
-source "$(dirname "$0")/utils/platform.sh"
-source "$(dirname "$0")/utils/backup.sh"
+RESTORE_SCRIPT_DIR=$(dirname "$0")
+source "${RESTORE_SCRIPT_DIR}/utils/logging.sh"
+source "${RESTORE_SCRIPT_DIR}/utils/platform.sh"
+source "${RESTORE_SCRIPT_DIR}/utils/backup.sh"
 
 # Initialize option variables.
 list_backups=0

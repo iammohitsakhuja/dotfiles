@@ -5,8 +5,13 @@
 # Functions handle Apple ID authentication and app installation with user interaction.
 
 # Source shared utilities
-source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/platform.sh"
+MAS_SCRIPT_DIR="${BASH_SOURCE[0]%/*}"
+if [[ ! -d ${MAS_SCRIPT_DIR} ]] || [[ ${MAS_SCRIPT_DIR} == "${BASH_SOURCE[0]}" ]]; then
+    # Fallback: assume we're being sourced from repo root
+    MAS_SCRIPT_DIR="macos/utils"
+fi
+source "${MAS_SCRIPT_DIR}/logging.sh"
+source "${MAS_SCRIPT_DIR}/platform.sh"
 
 # Function to check if current user is signed into Apple ID
 # Returns 0 if signed in, 1 if not
@@ -76,7 +81,7 @@ prompt_apple_account_login() {
 # Function to install MAS apps from Brewfile
 install_mas_apps() {
     print_action "Installing Mac App Store apps..."
-    if ! brew bundle --file "$(dirname "${BASH_SOURCE[0]}")/../Brewfile.mas"; then
+    if ! brew bundle --file "${MAS_SCRIPT_DIR}/../Brewfile.mas"; then
         print_warning "Failed to install Mac App Store apps"
         return 1
     fi
