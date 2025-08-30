@@ -4,7 +4,7 @@
 # This file provides platform detection, dependency management, and system-specific operations.
 
 # Source shared utilities for logging functions
-source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/logging.sh"
 
 # Helper function to exit the script with an error message
 die() {
