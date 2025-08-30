@@ -173,7 +173,7 @@ install_shell_packages() {
 
     # Install oh-my-zsh
     print_detail "Installing Oh-my-zsh..."
-    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" "" --unattended --keep-zshrc || return 1
+    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" "" --unattended --keep-zshrc --skip-chsh || return 1
     print_detail "Oh-my-zsh installation successful"
 
     # Install oh-my-zsh plugins
