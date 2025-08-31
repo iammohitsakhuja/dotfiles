@@ -228,6 +228,6 @@ See `docs/development-environment.md` for comprehensive testing instructions.
 - **Host Repository**: Shared with VM for live testing
 - **IPSW Cache**: `$HOME/.cache/dotfiles/` for reusing firmware downloads
 
-- For commit messages, avoid mentioning actual methods/files that have changed. Prefer describing what has changed, why it has changed - and try to provide context around it, rather than implementation details. Avoid making commit descriptions too long, be concise but thorough.
+- For commit messages, avoid mentioning actual methods/files that have changed. Prefer describing what has changed, why it has changed - and try to provide context around it, rather than implementation details. Avoid making commit descriptions too long, be concise but thorough. Don't mention the no. of lines changed!
 - In comments, don't mention where a particular method is defined. Instead, try to describe where certain functionality resides.
 - End comments with a '.'
