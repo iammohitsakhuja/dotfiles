@@ -245,10 +245,10 @@ create_backup_manifest() {
     # Count conflicts (handle empty strings properly)
     local stowing_count=0
     [[ -n ${stowing_conflicts} ]] && stowing_count=$(echo "${stowing_conflicts}" | tr ',' '\n' | grep -c .)
-    echo "Stowing conflicts: ${stowing_conflicts}" >&2
+    print_detail "Stowing conflicts: ${stowing_conflicts}" 3
     local ownership_count=0
     [[ -n ${ownership_conflicts} ]] && ownership_count=$(echo "${ownership_conflicts}" | tr ',' '\n' | grep -c .)
-    echo "Ownership conflicts: ${ownership_conflicts}" >&2
+    print_detail "Ownership conflicts: ${ownership_conflicts}" 3
     local stow_count=$((stowing_count + ownership_count))
     local non_stow_count=0
     [[ -n ${non_stow_conflicts} ]] && non_stow_count=$(echo "${non_stow_conflicts}" | tr ',' '\n' | grep -c .)

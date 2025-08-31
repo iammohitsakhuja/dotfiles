@@ -98,9 +98,9 @@ auth       sufficient     pam_tid.so
     if ! grep -F -q "${brew_prefix}/bin/bash" /etc/shells; then
         print_detail "Adding Bash to /etc/shells..." 3
         echo "${brew_prefix}/bin/bash" | sudo tee -a /etc/shells >/dev/null
-        print_success "Bash added to /etc/shells"
+        print_detail "Bash added to /etc/shells" 3
     else
-        print_success "Bash already in /etc/shells"
+        print_detail "Bash already in /etc/shells" 3
     fi
 
     # Add modern Zsh to /etc/shells and set as default shell (installed via Brewfile).
@@ -109,19 +109,22 @@ auth       sufficient     pam_tid.so
         echo "${brew_prefix}/bin/zsh" | sudo tee -a /etc/shells >/dev/null
         print_detail "Changing default shell to Zsh..." 3
         chsh -s "${brew_prefix}/bin/zsh"
-        print_success "Zsh configured as default shell"
+        print_detail "Zsh configured as default shell" 3
     else
-        print_success "Zsh already configured"
+        print_detail "Zsh already configured" 3
     fi
+
+    print_success "Shell configuration completed"
     echo ""
 
     # Set up Perl correctly.
-    print_detail "Configuring Perl module installation path..." 3
+    print_action "Configuring Perl module installation path..."
     PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5" PERL_MM_USE_DEFAULT=1 cpan local::lib
     print_success "Perl configuration completed"
+    echo ""
 
     # Set up FZF autocompletion and keybindings.
-    print_detail "Installing FZF autocompletion and keybindings..." 3
+    print_action "Installing FZF autocompletion and keybindings..."
     "${brew_prefix}/opt/fzf/install" --key-bindings --completion --no-update-rc
     print_success "FZF configuration completed"
     echo ""
@@ -586,5 +589,5 @@ configure_macos_preferences() {
         killall "${app}" &>/dev/null || true
     done
 
-    echo "Done. Note that some of these changes require a logout/restart to take effect."
+    print_preview "Done. Note that some of these changes require a logout/restart to take effect."
 }
