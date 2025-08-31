@@ -188,26 +188,36 @@ install_shell_packages() {
     # Install oh-my-zsh plugins
     print_detail "Installing/updating Oh-my-zsh plugins..."
 
-    # Helper function to clone or update plugin
-    install_or_update_plugin() {
-        local repo_url="$1"
-        local plugin_path="$2"
-        local plugin_name=$(basename "${plugin_path}")
+    local plugins_base_dir="${HOME}/.oh-my-zsh/custom/plugins"
+
+    # Array of plugins: "repo_url plugin_name [branch]"
+    local plugins=(
+        "https://github.com/zsh-users/zsh-syntax-highlighting.git zsh-syntax-highlighting"
+        "https://github.com/zsh-users/zsh-autosuggestions zsh-autosuggestions"
+        "https://github.com/zsh-users/zsh-completions zsh-completions"
+        "https://github.com/iammohitsakhuja/yazi-zoxide-zsh.git yazi-zoxide-zsh fix/omz-plugin-load" # Use own repository until upstream is fixed
+    )
+
+    for plugin_info in "${plugins[@]}"; do
+        read -r repo_url plugin_name branch <<<"${plugin_info}"
+        local plugin_path="${plugins_base_dir}/${plugin_name}"
 
         if [[ -d ${plugin_path} ]]; then
             print_detail "Updating existing plugin: ${plugin_name}"
-            (cd "${plugin_path}" && git pull --quiet)
+            if [[ -n ${branch} ]]; then
+                (cd "${plugin_path}" && git checkout "${branch}" --quiet && git pull --quiet)
+            else
+                (cd "${plugin_path}" && git pull --quiet)
+            fi
         else
             print_detail "Installing plugin: ${plugin_name}"
-            git clone --depth=1 --quiet "${repo_url}" "${plugin_path}"
+            if [[ -n ${branch} ]]; then
+                git clone --depth=1 --branch "${branch}" --quiet "${repo_url}" "${plugin_path}"
+            else
+                git clone --depth=1 --quiet "${repo_url}" "${plugin_path}"
+            fi
         fi
-    }
-
-    # Install/update each plugin
-    install_or_update_plugin "https://github.com/zsh-users/zsh-syntax-highlighting.git" "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
-    install_or_update_plugin "https://github.com/zsh-users/zsh-autosuggestions" "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
-    install_or_update_plugin "https://github.com/zsh-users/zsh-completions" "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions"
-    install_or_update_plugin "https://github.com/fdw/yazi-zoxide-zsh.git" "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/yazi-zoxide"
+    done
 
     print_detail "Oh-my-zsh plugins installation/update completed successfully"
 
