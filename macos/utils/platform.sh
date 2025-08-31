@@ -30,6 +30,22 @@ require_apple_silicon() {
     fi
 }
 
+# Check if terminal has Full Disk Access
+has_full_disk_access() {
+    # Try to read a system file that requires Full Disk Access
+    plutil -lint /Library/Preferences/com.apple.TimeMachine.plist >/dev/null 2>&1
+}
+
+# Require Full Disk Access and guide user to enable it if not available
+require_full_disk_access() {
+    if ! has_full_disk_access; then
+        # Open System Settings to the relevant panel
+        open "x-apple.systempreferences:com.apple.preference.security?Privacy_All"
+
+        die "ERROR: This script requires your terminal app to have Full Disk Access. Add this terminal to the Full Disk Access list in System Settings > Privacy & Security, quit the app, and re-run this script."
+    fi
+}
+
 # Evaluate Homebrew environment for Apple Silicon
 evaluate_homebrew_environment() {
     eval "$(/opt/homebrew/bin/brew shellenv)"

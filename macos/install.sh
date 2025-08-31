@@ -18,6 +18,10 @@ source "${INSTALL_SCRIPT_DIR}/utils/orchestrator.sh"
 require_apple_silicon
 print_newline
 print_success "macOS environment confirmed and Apple Silicon Mac detected"
+
+# Require Full Disk Access - fail immediately if not available
+require_full_disk_access
+print_success "Full Disk Access confirmed for terminal application"
 print_newline
 
 # Get the stow directory (directory containing this script).
