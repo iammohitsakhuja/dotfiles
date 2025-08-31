@@ -204,7 +204,7 @@ print_success "Development packages and tools installed"
 print_success "Terminal colors configured for Tmux"
 print_success "macOS system preferences applied"
 print_newline
-print_celebration "Your macOS development environment is now ready!"
+print_celebration "Your macOS environment is now ready!"
 print_newline
 echo "Next steps:"
 echo "  • Add your SSH public key to GitHub/GitLab"
