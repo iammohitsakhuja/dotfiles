@@ -583,7 +583,7 @@ configure_macos_preferences() {
         "Photos" \
         "Safari" \
         "SystemUIServer"; do
-        killall "${app}" &>/dev/null
+        killall "${app}" &>/dev/null || true
     done
 
     echo "Done. Note that some of these changes require a logout/restart to take effect."

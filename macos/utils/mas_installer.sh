@@ -64,16 +64,16 @@ prompt_apple_account_login() {
             return 0
         else
             print_warning "Still not signed in. Skipping Mac App Store apps."
-            return 2
+            return 1
         fi
         ;;
     2)
-        print_warning "Skipping Mac App Store apps installation."
-        return 2
+        print_warning "Skipping Mac App Store apps installation as per user choice."
+        return 1
         ;;
     *)
         print_warning "Invalid choice. Skipping Mac App Store apps."
-        return 2
+        return 1
         ;;
     esac
 }
@@ -83,9 +83,9 @@ install_mas_apps() {
     print_action "Installing Mac App Store apps..."
     if ! brew bundle --file "${MAS_SCRIPT_DIR}/../Brewfile.mas"; then
         print_warning "Failed to install Mac App Store apps"
-        return 1
+    else
+        print_success "Mac App Store apps installation completed!"
     fi
-    print_success "Mac App Store apps installation completed!"
 }
 
 # Main orchestration function for Mac App Store installation
@@ -99,19 +99,14 @@ handle_mas_installation() {
     if is_signed_into_apple_id; then
         print_success "Already signed into Apple ID"
         install_mas_apps
-        return 0
+        print_success "Mac App Store apps installed successfully"
     else
         print_warning "Not signed into Apple ID"
 
         # Prompt user for action
         if prompt_apple_account_login; then
             install_mas_apps
-            return 0
-        else
-            echo ""
-            print_warning "Mac App Store apps skipped."
-            echo ""
-            return 2
         fi
     fi
+    echo ""
 }
