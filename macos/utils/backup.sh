@@ -583,21 +583,21 @@ backup_existing_files() {
     local total_backed_up=$((stow_backed_up + non_stow_backed_up))
 
     if [[ ${total_backed_up} -gt 0 ]]; then
-        echo "" >&2
+        print_newline
         print_success "Backup completed successfully!"
         print_detail "Location: ${backup_dir}" 3
         print_detail "Stow files backed up: ${stow_backed_up}" 3
         print_detail "Non-stow files backed up: ${non_stow_backed_up}" 3
         print_detail "Total files backed up: ${total_backed_up}" 3
         print_detail "Manifest file path: ${manifest_file}" 3
-        echo "" >&2
+        print_newline
         # Return the backup directory path to stdout
         echo "${backup_dir}"
     else
         # Remove empty backup directory if no files were actually backed up
         cleanup_empty_backup_dir "${backup_dir}"
         print_success "No files needed backup. Proceeding with installation."
-        echo "" >&2
+        print_newline
         echo "" # Return empty string for no backup
     fi
 

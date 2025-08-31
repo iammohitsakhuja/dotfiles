@@ -71,4 +71,5 @@ install_homebrew() {
     else
         print_success "Homebrew already installed"
     fi
+    print_newline
 }

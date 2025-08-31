@@ -23,14 +23,14 @@ is_signed_into_apple_id() {
 
 # Function to prompt user for Apple ID login
 prompt_apple_account_login() {
-    echo ""
+    print_newline
     echo "======================================================================"
     echo "Apple ID Sign-In Required"
     echo "======================================================================"
-    echo ""
+    print_newline
     echo "The Brewfile contains Mac App Store applications that require"
     echo "you to be signed into your Apple ID in the App Store."
-    echo ""
+    print_newline
     echo "Note: Apple ID login (System Settings) and App Store login are separate."
     echo "You may be signed into Apple ID but still need to sign into App Store."
     echo "Unfortunately, we cannot detect App Store login status."
@@ -38,11 +38,11 @@ prompt_apple_account_login() {
     echo "Apple ID but not App Store."
     echo "However, when mas begins installing apps, it will fail if you are not"
     echo "signed into App Store, so we are still good - just not ideal."
-    echo ""
+    print_newline
     echo "Options:"
     echo "  1) Sign in to App Store now (opens App Store)"
     echo "  2) Skip Mac App Store apps for now"
-    echo ""
+    print_newline
     read -r -p "Your choice [1/2]: " choice
 
     case ${choice} in
@@ -52,7 +52,7 @@ prompt_apple_account_login() {
         # Hack to force Login page/dialog: we open Updates page
         open "macappstore://showUpdatesPage"
 
-        echo ""
+        print_newline
         echo "Please sign in to your Apple ID in the App Store."
         echo "Once signed in, press Enter to continue..."
         read -r
@@ -108,5 +108,5 @@ handle_mas_installation() {
             install_mas_apps
         fi
     fi
-    echo ""
+    print_newline
 }

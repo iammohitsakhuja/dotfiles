@@ -120,7 +120,7 @@ list_available_backups() {
         else
             echo "  ${timestamp} (manifest file missing - backup may be incomplete)"
         fi
-        echo ""
+        print_newline
     done
 
     return 0
@@ -150,7 +150,7 @@ cleanup_stow_symlinks() {
     else
         print_warning "Some stow operations could not be completed (this may be normal if installation was incomplete)"
     fi
-    echo ""
+    print_newline
 }
 
 # Function to restore stow files from backup
@@ -384,15 +384,15 @@ restore_files() {
         return 0
     fi
 
-    echo "Files to restore - Total: ${total_count} (Stow: ${stow_count}, Non-Stow: ${non_stow_count})" >&2
-    echo "" >&2
+    print_action "Files to restore - Total: ${total_count} (Stow: ${stow_count}, Non-Stow: ${non_stow_count})"
+    print_newline
 
     # Restore stow files first
     local stow_results=$(restore_stow_files "${backup_dir}" "${manifest_file}" "${dry_run_flag}")
     local stow_restored stow_failed stow_skipped
     IFS='|' read -r stow_restored stow_failed stow_skipped <<<"${stow_results}"
 
-    echo "" >&2
+    print_newline
 
     # Restore non-stow files second
     local non_stow_results=$(restore_non_stow_files "${backup_dir}" "${manifest_file}" "${dry_run_flag}")
@@ -404,7 +404,7 @@ restore_files() {
     local total_failed=$((stow_failed + non_stow_failed))
     local total_skipped=$((stow_skipped + non_stow_skipped))
 
-    echo "" >&2
+    print_newline
     echo "File restoration summary:" >&2
     print_config_item "Stow files restored" "${stow_restored}"
     print_config_item "Non-stow files restored" "${non_stow_restored}"
@@ -419,7 +419,7 @@ restore_files() {
         print_config_item "Non-stow files skipped" "${non_stow_skipped}"
         print_config_item "Total files skipped" "${total_skipped}"
     fi
-    echo "" >&2
+    print_newline
 
     # Return actual restoration results: stow_restored|stow_failed|stow_skipped|non_stow_restored|non_stow_failed|non_stow_skipped|total_restored|total_failed|total_skipped
     echo "${stow_restored}|${stow_failed}|${stow_skipped}|${non_stow_restored}|${non_stow_failed}|${non_stow_skipped}|${total_restored}|${total_failed}|${total_skipped}"
@@ -471,25 +471,25 @@ show_backup_directory_status() {
             print_config_item "Total files remaining" "${total_dotfiles} (plus manifest)"
 
             if [[ ${stow_files} -gt 0 ]]; then
-                echo ""
+                print_newline
                 echo "Remaining stow files:"
                 find "${backup_dir}/stow" -type f 2>/dev/null | sed "s|${backup_dir}/stow/||" | sort | sed 's/^/  /'
             fi
 
             if [[ ${non_stow_files} -gt 0 ]]; then
-                echo ""
+                print_newline
                 echo "Remaining non-stow files:"
                 find "${backup_dir}/non_stow" -type f 2>/dev/null | sed "s|${backup_dir}/non_stow/||" | sort | sed 's/^/  /'
             fi
         fi
 
-        echo ""
+        print_newline
         echo "To clean up the backup directory:"
         echo "  rm -rf \"${backup_dir}\""
     else
         print_config_item "Status" "(directory not found - may have been removed)"
     fi
-    echo ""
+    print_newline
 }
 
 # Function to perform complete restoration
@@ -515,13 +515,13 @@ perform_restoration() {
 
     # Show summary
     echo "Summary of restoration operations:"
-    echo ""
+    print_newline
     print_success "Stow-managed symlinks cleaned up from ${HOME}"
     print_success "Original files restored from backup (${actual_stow_restored} stow + ${actual_non_stow_restored} non-stow = ${actual_total_restored} total files)"
     print_success "Dotfiles restoration completed successfully"
-    echo ""
+    print_newline
     print_header "Restoration Complete!"
-    echo ""
+    print_newline
 
     echo "Operation details:"
     print_config_item "Backup location" "${backup_dir}"
@@ -539,12 +539,12 @@ perform_restoration() {
         print_config_item "Total files skipped" "${actual_total_skipped}"
     fi
     print_config_item "Stow directory" "${STOW_DIR}"
-    echo ""
+    print_newline
     echo "Next steps:"
     echo "  • You can now re-run the installation script if desired"
     echo "  • Or keep your restored configuration as-is"
     echo "  • Consider backing up your current state before making changes"
-    echo ""
+    print_newline
 
     # Show backup directory status and cleanup command
     show_backup_directory_status "${backup_dir}" "${dry_run_flag}"
@@ -554,7 +554,7 @@ perform_restoration() {
     else
         print_warning "The backup directory may now be empty as files were moved back"
     fi
-    echo ""
+    print_newline
 
     # Success message last
     if [[ ${dry_run_flag} == "dry-run" ]]; then
@@ -562,7 +562,7 @@ perform_restoration() {
     else
         print_celebration "Your original dotfiles have been successfully restored!"
     fi
-    echo ""
+    print_newline
 }
 
 # Main execution logic
@@ -575,7 +575,7 @@ main() {
     # If no specific backup timestamp provided, show available backups and prompt user
     if [[ -z ${backup_timestamp} ]]; then
         print_header "Disaster Recovery Mode - Restore Original Dotfiles"
-        echo ""
+        print_newline
 
         # shellcheck disable=SC2310
         if ! list_available_backups; then
@@ -589,7 +589,7 @@ main() {
             echo "Restoration cancelled."
             exit 0
         fi
-        echo ""
+        print_newline
 
         backup_timestamp="${user_choice}"
     fi
@@ -608,7 +608,7 @@ main() {
     local total_count=$(get_total_file_count "${manifest_file}")
 
     print_header "Dotfiles Restoration Process"
-    echo ""
+    print_newline
     print_subheader "Configuration"
     print_config_item "Stow directory" "${STOW_DIR}"
     print_config_item "Backup timestamp" "${backup_timestamp}"
@@ -618,14 +618,14 @@ main() {
     print_config_item "Total files to restore" "${total_count}"
     print_config_item "Backup location" "${backup_dir}"
     print_config_item "Dry run mode" "$(if [[ ${dry_run} -eq 1 ]]; then echo "Yes (preview only)"; else echo "No (actual restoration)"; fi)"
-    echo ""
+    print_newline
 
     # Show warning about what will happen
     print_warning "This will restore your original dotfiles and remove any stow-managed symlinks."
     if [[ ${dry_run} -eq 1 ]]; then
         print_warning "This is a preview mode - no changes will be made to your system"
     fi
-    echo ""
+    print_newline
 
     # Get user confirmation for real mode
     if [[ ${dry_run} -eq 0 ]]; then
@@ -636,7 +636,7 @@ main() {
             echo "Restoration cancelled."
             exit 0
         fi
-        echo ""
+        print_newline
     fi
 
     # Execute restoration

@@ -89,7 +89,7 @@ auth       sufficient     pam_tid.so
             die "ERROR: SSH key generation failed - key files not found"
         fi
     fi
-    echo ""
+    print_newline
 
     # Configure modern shells.
     print_action "Configuring modern shells..."
@@ -115,32 +115,32 @@ auth       sufficient     pam_tid.so
     fi
 
     print_success "Shell configuration completed"
-    echo ""
+    print_newline
 
     # Set up Perl correctly.
     print_action "Configuring Perl module installation path..."
     PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5" PERL_MM_USE_DEFAULT=1 cpan local::lib
     print_success "Perl configuration completed"
-    echo ""
+    print_newline
 
     # Set up FZF autocompletion and keybindings.
     print_action "Installing FZF autocompletion and keybindings..."
     "${brew_prefix}/opt/fzf/install" --key-bindings --completion --no-update-rc
     print_success "FZF configuration completed"
-    echo ""
+    print_newline
 
     # Configure Tmux colors.
     print_action "Configuring Tmux terminal colors..."
     tic -x "${stow_dir}/utils/terminfo/xterm-256color-italic.terminfo"
     tic -x "${stow_dir}/utils/terminfo/tmux-256color.terminfo"
     print_success "Tmux terminal colors configured"
-    echo ""
+    print_newline
 
     # Configure MacOS settings.
     print_action "Applying macOS system preferences and settings..."
     configure_macos_preferences
     print_success "macOS system settings configured"
-    echo ""
+    print_newline
 }
 
 # Function to configure macOS system preferences and settings
@@ -589,5 +589,5 @@ configure_macos_preferences() {
         killall "${app}" &>/dev/null || true
     done
 
-    print_preview "Done. Note that some of these changes require a logout/restart to take effect."
+    print_preview "Done. Note that some of these changes require a logout/restart to take effect." 1
 }

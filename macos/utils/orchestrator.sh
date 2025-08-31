@@ -25,17 +25,19 @@ install_all_packages() {
     evaluate_homebrew_environment
 
     # Update Homebrew
+    print_action "Updating & Upgrading Homebrew..."
     brew update
 
     # Upgrade any previously installed packages
     brew upgrade
+    print_success "Homebrew updated & upgraded successfully"
 
     # Install all packages from main Brewfile (this excludes Mac App Store apps)
     print_action "Installing Homebrew packages (excluding Mac App Store apps)"
     print_detail "You may be prompted for your password by sudo if any packages require elevated permissions"
     brew bundle --file "${ORCHESTRATOR_SCRIPT_DIR}/../Brewfile"
     print_success "Homebrew packages installed successfully"
-    echo ""
+    print_newline
 
     # Handle Mac App Store apps separately with login check
     handle_mas_installation
@@ -44,7 +46,7 @@ install_all_packages() {
     print_action "Cleaning up Homebrew cache and removing unused packages"
     brew cleanup && brew autoremove
     print_success "Homebrew cleanup completed"
-    echo ""
+    print_newline
 
     print_subheader "Language Environments & Packages"
     install_go_packages

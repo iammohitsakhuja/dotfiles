@@ -45,7 +45,7 @@ install_go_packages() {
     fi
 
     print_success "Go environment setup complete"
-    echo ""
+    print_newline
 }
 
 # Install Node.js packages and setup nodenv
@@ -85,7 +85,7 @@ install_node_packages() {
     fi
 
     print_success "Node.js environment setup complete"
-    echo ""
+    print_newline
 }
 
 # Install Python packages and setup pyenv
@@ -125,7 +125,7 @@ install_python_packages() {
     fi
 
     print_success "Python environment setup complete"
-    echo ""
+    print_newline
 }
 
 # Install Ruby gems and setup rbenv
@@ -169,7 +169,7 @@ install_ruby_gems() {
     fi
 
     print_success "Ruby environment setup complete"
-    echo ""
+    print_newline
 }
 
 # Install shell packages and plugins
@@ -212,7 +212,7 @@ install_shell_packages() {
     print_detail "Oh-my-zsh plugins installation/update completed successfully"
 
     print_success "Shell packages setup complete"
-    echo ""
+    print_newline
 }
 
 # Install Vim packages and setup VimPlug
@@ -255,5 +255,5 @@ install_vim_packages() {
     fi
 
     print_success "Vim packages setup complete"
-    echo ""
+    print_newline
 }

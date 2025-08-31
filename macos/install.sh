@@ -16,9 +16,9 @@ source "${INSTALL_SCRIPT_DIR}/utils/orchestrator.sh"
 
 # Require Apple Silicon Mac - fail immediately if not supported
 require_apple_silicon
-echo ""
+print_newline
 print_success "macOS environment confirmed and Apple Silicon Mac detected"
-echo ""
+print_newline
 
 # Get the stow directory (directory containing this script).
 STOW_DIR=$(cd "$(dirname "$0")" && pwd)
@@ -87,13 +87,13 @@ while :; do
         ;;
     *) # Default case: No more options, so break out of the loop.
         print_header "macOS Dotfiles Installation"
-        echo ""
+        print_newline
         print_subheader "Configuration:"
         print_config_item "Backup existing files" "$(if [[ ${backup} == 1 ]]; then echo "Yes"; else echo "No"; fi)"
         print_config_item "Email" "${email}"
         print_config_item "Name" "${name}"
         print_config_item "Stow directory" "${STOW_DIR}"
-        echo ""
+        print_newline
 
         # Argument Validations.
         if [[ -z ${email} ]]; then
@@ -114,7 +114,7 @@ if [[ ! -d "${STOW_DIR}/home" ]]; then
 fi
 
 print_header "Authentication & Dependencies"
-echo ""
+print_newline
 
 # Ask for administrator password upfront (we will need to ask for this again explicitly once after homebrew operations are done).
 print_action "Requesting administrator authentication (1 of 2)..."
@@ -124,29 +124,30 @@ sudo -v
 sudo_keepalive
 
 print_success "Administrator authentication confirmed"
-echo ""
+print_newline
 
 # Install essential dependencies before proceeding
 print_step 1 5 "Checking and installing essential dependencies"
+print_newline
 bootstrap_dependencies
-echo ""
+print_newline
 print_success "Essential dependencies are ready!"
-echo ""
+print_newline
 
 print_header "Package Installation & Setup"
-echo ""
+print_newline
 
 # Run installation scripts.
 print_step 2 5 "Installing packages and applications"
-echo ""
+print_newline
 
 install_all_packages "${STOW_DIR}"
 BREW_PREFIX=$(brew --prefix)
 print_success "Package and application installation complete!"
-echo ""
+print_newline
 
 print_header "Backup & File Management"
-echo ""
+print_newline
 
 # Ask for administrator password upfront (we will need to ask for this again explicitly once after homebrew operations are done).
 print_action "Requesting administrator authentication (2 of 2)..."
@@ -156,7 +157,7 @@ sudo -v
 sudo_keepalive
 
 print_success "Administrator authentication confirmed"
-echo ""
+print_newline
 
 # Backup existing files before stow operations
 print_step 3 5 "Backing up existing files and linking dotfiles"
@@ -165,28 +166,28 @@ BACKUP_DIR=$(backup_existing_files "${backup}" "${STOW_DIR}")
 # Stow will handle all dotfile symlinking.
 # The home/ directory structure mirrors the $HOME directory structure.
 # Do not fold the tree.
-echo "Linking dotfiles into ${HOME}/ using stow..."
+print_action "Linking dotfiles into ${HOME}/ using stow..."
 stow -d "${STOW_DIR}" -t "${HOME}" --no-folding home --verbose=1
 print_success "Dotfiles linked successfully!"
-echo ""
+print_newline
 
 print_header "System Configuration"
-echo ""
+print_newline
 
 # Configure system and user settings.
 print_step 4 5 "Configuring system and user settings"
-echo ""
+print_newline
 
 print_action "Configuring system settings..."
 configure_system_settings "${email}" "${name}" "${STOW_DIR}" "${BREW_PREFIX}"
 print_success "System configuration completed"
-echo ""
+print_newline
 
 print_header "Installation Complete!"
-echo ""
+print_newline
 
 print_step 5 5 "Summary of completed installation"
-echo ""
+print_newline
 
 print_success "Essential dependencies installed (Homebrew, Stow, Command Line Tools)"
 if [[ ${backup} == 1 ]]; then
@@ -202,19 +203,19 @@ print_success "API keys storage file created"
 print_success "Development packages and tools installed"
 print_success "Terminal colors configured for Tmux"
 print_success "macOS system preferences applied"
-echo ""
+print_newline
 print_celebration "Your macOS development environment is now ready!"
-echo ""
+print_newline
 echo "Next steps:"
 echo "  • Add your SSH public key to GitHub/GitLab"
 echo "  • Restart your terminal or run 'source ~/.zshrc'"
 echo "  • Review installed applications and configure as needed"
-echo ""
+print_newline
 echo "SSH public key location: ${HOME}/.ssh/id_ed25519.pub"
 if [[ -n ${BACKUP_DIR} ]]; then
     echo "Dotfiles backup location: ${BACKUP_DIR}"
 else
     echo "Dotfiles backup location: No backup created"
 fi
-echo ""
+print_newline
 echo "======================================================================"

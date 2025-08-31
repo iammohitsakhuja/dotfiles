@@ -58,6 +58,11 @@ get_indent() {
     printf "%*s" "$((level * 2))" ""
 }
 
+# Print a newline for spacing
+print_newline() {
+    echo "" >&2
+}
+
 # Print a standardized header with 70-character width and centered title
 print_header() {
     local title="$1"
@@ -75,7 +80,7 @@ print_subheader() {
     local indent=$(get_indent "${indent_level}")
     echo "${indent}${COLOR_BOLD}${COLOR_CYAN}${title}${COLOR_RESET}" >&2
     printf "${indent}${COLOR_CYAN}=%.0s${COLOR_RESET}" $(seq 1 ${#title}) >&2
-    echo "" >&2
+    print_newline
 }
 
 # Print a step indicator with current/total progress and description
@@ -85,10 +90,10 @@ print_step() {
     local description="$3"
     local indent_level="${4:-0}"
     local indent=$(get_indent "${indent_level}")
-    echo "" >&2
+    print_newline
     echo "${indent}${COLOR_BOLD}${COLOR_CYAN}Step ${current}/${total}: ${description}${COLOR_RESET}" >&2
     printf "${indent}${COLOR_BOLD}${COLOR_CYAN}=%.0s${COLOR_RESET}" $(seq 1 $((${#description} + 15))) >&2
-    echo "" >&2
+    print_newline
 }
 
 # Print an action message with arrow emoji indicator
