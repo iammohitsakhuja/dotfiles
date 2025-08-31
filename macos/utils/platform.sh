@@ -13,7 +13,7 @@ source "${PLATFORM_SCRIPT_DIR}/logging.sh"
 
 # Helper function to exit the script with an error message
 die() {
-    printf '%s\n' "$1" >&2
+    print_error "$1" 0
     exit 1
 }
 

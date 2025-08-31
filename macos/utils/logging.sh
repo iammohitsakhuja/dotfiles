@@ -120,6 +120,14 @@ print_warning() {
     echo "${indent}${COLOR_YELLOW}⚠️ ${message}${COLOR_RESET}" >&2
 }
 
+# Print an error message with error emoji
+print_error() {
+    local message="$1"
+    local indent_level="${2:-1}"
+    local indent=$(get_indent "${indent_level}")
+    echo "${indent}$(get_color red)❌ ${message}${COLOR_RESET}" >&2
+}
+
 # Print a configuration item with memo emoji
 print_config_item() {
     local label="$1"
