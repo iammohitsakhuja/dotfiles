@@ -58,14 +58,19 @@ get_indent() {
     printf "%*s" "$((level * 2))" ""
 }
 
+# Print a newline for spacing
+print_newline() {
+    echo "" >&2
+}
+
 # Print a standardized header with 70-character width and centered title
 print_header() {
     local title="$1"
     local indent_level="${2:-0}"
     local indent=$(get_indent "${indent_level}")
-    echo "${indent}${COLOR_BLUE}${COLOR_BOLD}======================================================================${COLOR_RESET}"
-    printf "${indent}${COLOR_BLUE}${COLOR_BOLD}%-70s${COLOR_RESET}\n" "$(printf "%*s" $(((70 - ${#title}) / 2)) '')${title}"
-    echo "${indent}${COLOR_BLUE}${COLOR_BOLD}======================================================================${COLOR_RESET}"
+    echo "${indent}${COLOR_BLUE}${COLOR_BOLD}======================================================================${COLOR_RESET}" >&2
+    printf "${indent}${COLOR_BLUE}${COLOR_BOLD}%-70s${COLOR_RESET}\n" "$(printf "%*s" $(((70 - ${#title}) / 2)) '')${title}" >&2
+    echo "${indent}${COLOR_BLUE}${COLOR_BOLD}======================================================================${COLOR_RESET}" >&2
 }
 
 # Print a subheader with cyan color and underline separator
@@ -73,9 +78,9 @@ print_subheader() {
     local title="$1"
     local indent_level="${2:-0}"
     local indent=$(get_indent "${indent_level}")
-    echo "${indent}${COLOR_BOLD}${COLOR_CYAN}${title}${COLOR_RESET}"
-    printf "${indent}${COLOR_CYAN}=%.0s${COLOR_RESET}" $(seq 1 ${#title})
-    echo ""
+    echo "${indent}${COLOR_BOLD}${COLOR_CYAN}${title}${COLOR_RESET}" >&2
+    printf "${indent}${COLOR_CYAN}=%.0s${COLOR_RESET}" $(seq 1 ${#title}) >&2
+    print_newline
 }
 
 # Print a step indicator with current/total progress and description
@@ -85,10 +90,10 @@ print_step() {
     local description="$3"
     local indent_level="${4:-0}"
     local indent=$(get_indent "${indent_level}")
-    echo ""
-    echo "${indent}${COLOR_BOLD}${COLOR_CYAN}Step ${current}/${total}: ${description}${COLOR_RESET}"
-    printf "${indent}${COLOR_BOLD}${COLOR_CYAN}=%.0s${COLOR_RESET}" $(seq 1 $((${#description} + 15)))
-    echo ""
+    print_newline
+    echo "${indent}${COLOR_BOLD}${COLOR_CYAN}Step ${current}/${total}: ${description}${COLOR_RESET}" >&2
+    printf "${indent}${COLOR_BOLD}${COLOR_CYAN}=%.0s${COLOR_RESET}" $(seq 1 $((${#description} + 15))) >&2
+    print_newline
 }
 
 # Print an action message with arrow emoji indicator
@@ -96,7 +101,7 @@ print_action() {
     local message="$1"
     local indent_level="${2:-1}"
     local indent=$(get_indent "${indent_level}")
-    echo "${indent}${COLOR_RESET}➡️ ${message}${COLOR_RESET}"
+    echo "${indent}${COLOR_RESET}➡️ ${message}${COLOR_RESET}" >&2
 }
 
 # Print a success message with check mark emoji
@@ -104,7 +109,7 @@ print_success() {
     local message="$1"
     local indent_level="${2:-1}"
     local indent=$(get_indent "${indent_level}")
-    echo "${indent}${COLOR_GREEN}✅ ${message}${COLOR_RESET}"
+    echo "${indent}${COLOR_GREEN}✅ ${message}${COLOR_RESET}" >&2
 }
 
 # Print a warning message with warning emoji
@@ -112,7 +117,15 @@ print_warning() {
     local message="$1"
     local indent_level="${2:-1}"
     local indent=$(get_indent "${indent_level}")
-    echo "${indent}${COLOR_YELLOW}⚠️ ${message}${COLOR_RESET}"
+    echo "${indent}${COLOR_YELLOW}⚠️ ${message}${COLOR_RESET}" >&2
+}
+
+# Print an error message with error emoji
+print_error() {
+    local message="$1"
+    local indent_level="${2:-1}"
+    local indent=$(get_indent "${indent_level}")
+    echo "${indent}$(get_color red)❌ ${message}${COLOR_RESET}" >&2
 }
 
 # Print a configuration item with memo emoji
@@ -121,7 +134,7 @@ print_config_item() {
     local value="$2"
     local indent_level="${3:-1}"
     local indent=$(get_indent "${indent_level}")
-    echo "${indent}${COLOR_RESET}📝 ${label}: ${value}${COLOR_RESET}"
+    echo "${indent}${COLOR_RESET}📝 ${label}: ${value}${COLOR_RESET}" >&2
 }
 
 # Print the final celebration message with consistent formatting
@@ -129,7 +142,7 @@ print_celebration() {
     local message="$1"
     local indent_level="${2:-0}"
     local indent=$(get_indent "${indent_level}")
-    echo "${indent}${COLOR_GREEN}${COLOR_BOLD}🎉 ${message}${COLOR_RESET}"
+    echo "${indent}${COLOR_GREEN}${COLOR_BOLD}🎉 ${message}${COLOR_RESET}" >&2
 }
 
 # Print a preview/info message with magnifying glass
@@ -137,7 +150,7 @@ print_preview() {
     local message="$1"
     local indent_level="${2:-0}"
     local indent=$(get_indent "${indent_level}")
-    echo "${indent}${COLOR_BLUE}🔍 ${message}${COLOR_RESET}"
+    echo "${indent}${COLOR_BLUE}🔍 ${message}${COLOR_RESET}" >&2
 }
 
 # Print detailed/secondary information in gray color
@@ -145,5 +158,5 @@ print_detail() {
     local message="$1"
     local indent_level="${2:-2}"
     local indent=$(get_indent "${indent_level}")
-    echo "${indent}${COLOR_GRAY}${message}${COLOR_RESET}"
+    echo "${indent}${COLOR_GRAY}${message}${COLOR_RESET}" >&2
 }

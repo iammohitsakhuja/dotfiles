@@ -2,9 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AllowClipboardAccess</key>
+	<true/>
 	<key>AlternateMouseScroll</key>
 	<true/>
 	<key>BootstrapDaemon</key>
+	<false/>
+	<key>ClickToSelectCommand</key>
 	<false/>
 	<key>Custom Color Presets</key>
 	<dict>
@@ -1061,11 +1065,15 @@
 	</dict>
 	<key>Default Bookmark Guid</key>
 	<string>0F9068BC-0CF5-4BAE-85A1-7E6CE5F09D83</string>
+	<key>DimOnlyText</key>
+	<false/>
 	<key>DisableFullscreenTransparency</key>
 	<true/>
 	<key>DoubleClickPerformsSmartSelection</key>
 	<false/>
 	<key>EnableAPIServer</key>
+	<true/>
+	<key>EnableDivisionView</key>
 	<true/>
 	<key>GlobalKeyMap</key>
 	<dict>
@@ -1109,6 +1117,8 @@
 			<key>AWDS Window Option</key>
 			<string>No</string>
 			<key>Allow Paste Bracketing</key>
+			<true/>
+			<key>Allow Title Reporting</key>
 			<true/>
 			<key>Ambiguous Double Width</key>
 			<false/>
@@ -1274,18 +1284,20 @@
 				<key>Alpha Component</key>
 				<real>0.5</real>
 				<key>Blue Component</key>
-				<real>0.0</real>
+				<real>0.13960540294647217</real>
 				<key>Color Space</key>
-				<string>sRGB</string>
+				<string>P3</string>
 				<key>Green Component</key>
-				<real>0.14910027384757996</real>
+				<real>0.25479039549827576</real>
 				<key>Red Component</key>
-				<real>1</real>
+				<real>0.92929404973983765</real>
 			</dict>
 			<key>Blinking Cursor</key>
 			<true/>
 			<key>Blur</key>
-			<false/>
+			<true/>
+			<key>Blur Radius</key>
+			<real>25.356305803571427</real>
 			<key>Bold Color</key>
 			<dict>
 				<key>Blue Component</key>
@@ -1300,7 +1312,7 @@
 			<key>Close Sessions On End</key>
 			<true/>
 			<key>Columns</key>
-			<integer>160</integer>
+			<integer>220</integer>
 			<key>Command</key>
 			<string></string>
 			<key>Cursor Boost</key>
@@ -1319,13 +1331,13 @@
 				<key>Alpha Component</key>
 				<real>0.25</real>
 				<key>Blue Component</key>
-				<real>1</real>
+				<real>0.99125725030899048</real>
 				<key>Color Space</key>
-				<string>sRGB</string>
+				<string>P3</string>
 				<key>Green Component</key>
-				<real>0.92681378126144409</real>
+				<real>0.92047786712646484</real>
 				<key>Red Component</key>
-				<real>0.70214027166366577</real>
+				<real>0.74862593412399292</real>
 			</dict>
 			<key>Cursor Text Color</key>
 			<dict>
@@ -1341,7 +1353,7 @@
 			<key>Custom Command</key>
 			<string>No</string>
 			<key>Custom Directory</key>
-			<string>Advanced</string>
+			<string>No</string>
 			<key>Custom Locale</key>
 			<string>en_US.UTF-8</string>
 			<key>Default Bookmark</key>
@@ -1351,7 +1363,7 @@
 			<key>Disable Window Resizing</key>
 			<true/>
 			<key>Draw Powerline Glyphs</key>
-			<false/>
+			<true/>
 			<key>Flashing Bell</key>
 			<false/>
 			<key>Foreground Color</key>
@@ -1372,7 +1384,7 @@
 			<key>Idle Code</key>
 			<integer>0</integer>
 			<key>Initial Use Transparency</key>
-			<false/>
+			<true/>
 			<key>Jobs to Ignore</key>
 			<array>
 				<string>rlogin</string>
@@ -1387,13 +1399,26 @@
 				<key>Alpha Component</key>
 				<real>1</real>
 				<key>Blue Component</key>
-				<real>0.73422712087631226</real>
+				<real>0.7093239426612854</real>
 				<key>Color Space</key>
-				<string>sRGB</string>
+				<string>P3</string>
 				<key>Green Component</key>
-				<real>0.35915297269821167</real>
+				<real>0.35333043336868286</real>
 				<key>Red Component</key>
-				<real>0.0</real>
+				<real>0.14513972401618958</real>
+			</dict>
+			<key>Match Background Color</key>
+			<dict>
+				<key>Alpha Component</key>
+				<real>1</real>
+				<key>Blue Component</key>
+				<real>0.32116127014160156</real>
+				<key>Color Space</key>
+				<string>P3</string>
+				<key>Green Component</key>
+				<real>0.98600882291793823</real>
+				<key>Red Component</key>
+				<real>0.99697142839431763</real>
 			</dict>
 			<key>Minimum Contrast</key>
 			<real>0.0</real>
@@ -1418,7 +1443,7 @@
 			<key>Right Option Key Sends</key>
 			<integer>0</integer>
 			<key>Rows</key>
-			<integer>45</integer>
+			<integer>70</integer>
 			<key>Screen</key>
 			<integer>-1</integer>
 			<key>Scrollback Lines</key>
@@ -1464,7 +1489,7 @@
 					<key>auto-rainbow style</key>
 					<integer>0</integer>
 					<key>font</key>
-					<string>FiraCode-Retina 12</string>
+					<string>MonaspaceNeon-Regular 13</string>
 					<key>remove empty components</key>
 					<false/>
 				</dict>
@@ -1490,13 +1515,13 @@
 									<key>Alpha Component</key>
 									<real>1</real>
 									<key>Blue Component</key>
-									<real>0.63</real>
+									<real>0.63590961694717407</real>
 									<key>Color Space</key>
-									<string>sRGB</string>
+									<string>P3</string>
 									<key>Green Component</key>
-									<real>0.63</real>
+									<real>0.6414334774017334</real>
 									<key>Red Component</key>
-									<real>0.90000000000000002</real>
+									<real>0.86000317335128784</real>
 								</dict>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
@@ -1506,7 +1531,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>FiraCode-Retina 12</string>
+								<string>MonaspaceNeon-Regular 13</string>
 								<key>remove empty components</key>
 								<false/>
 							</dict>
@@ -1532,13 +1557,13 @@
 									<key>Alpha Component</key>
 									<real>1</real>
 									<key>Blue Component</key>
-									<real>0.63</real>
+									<real>0.65761250257492065</real>
 									<key>Color Space</key>
-									<string>sRGB</string>
+									<string>P3</string>
 									<key>Green Component</key>
-									<real>0.87570000000000003</real>
+									<real>0.87652522325515747</real>
 									<key>Red Component</key>
-									<real>0.90000000000000002</real>
+									<real>0.89574497938156128</real>
 								</dict>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
@@ -1548,7 +1573,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>FiraCode-Retina 12</string>
+								<string>MonaspaceNeon-Regular 13</string>
 								<key>remove empty components</key>
 								<false/>
 							</dict>
@@ -1574,13 +1599,13 @@
 									<key>Alpha Component</key>
 									<real>1</real>
 									<key>Blue Component</key>
-									<real>0.63</real>
+									<real>0.65540963411331177</real>
 									<key>Color Space</key>
-									<string>sRGB</string>
+									<string>P3</string>
 									<key>Green Component</key>
-									<real>0.90000000000000002</real>
+									<real>0.89377599954605103</real>
 									<key>Red Component</key>
-									<real>0.67859999999999998</real>
+									<real>0.72450786828994751</real>
 								</dict>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
@@ -1590,7 +1615,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>FiraCode-Retina 12</string>
+								<string>MonaspaceNeon-Regular 13</string>
 								<key>remove empty components</key>
 								<false/>
 							</dict>
@@ -1616,13 +1641,13 @@
 									<key>Alpha Component</key>
 									<real>1</real>
 									<key>Blue Component</key>
-									<real>0.82710000000000006</real>
+									<real>0.82982355356216431</real>
 									<key>Color Space</key>
-									<string>sRGB</string>
+									<string>P3</string>
 									<key>Green Component</key>
-									<real>0.90000000000000002</real>
+									<real>0.89269793033599854</real>
 									<key>Red Component</key>
-									<real>0.63</real>
+									<real>0.68831604719161987</real>
 								</dict>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
@@ -1632,7 +1657,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>FiraCode-Retina 12</string>
+								<string>MonaspaceNeon-Regular 13</string>
 								<key>remove empty components</key>
 								<false/>
 							</dict>
@@ -1652,13 +1677,13 @@
 									<key>Alpha Component</key>
 									<real>1</real>
 									<key>Blue Component</key>
-									<real>0.90000000000000002</real>
+									<real>0.8851432204246521</real>
 									<key>Color Space</key>
-									<string>sRGB</string>
+									<string>P3</string>
 									<key>Green Component</key>
-									<real>0.72719999999999996</real>
+									<real>0.72423571348190308</real>
 									<key>Red Component</key>
-									<real>0.63</real>
+									<real>0.64865356683731079</real>
 								</dict>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
@@ -1668,7 +1693,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>FiraCode-Retina 12</string>
+								<string>MonaspaceNeon-Regular 13</string>
 								<key>remove empty components</key>
 								<false/>
 							</dict>
@@ -1688,13 +1713,13 @@
 									<key>Alpha Component</key>
 									<real>1</real>
 									<key>Blue Component</key>
-									<real>0.90000000000000002</real>
+									<real>0.88204485177993774</real>
 									<key>Color Space</key>
-									<string>sRGB</string>
+									<string>P3</string>
 									<key>Green Component</key>
-									<real>0.63</real>
+									<real>0.63566368818283081</real>
 									<key>Red Component</key>
-									<real>0.77849999999999997</real>
+									<real>0.75487619638442993</real>
 								</dict>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
@@ -1704,7 +1729,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>FiraCode-Retina 12</string>
+								<string>MonaspaceNeon-Regular 13</string>
 								<key>remove empty components</key>
 								<false/>
 							</dict>
@@ -1724,13 +1749,13 @@
 									<key>Alpha Component</key>
 									<real>1</real>
 									<key>Blue Component</key>
-									<real>0.77580000000000027</real>
+									<real>0.76881867647171021</real>
 									<key>Color Space</key>
-									<string>sRGB</string>
+									<string>P3</string>
 									<key>Green Component</key>
-									<real>0.63</real>
+									<real>0.64143049716949463</real>
 									<key>Red Component</key>
-									<real>0.90000000000000002</real>
+									<real>0.86000508069992065</real>
 								</dict>
 							</dict>
 							<key>layout advanced configuration dictionary value</key>
@@ -1740,7 +1765,7 @@
 								<key>auto-rainbow style</key>
 								<integer>0</integer>
 								<key>font</key>
-								<string>FiraCode-Retina 12</string>
+								<string>MonaspaceNeon-Regular 13</string>
 								<key>remove empty components</key>
 								<false/>
 							</dict>
@@ -1757,7 +1782,7 @@
 			<key>Thin Strokes</key>
 			<integer>4</integer>
 			<key>Transparency</key>
-			<real>0.0</real>
+			<real>0.19740513392857142</real>
 			<key>Unicode Version</key>
 			<integer>9</integer>
 			<key>Unlimited Scrollback</key>
@@ -1819,6 +1844,8 @@
 	</dict>
 	<key>PromptOnQuit</key>
 	<false/>
+	<key>RestoreWindowsToSameSpaces</key>
+	<true/>
 	<key>SeparateWindowTitlePerTab</key>
 	<true/>
 	<key>ShowFullScreenTabBar</key>
@@ -1826,9 +1853,11 @@
 	<key>SoundForEsc</key>
 	<false/>
 	<key>SplitPaneDimmingAmount</key>
-	<real>0.29143984866770983</real>
+	<real>0.25</real>
 	<key>StatusBarPosition</key>
 	<integer>0</integer>
+	<key>StretchTabsToFillBar</key>
+	<false/>
 	<key>TabStyleWithAutomaticOption</key>
 	<integer>5</integer>
 	<key>TabViewType</key>

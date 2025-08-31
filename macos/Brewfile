@@ -1,7 +1,3 @@
-#########################################################
-####### Uncomment to install particular software. #######
-#########################################################
-
 # Each section is arranged alphabetically.
 
 # GNU utilities (replace macOS defaults - those that come with macOS are outdated).

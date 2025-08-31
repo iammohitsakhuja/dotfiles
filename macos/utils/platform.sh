@@ -4,23 +4,45 @@
 # This file provides platform detection, dependency management, and system-specific operations.
 
 # Source shared utilities for logging functions
-source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
+PLATFORM_SCRIPT_DIR="${BASH_SOURCE[0]%/*}"
+if [[ ! -d ${PLATFORM_SCRIPT_DIR} ]] || [[ ${PLATFORM_SCRIPT_DIR} == "${BASH_SOURCE[0]}" ]]; then
+    # Fallback: assume we're being sourced from repo root
+    PLATFORM_SCRIPT_DIR="macos/utils"
+fi
+source "${PLATFORM_SCRIPT_DIR}/logging.sh"
 
 # Helper function to exit the script with an error message
 die() {
-    printf '%s\n' "$1" >&2
+    print_error "$1" 0
     exit 1
 }
 
 # Check if running on Apple Silicon Mac
 is_apple_silicon() {
-    [[ $(uname -m) == 'arm64' ]]
+    # Check the OS is macOS and the architecture is arm64
+    [[ ${OSTYPE} == 'darwin'* && $(uname -m) == 'arm64' ]]
 }
 
 # Require Apple Silicon Mac and fail if not
 require_apple_silicon() {
     if ! is_apple_silicon; then
-        die "ERROR: These dotfiles only support Apple Silicon Macs. Intel Macs are not supported."
+        die "ERROR: These dotfiles only support Apple Silicon Macs. Other Operating Systems and Intel Macs are not supported."
+    fi
+}
+
+# Check if terminal has Full Disk Access
+has_full_disk_access() {
+    # Try to read a system file that requires Full Disk Access
+    plutil -lint /Library/Preferences/com.apple.TimeMachine.plist >/dev/null 2>&1
+}
+
+# Require Full Disk Access and guide user to enable it if not available
+require_full_disk_access() {
+    if ! has_full_disk_access; then
+        # Open System Settings to the relevant panel
+        open "x-apple.systempreferences:com.apple.preference.security?Privacy_All"
+
+        die "ERROR: This script requires your terminal app to have Full Disk Access. Add this terminal to the Full Disk Access list in System Settings > Privacy & Security, quit the app, and re-run this script."
     fi
 }
 
@@ -65,4 +87,5 @@ install_homebrew() {
     else
         print_success "Homebrew already installed"
     fi
+    print_newline
 }

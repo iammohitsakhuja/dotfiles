@@ -4,9 +4,14 @@
 # This file provides consistent backup operations and path management.
 
 # Source utilities for die function
-source "$(dirname "${BASH_SOURCE[0]}")/platform.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/miscellaneous.sh"
+BACKUP_SCRIPT_DIR="${BASH_SOURCE[0]%/*}"
+if [[ ! -d ${BACKUP_SCRIPT_DIR} ]] || [[ ${BACKUP_SCRIPT_DIR} == "${BASH_SOURCE[0]}" ]]; then
+    # Fallback: assume we're being sourced from repo root
+    BACKUP_SCRIPT_DIR="macos/utils"
+fi
+source "${BACKUP_SCRIPT_DIR}/platform.sh"
+source "${BACKUP_SCRIPT_DIR}/logging.sh"
+source "${BACKUP_SCRIPT_DIR}/miscellaneous.sh"
 
 # Constants for backup operations
 readonly BACKUP_BASE_DIR="${HOME}/.backup/dotfiles"
@@ -233,24 +238,23 @@ create_backup_manifest() {
     fi
 
     # Create backup directory structure.
-    # Make sure that `echo` statements are directed to stderr and not returned by the function.
-    print_action "Creating backup directory: ${backup_dir}" >&2
+    print_action "Creating backup directory: ${backup_dir}"
     ensure_backup_structure "${backup_dir}"
-    print_detail "Manifest file path: ${manifest_file}" 3 >&2
+    print_detail "Manifest file path: ${manifest_file}" 3
 
     # Count conflicts (handle empty strings properly)
     local stowing_count=0
     [[ -n ${stowing_conflicts} ]] && stowing_count=$(echo "${stowing_conflicts}" | tr ',' '\n' | grep -c .)
-    echo "Stowing conflicts: ${stowing_conflicts}" >&2
+    print_detail "Stowing conflicts: ${stowing_conflicts}" 3
     local ownership_count=0
     [[ -n ${ownership_conflicts} ]] && ownership_count=$(echo "${ownership_conflicts}" | tr ',' '\n' | grep -c .)
-    echo "Ownership conflicts: ${ownership_conflicts}" >&2
+    print_detail "Ownership conflicts: ${ownership_conflicts}" 3
     local stow_count=$((stowing_count + ownership_count))
     local non_stow_count=0
     [[ -n ${non_stow_conflicts} ]] && non_stow_count=$(echo "${non_stow_conflicts}" | tr ',' '\n' | grep -c .)
     local total_conflicts=$((stow_count + non_stow_count))
 
-    print_action "Found conflicts: ${stow_count} stow conflicts (Stowing: ${stowing_conflicts}, Ownership: ${ownership_conflicts}), ${non_stow_count} non-stow conflicts" >&2
+    print_action "Found conflicts: ${stow_count} stow conflicts (Stowing: ${stowing_conflicts}, Ownership: ${ownership_conflicts}), ${non_stow_count} non-stow conflicts"
 
     # Convert conflicts to JSON arrays
     local stowing_conflicts_json ownership_conflicts_json non_stow_conflicts_json
@@ -372,8 +376,7 @@ backup_conflicting_stow_files() {
 
         # Validate paths are relative and safe
         if [[ ${relative_path} =~ ^/ ]] || [[ ${relative_path} =~ \.\. ]]; then
-            # Make sure that `echo` statements are directed to stderr and not returned by the function.
-            print_warning "Unsafe path detected: ${relative_path}" >&2
+            print_warning "Unsafe path detected: ${relative_path}"
             add_stow_file_to_manifest "${manifest_file}" "${relative_path}" "unsafe_path" "unknown" 0
             ((failed++))
             continue
@@ -403,7 +406,7 @@ backup_conflicting_stow_files() {
             # Move file to backup location (atomic operation)
             if mv "${target_file}" "${backup_file}" 2>/dev/null; then
                 add_stow_file_to_manifest "${manifest_file}" "${relative_path}" "moved_successfully" "${conflict_type}" "${file_size}"
-                print_detail "Moved stow file to backup: ${relative_path}" 3 >&2
+                print_detail "Moved stow file to backup: ${relative_path}" 3
                 ((backed_up++))
                 ((size += file_size))
             else
@@ -451,7 +454,7 @@ backup_conflicting_non_stow_files() {
 
             if mv "${absolute_path}" "${backup_file}" 2>/dev/null; then
                 add_non_stow_file_to_manifest "${manifest_file}" "${backup_relative}" "moved_successfully" "${absolute_path}" "${file_size}"
-                print_detail "Moved non-stow file to backup: ${absolute_path}" 3 >&2
+                print_detail "Moved non-stow file to backup: ${absolute_path}" 3
                 ((backed_up++))
                 ((size += file_size))
             else
@@ -536,13 +539,12 @@ backup_existing_files() {
     local stow_dir="$2"
 
     if [[ ${backup_flag} == 0 ]]; then
-        # Make sure that `echo` statements are directed to stderr and not returned by the function.
-        print_action "Skipping backup as requested..." >&2
+        print_action "Skipping backup as requested..."
         echo "" # Return empty string for no backup
         return 0
     fi
 
-    print_action "Checking for existing files that would be overwritten..." >&2
+    print_action "Checking for existing files that would be overwritten..."
 
     # Create timestamped backup directory
     local backup_timestamp=$(generate_backup_timestamp)
@@ -558,7 +560,7 @@ backup_existing_files() {
 
     # Check if any conflicts exist
     if [[ -z ${actual_stow_conflicts} ]] && [[ -z ${non_stow_conflicts} ]]; then
-        print_success "No existing files would be overwritten. Proceeding without backup." >&2
+        print_success "No existing files would be overwritten. Proceeding without backup."
         echo "" # Return empty string for no backup
         return 0
     fi
@@ -581,21 +583,21 @@ backup_existing_files() {
     local total_backed_up=$((stow_backed_up + non_stow_backed_up))
 
     if [[ ${total_backed_up} -gt 0 ]]; then
-        echo "" >&2
-        print_success "Backup completed successfully!" >&2
-        print_detail "Location: ${backup_dir}" 3 >&2
-        print_detail "Stow files backed up: ${stow_backed_up}" 3 >&2
-        print_detail "Non-stow files backed up: ${non_stow_backed_up}" 3 >&2
-        print_detail "Total files backed up: ${total_backed_up}" 3 >&2
-        print_detail "Manifest file path: ${manifest_file}" 3 >&2
-        echo "" >&2
+        print_newline
+        print_success "Backup completed successfully!"
+        print_detail "Location: ${backup_dir}" 3
+        print_detail "Stow files backed up: ${stow_backed_up}" 3
+        print_detail "Non-stow files backed up: ${non_stow_backed_up}" 3
+        print_detail "Total files backed up: ${total_backed_up}" 3
+        print_detail "Manifest file path: ${manifest_file}" 3
+        print_newline
         # Return the backup directory path to stdout
         echo "${backup_dir}"
     else
         # Remove empty backup directory if no files were actually backed up
         cleanup_empty_backup_dir "${backup_dir}"
-        print_success "No files needed backup. Proceeding with installation." >&2
-        echo "" >&2
+        print_success "No files needed backup. Proceeding with installation."
+        print_newline
         echo "" # Return empty string for no backup
     fi
 
