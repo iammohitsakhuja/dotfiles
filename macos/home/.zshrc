@@ -53,29 +53,7 @@ source ~/.aliases
 
 ############################# Utility functions #############################
 
-# Always show files when switching directories via cd.
-cd() { builtin cd "$@" && ls; }
-
-# Delta-enhanced text processing functions.
-rg-delta() {
-    rg --color=always "$@" | delta
-}
-
-grep-delta() {
-    grep --color=always "$@" | delta
-}
-
-diff-delta() {
-    diff --color=always "$@" | delta
-}
-
-blame-delta() {
-    git blame "$@" | delta
-}
-
-show-delta() {
-    git show --color=always "$@" | delta
-}
+# Feel free to define any utility methods here.
 
 ############################# Sourcing scripts #############################
 
