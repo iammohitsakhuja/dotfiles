@@ -1,7 +1,7 @@
 gui:
   nerdFontsVersion: "3"
   showFileIcons: true
-  sidePanelWidth: 0.28
+  sidePanelWidth: 0.25
 
 git:
   # Better diff context
