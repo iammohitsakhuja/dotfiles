@@ -189,12 +189,27 @@ detect_stow_conflicts() {
     local stow_output=$(stow -n -d "${stow_dir}" -t "${target_dir}" --no-folding home --verbose=3 2>&1)
 
     # Filter files that are causing conflicts - catch both types of conflicts
-    local stowing_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*over existing target \([^[:space:]]*\).*/\1/p' | tr '\n' ',' | sed 's/,$//')
-    local ownership_conflicts=$(echo "${stow_output}" | grep "CONFLICT when stowing" | sed -n 's/.*existing target is not owned by stow: \([^[:space:]]*\).*/\1/p' | tr '\n' ',' | sed 's/,$//')
+    # Deduped extraction
+    local stowing_conflicts=$(echo "${stow_output}" |
+        sed -n 's/.*over existing target \(.*\) since.*/\1/p' |
+        sort -u |
+        tr '\n' ',' |
+        sed 's/,$//')
+
+    local ownership_conflicts=$(echo "${stow_output}" |
+        sed -n 's/.*existing target is not owned by stow: \(.*\)/\1/p' |
+        sort -u |
+        tr '\n' ',' |
+        sed 's/,$//')
 
     # TODO: Remove the need for `actual_conflicts` variable.
-    # Combine both types of conflics.
-    local actual_conflicts=$(printf "%s\n%s" "${stowing_conflicts}" "${ownership_conflicts}" | grep -v '^$' | sort -u | tr '\n' ',' | sed 's/,$//')
+    # Combine both types of conflicts.
+    local actual_conflicts=$(printf "%s\n%s" "${stowing_conflicts}" "${ownership_conflicts}" |
+        tr ',' '\n' |
+        grep -v '^$' |
+        sort -u |
+        tr '\n' ',' |
+        sed 's/,$//')
 
     # Return conflict information as a structured format
     echo "${stowing_conflicts}|${ownership_conflicts}|${actual_conflicts}"
