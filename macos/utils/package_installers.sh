@@ -193,9 +193,9 @@ install_shell_packages() {
     # Array of plugins: "repo_url plugin_name [branch]"
     local plugins=(
         "https://github.com/zsh-users/zsh-syntax-highlighting.git zsh-syntax-highlighting"
-        "https://github.com/zsh-users/zsh-autosuggestions zsh-autosuggestions"
-        "https://github.com/zsh-users/zsh-completions zsh-completions"
-        "https://github.com/iammohitsakhuja/yazi-zoxide-zsh.git yazi-zoxide-zsh fix/omz-plugin-load" # Use own repository until upstream is fixed
+        "https://github.com/zsh-users/zsh-autosuggestions.git zsh-autosuggestions"
+        "https://github.com/zsh-users/zsh-completions.git zsh-completions"
+        "https://github.com/fdw/yazi-zoxide-zsh.git yazi-zoxide-zsh"
     )
 
     for plugin_info in "${plugins[@]}"; do
