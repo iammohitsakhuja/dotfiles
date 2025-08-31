@@ -267,3 +267,57 @@ install_vim_packages() {
     print_success "Vim packages setup complete"
     print_newline
 }
+
+# Install Yazi plugins and themes
+install_yazi_packages() {
+    print_action "Installing Yazi plugins and themes"
+
+    # Make sure yazi is installed
+    install_package_if_missing "yazi"
+
+    # Define plugins to install
+    local plugins=(
+        "yazi-rs/plugins:full-border"
+        "yazi-rs/plugins:chmod"
+        "yazi-rs/plugins:smart-enter"
+        "yazi-rs/plugins:zoom"
+        "Lil-Dank/lazygit"
+    )
+
+    # Define flavors/themes to install
+    local flavors=(
+        "yazi-rs/flavors:dracula"
+    )
+
+    # Get currently installed packages to avoid re-adding
+    local installed_packages=$(ya pkg list 2>/dev/null | grep -E "^\s+" | sed 's/^\s*//' | cut -d' ' -f1)
+
+    # Install plugins
+    print_detail "Installing Yazi plugins..."
+    for plugin in "${plugins[@]}"; do
+        if echo "${installed_packages}" | grep -q "^${plugin}$"; then
+            print_detail "Plugin already installed: ${plugin}"
+        else
+            print_detail "Installing plugin: ${plugin}"
+            ya pkg add "${plugin}" || print_warning "Failed to install plugin: ${plugin}"
+        fi
+    done
+
+    # Install flavors/themes
+    print_detail "Installing Yazi flavors/themes..."
+    for flavor in "${flavors[@]}"; do
+        if echo "${installed_packages}" | grep -q "^${flavor}$"; then
+            print_detail "Flavor already installed: ${flavor}"
+        else
+            print_detail "Installing flavor: ${flavor}"
+            ya pkg add "${flavor}" || print_warning "Failed to install flavor: ${flavor}"
+        fi
+    done
+
+    # Install all packages (syncs package.toml)
+    print_detail "Installing all packages..."
+    ya pkg install
+
+    print_success "Yazi plugins and themes installation complete"
+    print_newline
+}
