@@ -178,8 +178,8 @@ cask "flutter"
 cask "temurin@21"
 
 # Fonts.
+cask "font-cascadia-code-nf"
 cask "font-fira-code"
-cask "font-hack-nerd-font"
 cask "font-ibm-plex-mono"
 cask "font-meslo-lg-nerd-font"
 cask "font-monaspace"

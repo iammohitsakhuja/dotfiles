@@ -2,7 +2,7 @@
 "Profiles": [
 {
   "ASCII Ligatures" : false,
-  "Working Directory" : "\/Users\/mohitsakhuja",
+  "Working Directory" : "$HOME",
   "Prompt Before Closing 2" : false,
   "Selected Text Color" : {
     "Green Component" : 0,
