@@ -27,7 +27,7 @@ plugins=(
     npm
     rust
     vi-mode
-    yazi-zoxide
+    yazi-zoxide-zsh
     zsh-autosuggestions
     zsh-completions
     zsh-interactive-cd
