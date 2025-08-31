@@ -1,9 +1,9 @@
 # Each section is arranged alphabetically.
 
-# GNU utilities (replace macOS defaults - those that come with macOS are outdated).
-# Add `$(brew --prefix coreutils)/libexec/gnubin`, `$(brew --prefix gnu-sed)/libexec/gnubin` and
-# `$(brew --prefix gnu-getopt)/libexec/gnubin` to `$PATH`.
+# GNU utilities (replace macOS defaults - those that come with macOS are outdated or have weird behaviors).
+# Add `$(brew --prefix <package_name>)/libexec/ghubin` to `$PATH`.
 brew "coreutils"
+brew "findutils"
 brew "gnu-getopt"
 brew "gnu-sed"
 
@@ -93,6 +93,7 @@ brew "lazydocker"
 brew "stern"
 
 # AI & machine learning.
+brew "ccusage" # Tool for checking Claude Code usage.
 brew "gollama" # TUI for managing Ollama models.
 brew "ollama"
 
@@ -106,9 +107,9 @@ brew "yt-dlp"
 brew "kcat" # Apache Kafka producer and consumer.
 
 # Browsers.
-cask "arc"
 cask "firefox"
 cask "google-chrome"
+cask "zen"
 
 # Development tools.
 cask "android-studio"
@@ -137,6 +138,7 @@ cask "rectangle" # Window Manager. Alternative to Spectacle as it is no longer m
 # System utilities.
 cask "adguard"
 cask "appcleaner"
+cask "betterdisplay"
 cask "cloudflare-warp" # Best general purpose VPN.
 cask "daisydisk"
 cask "imageoptim"
