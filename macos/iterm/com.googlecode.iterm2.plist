@@ -1434,6 +1434,8 @@
 			<false/>
 			<key>Normal Font</key>
 			<string>MonoLisa-Medium 14</string>
+			<key>Only The Default BG Color Uses Transparency</key>
+			<false/>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
 			<key>Place Prompt at First Column</key>
@@ -1782,7 +1784,7 @@
 			<key>Thin Strokes</key>
 			<integer>4</integer>
 			<key>Transparency</key>
-			<real>0.19740513392857142</real>
+			<real>0.10000000000000001</real>
 			<key>Unicode Version</key>
 			<integer>9</integer>
 			<key>Unlimited Scrollback</key>
