@@ -12,6 +12,7 @@ source "${INSTALL_SCRIPT_DIR}/utils/platform.sh"
 source "${INSTALL_SCRIPT_DIR}/utils/backup.sh"
 source "${INSTALL_SCRIPT_DIR}/utils/bootstrap.sh"
 source "${INSTALL_SCRIPT_DIR}/utils/system_config.sh"
+source "${INSTALL_SCRIPT_DIR}/utils/orchestrator.sh"
 
 # Require Apple Silicon Mac - fail immediately if not supported
 require_apple_silicon
@@ -139,7 +140,7 @@ echo ""
 print_step 2 5 "Installing packages and applications"
 echo ""
 
-bash "${STOW_DIR}/scripts/packages.sh"
+install_all_packages "${STOW_DIR}"
 BREW_PREFIX=$(brew --prefix)
 print_success "Package and application installation complete!"
 echo ""
