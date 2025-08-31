@@ -122,7 +122,7 @@ if type rbenv >> /dev/null; then
 fi
 
 # Hook GitHub Copilot into shell.
-if type gh >> /dev/null; then
+if type gh >> /dev/null && [[ -d ~/.local/share/gh/extensions/gh-copilot ]]; then
     eval "$(gh copilot alias -- zsh)"
 fi
 
