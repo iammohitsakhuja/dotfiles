@@ -30,8 +30,9 @@ configure_system_settings() {
     if ! sudo grep -q "pam_tid.so" /etc/pam.d/sudo; then
         # Backup the original file before modifying
         sudo cp /etc/pam.d/sudo /etc/pam.d/sudo.backup
+        # Force usage of macOS' in-built `sed` over any other `sed` as syntax is different.
         # This syntax is required to work properly with macOS's inbuilt version of `sed`
-        sudo sed -i '' '3i\
+        sudo /usr/bin/sed -i '' '3i\
 auth       sufficient     pam_tid.so
 ' /etc/pam.d/sudo
         print_success "Touch ID authentication enabled for sudo commands"
