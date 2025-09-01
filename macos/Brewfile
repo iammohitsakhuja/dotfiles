@@ -147,6 +147,7 @@ cask "macmediakeyforwarder"
 cask "mhaeuser/mhaeuser/battery-toolkit" # Battery management tool.
 cask "mos" # Mouse utility.
 cask "neo-network-utility" # Network diagnostic tool.
+cask "the-unarchiver"
 
 # Entertainment & media.
 cask "discord"
