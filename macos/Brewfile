@@ -178,8 +178,10 @@ cask "flutter"
 cask "temurin@21"
 
 # Fonts.
-cask "font-cascadia-code-nf"
-cask "font-fira-code"
-cask "font-ibm-plex-mono"
-cask "font-meslo-lg-nerd-font"
-cask "font-monaspace"
+cask "font-cascadia-code-nf" # Default terminal font
+cask "font-fira-code" # Backup programming/terminal font
+cask "font-ibm-plex-mono" # Postman font
+cask "font-ibm-plex-sans" # Better Sans font for applications that allow us to set it, e.g., Zen/Firefox
+cask "font-meslo-lg-nerd-font" # Default non-ASCII terminal font
+cask "font-monaspace" # Default programming font
+cask "font-source-serif-4" # Better Serif font for applications that allow us to set it, e.g., Zen/Firefox
