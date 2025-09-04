@@ -1,7 +1,6 @@
 set nocompatible
 filetype off
 
-call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
@@ -26,64 +25,9 @@ Plug 'mhinz/vim-startify'
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'uiiaoo/java-syntax.vim'
 
-" Colors & themes.
-Plug 'dracula/vim', { 'as': 'dracula' }
-Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
-Plug 'joshdick/onedark.vim', { 'as': 'onedark' }
-Plug 'drewtempelmeyer/palenight.vim', { 'as': 'palenight' }
-Plug 'ayu-theme/ayu-vim', { 'as': 'ayu' }
-Plug 'mountain-theme/Mountain', { 'rtp': 'vim' }
-Plug 'tomasr/molokai', { 'as': 'molokai' }
-
-" Has to be loaded as the last one.
-Plug 'ryanoasis/vim-devicons'
-call plug#end()
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Colors and Fonts
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Enable syntax highlighting.
-syntax on
-
-" Sets the theme for the editor.
-let ayucolor="dark" " Check whether this is required, if we are not using `ayu` as the colorscheme.
-colorscheme mountain
-if $TERM_PROGRAM != "Apple_Terminal"
-    if has('nvim') || has('termguicolors')
-        set termguicolors
-    endif
-endif
-
-" Italicize comments.
-let &t_ZH="\e[3m"
-let &t_ZR="\e[23m"
-highlight Comment gui=italic cterm=italic
-
-" Use underline cursor.
-let &t_SI = "\e[4 q"
-let &t_EI = "\e[2 q"
-
-" Set utf8 as standard encoding and en_US as the standard language.
-set encoding=utf8
-
-" Use Unix as the standard file type.
-set ffs=unix,dos,mac
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Sets how many lines of history VIM has to remember.
-set history=700
-
-" Enable indentation.
-filetype plugin indent on
-
-" Set to autoread when a file is changed from the outside.
-set autoread
-
-" With a map leader it's possible to do extra key combinations like <leader>w saves the current file.
-let mapleader = ","
-let g:mapleader = ","
 
 " Fast saving.
 nmap <leader>s :w!<cr>
@@ -110,9 +54,6 @@ map <leader>p :bp<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Set 7 lines to the cursor - when moving vertically using j/k.
-set so=7
-
 " Turn on the WiLd menu.
 set wildmenu
 
@@ -124,46 +65,11 @@ else
     set wildignore+=.git\*,.hg\*,.svn\*
 endif
 
-" Always show the current position.
-set ruler
-
-" Always show the line numbers.
-set nu
-
-" Set column width to be 120 characters and highlight it.
-highlight ColorColumn ctermbg=235 guibg=#464b59
-set colorcolumn=120
-
-" Height of the command bar.
-set cmdheight=3
-
 " A buffer becomes hidden when it is abandoned.
 set hid
 
-" Configure backspace so it acts as it should act.
-set backspace=eol,start,indent
-set whichwrap+=<,>,h,l
-
-" Ignore case when searching.
-set ignorecase
-
-" When searching, try to be smart about cases.
-set smartcase
-
-" Highlight search results.
-set hlsearch
-
-" Makes search act like search in modern browsers.
-set incsearch
-
 " Don't redraw while executing macros (good performance config).
 set lazyredraw
-
-" Faster scrolling.
-set nocursorline
-
-" For regular expressions, turn magic on.
-set magic
 
 " Add a bit extra margin to the left.
 set foldcolumn=1
@@ -171,36 +77,11 @@ set foldcolumn=1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Use spaces instead of tabs.
-set expandtab
-
-" Be smart when using tabs.
-set smarttab
-
-" 1 tab = 4 spaces.
-set shiftwidth=4
-set tabstop=4
-
 " Set colorcolumn to be at 81 characters for Markdown files.
 autocmd Filetype markdown setlocal colorcolumn=81
 
 " Set colorcolumn to be at 101 characters for Java files.
 autocmd Filetype java setlocal colorcolumn=101
-
-" Linebreak on 150 characters.
-set lbr
-set tw=150
-
-" Set autoindent, smartindent and wrap lines.
-set ai
-set si
-set wrap
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Status line
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Always show the status line.
-set laststatus=2
 
 function! CocCurrentFunction()
     return get(b:, 'coc_current_function', '')
@@ -360,14 +241,6 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Coc.nvim Config
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Some servers have issues with backup files, see #649.
-set nobackup
-set nowritebackup
-
-" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
-" delays and poor user experience.
-set updatetime=300
-
 " Don't pass messages to |ins-completion-menu|.
 set shortmess+=c
 
