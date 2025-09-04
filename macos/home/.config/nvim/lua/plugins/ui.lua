@@ -25,9 +25,9 @@ return {
         options = {
           theme = "auto",
           globalstatus = true, -- Have a single statusline instead of one per each split
-        },
-        refresh = {
-            refresh_time = 16, -- ~60 fps
+          refresh = {
+            refresh_time = 8, -- ~120 fps
+          },
         },
         sections = {
           lualine_a = { "mode" },
@@ -54,7 +54,7 @@ return {
             },
           },
           lualine_x = { "encoding", "fileformat", "filetype" },
-          lualine_y = { "progress" },
+          lualine_y = { "progress", "searchcount", "selectioncount" },
           lualine_z = { "location" },
         },
       })
