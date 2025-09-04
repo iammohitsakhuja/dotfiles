@@ -13,13 +13,10 @@ Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'airblade/vim-gitgutter'
-Plug 'itchyny/lightline.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'mattn/emmet-vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'ap/vim-css-color', { 'for': ['css', 'scss'] }
-Plug 'psliwka/vim-smoothie'
-Plug 'Yggdroot/indentLine'
 Plug 'itchyny/vim-gitbranch'
 Plug 'mhinz/vim-startify'
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }
@@ -66,44 +63,6 @@ autocmd Filetype markdown setlocal colorcolumn=81
 
 " Set colorcolumn to be at 101 characters for Java files.
 autocmd Filetype java setlocal colorcolumn=101
-
-function! CocCurrentFunction()
-    return get(b:, 'coc_current_function', '')
-endfunction
-
-function! GetFileType()
-    return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
-endfunction
-
-function! GetFileFormat()
-    return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
-endfunction
-
-" Settings for 'lightline' plugin.
-" Settings for 'lightline' plugin.
-let g:lightline = {
-    \   'active': {
-    \       'left': [
-    \           ['mode', 'paste'],
-    \           ['gitbranch', 'readonly', 'filename', 'fileicon', 'modified'],
-    \           ['cocstatus', 'currentfunction'],
-    \       ],
-    \       'right': [
-    \           ['lineinfo'],
-    \           ['percent'],
-    \           ['filetype', 'fileformat', 'fileencoding']
-    \       ]
-    \   },
-    \   'colorscheme': 'ayu',
-    \   'component_function': {
-    \       'cocstatus': 'coc#status',
-    \       'currentfunction': 'CocCurrentFunction',
-    \       'gitbranch': 'gitbranch#name',
-    \       'filetype': 'GetFileType',
-    \       'fileformat': 'GetFileFormat',
-    \       'fileicon': 'WebDevIconsGetFileTypeSymbol',
-    \   },
-    \ }
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
@@ -185,24 +144,6 @@ autocmd VimEnter *
 " => FZF settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let $FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => IndentLine settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:indentLine_setColors = 0
-let g:indentLine_bufNameExclude = ['NERD_tree.*']
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Helper functions
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Toggles Relative Numbers on/off.
-function! NumberToggle()
-    if(&relativenumber == 1)
-        set norelativenumber
-    else
-        set relativenumber
-    endif
-endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Coc.nvim Config
