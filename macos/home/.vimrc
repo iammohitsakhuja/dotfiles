@@ -117,9 +117,6 @@ map <C-o> :NERDTreeTabsToggle<CR>
 " Treat `.md` as Markdown.
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
-" Enable fenced code block syntax highlighting in Markdown.
-let g:markdown_fenced_languages = ['c', 'cpp', 'python', 'java', 'bash=sh', 'sql']
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Emmet settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
