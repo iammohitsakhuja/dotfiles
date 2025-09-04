@@ -29,27 +29,11 @@ Plug 'uiiaoo/java-syntax.vim'
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Fast saving.
-nmap <leader>s :w!<cr>
-
-" Fast switching between windows.
-nmap <leader>t <C-w>w
-
 " :W sudo saves the file. Useful for handling the permission-denied error.
 command W w !sudo tee % > /dev/null
 
-" <leader>l redraws the screen and removes any search highlighting.
-nnoremap <leader>l :nohl<cr>
-
 " <leader>F shortcut for :Files command of Fzf.
 nnoremap <leader>F :Files<cr>
-
-" Toggle relative numbers.
-nnoremap <leader>nt :call NumberToggle()<cr>
-
-" Shortcuts for switching between buffers.
-map <leader>n :bn<cr>
-map <leader>p :bp<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -124,20 +108,8 @@ let g:lightline = {
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Remap VIM 0 to first non-blank character.
-map 0 ^
-
 " Map 'Ctrl-O' to ':NERDTreeToggle'
 map <C-o> :NERDTreeTabsToggle<CR>
-
-" Remap 'Esc' key.
-:imap jk <Esc>
-
-" Move lines of text using Ctrl+[jk].
-nmap <C-j> mz:m+<cr>`z
-nmap <C-k> mz:m-2<cr>`z
-vmap <C-j> :m'>+<cr>`<my`>mzgv`yo`z
-vmap <C-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Linting Markdown settings
