@@ -35,6 +35,8 @@ opt.fileencoding = "utf-8"
 opt.fileformats = { "unix", "dos", "mac" }
 
 -- Misc
+-- Don't show search count messages, e.g. [1/5] when doing a search. We're showing this information on the status line.
+opt.shortmess:append("S")
 -- Allows using `Left`, `Right`, `h` and `l` keys to go from one line to next in various modes.
 -- `<` and `>` represent these arrow keys in Normal & Visual modes.
 -- `[` and `]` represent these arrow keys in Insert & Replace modes.

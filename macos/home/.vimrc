@@ -4,8 +4,6 @@ filetype off
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'preservim/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
@@ -28,9 +26,6 @@ Plug 'uiiaoo/java-syntax.vim'
 
 " :W sudo saves the file. Useful for handling the permission-denied error.
 command W w !sudo tee % > /dev/null
-
-" <leader>F shortcut for :Files command of Fzf.
-nnoremap <leader>F :Files<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -139,11 +134,6 @@ autocmd VimEnter *
         \ |   Startify
         \ |   wincmd w
     \ | endif
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => FZF settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let $FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Coc.nvim Config

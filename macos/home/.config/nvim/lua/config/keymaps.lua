@@ -42,3 +42,18 @@ keymap(
 -- Better indenting
 keymap("v", "<", "<gv", opts)
 keymap("v", ">", ">gv", opts)
+
+-- Telescope Keymaps.
+local builtin = require("telescope.builtin")
+keymap("n", "<leader>ff", builtin.find_files, { desc = "Telescope find files" })
+keymap("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" } )
+keymap("n", "<leader>fb", builtin.buffers, { desc = "Telescope buffers" })
+keymap("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help tags" })
+keymap("n", "<leader>fo", builtin.oldfiles, { desc = "Telescope list old files" })
+keymap("n", "<leader>fc", builtin.commands, { desc = "Telescope list available plugin/user commands" })
+keymap("n", "<leader>fm", builtin.man_pages, { desc = "Telescope list manpages" })
+keymap("n", "<leader>fr", builtin.registers, { desc = "Telescope list vim registers" })
+keymap("n", "<leader>fk", builtin.keymaps, { desc = "Telescope list keymaps" })
+keymap("n", "<leader>flr", builtin.lsp_references, { desc = "Telescope list LSP references" })
+keymap("n", "<leader>fli", builtin.lsp_implementations, { desc = "Telescope goto LSP implementation" })
+keymap("n", "<leader>fld", builtin.lsp_definitions, { desc = "Telescope goto LSP defintion" })
