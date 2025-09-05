@@ -25,9 +25,6 @@ return {
         options = {
           theme = "auto",
           globalstatus = true, -- Have a single statusline instead of one per each split
-          refresh = {
-            refresh_time = 8, -- ~120 fps
-          },
         },
         sections = {
           lualine_a = { "mode" },
