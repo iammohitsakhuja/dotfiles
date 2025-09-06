@@ -29,6 +29,9 @@ require("lazy").setup({
     -- Load plugins from `plugins` directory
     { import = "plugins" },
   },
+  defaults = {
+    lazy = true, -- Lazy-load by default
+  },
   -- Configure any other settings here. See the documentation for more details.
   -- colorscheme that will be used when installing plugins.
   install = {
