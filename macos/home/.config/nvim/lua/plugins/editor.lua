@@ -76,4 +76,31 @@ return {
     event = "VeryLazy",
     opts = {},
   },
+
+  -- Which Key
+  {
+    "folke/which-key.nvim",
+    -- Lazy loading the plugin does not work: https://github.com/folke/which-key.nvim/issues/981
+    -- So we just defer it with VeryLazy.
+    event = "VeryLazy",
+    opts = {
+      preset = "classic",
+      plugins = {
+        marks = false,
+        registers = false,
+      },
+      win = {
+        border = "rounded",
+      },
+    },
+    keys = {
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
+      },
+    },
+  },
 }
