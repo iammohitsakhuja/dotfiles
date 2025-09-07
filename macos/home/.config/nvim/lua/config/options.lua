@@ -35,7 +35,6 @@ opt.linebreak = true -- During wrapping, break lines at word boundaries rather t
 
 -- Files and buffers
 opt.encoding = "utf-8"
-opt.fileencoding = "utf-8"
 opt.fileformats = { "unix", "dos", "mac" }
 
 -- Misc
