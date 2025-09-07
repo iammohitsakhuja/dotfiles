@@ -31,6 +31,7 @@ brew "git-extras"
 brew "lazygit" # Terminal UI for git commands.
 brew "neovim"
 brew "pre-commit"
+brew "tree-sitter-cli" # For use with Neovim
 
 # File & directory management.
 brew "ack"
