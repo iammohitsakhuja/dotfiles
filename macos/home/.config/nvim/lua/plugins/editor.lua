@@ -38,7 +38,7 @@ return {
           vimgrep_arguments = vimgrep_arguments,
           preview = {
             -- Ignore preview for files bigger than a threshold.
-            filesize_limit = 0.1, -- MB
+            filesize_limit = 0.5, -- MB
           }
         },
         pickers = {
