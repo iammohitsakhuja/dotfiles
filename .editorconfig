@@ -3,15 +3,12 @@
 # top-most EditorConfig file
 root = true
 
-# Unix-style newlines with a newline ending every file
+# Base settings for all files
 [*]
 charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
-
-# 4 space indentation for most files
-[*]
 indent_style = space
 indent_size = 4
 
@@ -23,10 +20,6 @@ indent_size = 4
 # YAML files typically use 2 spaces
 [*.{yml,yaml}]
 indent_size = 2
-
-# Make JSON files use 4 spaces
-[*.json]
-indent_size = 4
 
 # Markdown files
 [*.md]
