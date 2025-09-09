@@ -15,13 +15,29 @@
         "branch": "main",
         "commit": "6c3bda4aca61a13a9c63f1c1d1b16b9d3be90d7a"
     },
+    "lazydev.nvim": {
+        "branch": "main",
+        "commit": "2367a6c0a01eb9edb0464731cc0fb61ed9ab9d2c"
+    },
     "lualine.nvim": {
         "branch": "master",
         "commit": "b8c23159c0161f4b89196f74ee3a6d02cdc3a955"
     },
+    "mason-lspconfig.nvim": {
+        "branch": "main",
+        "commit": "5e085efe67fccb13372d54331d849219662a7e93"
+    },
+    "mason.nvim": {
+        "branch": "main",
+        "commit": "7dc4facca9702f95353d5a1f87daf23d78e31c2a"
+    },
     "neoscroll.nvim": {
         "branch": "master",
         "commit": "f957373912e88579e26fdaea4735450ff2ef5c9c"
+    },
+    "nvim-lspconfig": {
+        "branch": "master",
+        "commit": "c8b90ae5cbe21d547b342b05c9266dcb8ca0de8f"
     },
     "nvim-surround": {
         "branch": "main",
@@ -29,7 +45,7 @@
     },
     "nvim-tree.lua": {
         "branch": "master",
-        "commit": "fefa335f1c8f690eb668a1efd18ee4fc6d64cd3e"
+        "commit": "e179ad2f83b5955ab0af653069a493a1828c2697"
     },
     "nvim-treesitter": {
         "branch": "main",
