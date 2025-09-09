@@ -141,4 +141,11 @@ return {
 
         end,
     },
+
+    -- Fidget for better notifications for the LSP.
+    {
+        "j-hui/fidget.nvim",
+        event = "VeryLazy",
+        opts = {},
+    }
 }
