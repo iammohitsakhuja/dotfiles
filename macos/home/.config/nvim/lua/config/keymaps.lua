@@ -10,21 +10,21 @@ keymap("n", "<leader>w", ":w!<CR>", opts)
 -- Window navigation
 keymap("n", "<leader>t", "<C-w>w", opts)
 keymap("n", "<C-h>", "<C-w>h", opts)
+keymap("n", "<C-j>", "<C-w>j", opts)
+keymap("n", "<C-k>", "<C-w>k", opts)
 keymap("n", "<C-l>", "<C-w>l", opts)
 
 -- Buffer navigation
-keymap("n", "<leader>n", ":bnext<CR>", opts)
-keymap("n", "<leader>p", ":bprevious<CR>", opts)
 keymap("n", "<leader>bd", ":bdelete<CR>", opts)
 
 -- Clear search highlighting
 keymap("n", "<leader>l", ":nohl<CR>", opts)
 
 -- Move lines up/down
-keymap("n", "<C-j>", ":m .+1<CR>==", opts)
-keymap("n", "<C-k>", ":m .-2<CR>==", opts)
-keymap("v", "<C-j>", ":m '>+1<CR>gv=gv", opts)
-keymap("v", "<C-k>", ":m '<-2<CR>gv=gv", opts)
+keymap("n", "<A-j>", ":m .+1<CR>==", opts)
+keymap("n", "<A-k>", ":m .-2<CR>==", opts)
+keymap("v", "<A-j>", ":m '>+1<CR>gv=gv", opts)
+keymap("v", "<A-k>", ":m '<-2<CR>gv=gv", opts)
 
 -- Start of line
 keymap("n", "0", "^", opts)
