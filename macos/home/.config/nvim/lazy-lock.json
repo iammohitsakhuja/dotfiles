@@ -3,13 +3,25 @@
         "branch": "main",
         "commit": "2b3cbcdd980cae1e022409289245053f62fb50f6"
     },
+    "blink.cmp": {
+        "branch": "main",
+        "commit": "bae4bae0eedd1fa55f34b685862e94a222d5c6f8"
+    },
     "catppuccin": {
         "branch": "main",
         "commit": "30fa4d122d9b22ad8b2e0ab1b533c8c26c4dde86"
     },
+    "colorful-menu.nvim": {
+        "branch": "master",
+        "commit": "bc3e82609f2fcf7dad7ca87c20e65e51d5d9d87c"
+    },
     "fidget.nvim": {
         "branch": "main",
         "commit": "4d5858bd4c471c895060e1b9f3575f1551184dc5"
+    },
+    "friendly-snippets": {
+        "branch": "main",
+        "commit": "572f5660cf05f8cd8834e096d7b4c921ba18e175"
     },
     "indent-blankline.nvim": {
         "branch": "master",
@@ -22,6 +34,10 @@
     "lazydev.nvim": {
         "branch": "main",
         "commit": "2367a6c0a01eb9edb0464731cc0fb61ed9ab9d2c"
+    },
+    "lspkind.nvim": {
+        "branch": "master",
+        "commit": "d79a1c3299ad0ef94e255d045bed9fa26025dab6"
     },
     "lualine.nvim": {
         "branch": "master",
@@ -45,7 +61,7 @@
     },
     "nvim-lspconfig": {
         "branch": "master",
-        "commit": "c8b90ae5cbe21d547b342b05c9266dcb8ca0de8f"
+        "commit": "bc09aa236d7d2af66f56a5a35d0577588eca7800"
     },
     "nvim-surround": {
         "branch": "main",
@@ -57,11 +73,11 @@
     },
     "nvim-treesitter": {
         "branch": "main",
-        "commit": "fee71c102c54146f90b14c89711ddbb8f95a1484"
+        "commit": "7f8dd2e48bc47227d8138a5b5b1fb5a6d6e42237"
     },
     "nvim-treesitter-context": {
         "branch": "master",
-        "commit": "66a9b5fa9e806918b5fe3dba00c6cce7e230abd2"
+        "commit": "41847d3dafb5004464708a3db06b14f12bde548a"
     },
     "nvim-treesitter-textobjects": {
         "branch": "main",
