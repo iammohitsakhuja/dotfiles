@@ -116,6 +116,20 @@ return {
         },
     },
 
+    -- Better Markdown rendering.
+    {
+        'MeanderingProgrammer/render-markdown.nvim',
+        dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+        ft = { "markdown" },
+        ---@module 'render-markdown'
+        ---@type render.md.UserConfig
+        opts = {
+            completions = {
+                lsp = { enabled = true },
+            },
+        },
+    },
+
     -- CSS colors
     {
         "catgoose/nvim-colorizer.lua",
@@ -135,7 +149,6 @@ return {
             },
         },
     },
-
 
     -- Highlight special comments such as TODOs.
     {
