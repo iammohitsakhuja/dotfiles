@@ -103,6 +103,10 @@
         "branch": "master",
         "commit": "b4da76be54691e854d3e0e02c36b0245f945c2c7"
     },
+    "todo-comments.nvim": {
+        "branch": "main",
+        "commit": "304a8d204ee787d2544d8bc23cd38d2f929e7cc5"
+    },
     "treesitter-modules.nvim": {
         "branch": "main",
         "commit": "415a69079db7254c456b62b18849a36cdba7e005"
