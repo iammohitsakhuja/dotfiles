@@ -172,6 +172,43 @@ install_ruby_gems() {
     print_newline
 }
 
+# Install Rust packages and setup rustup
+install_rust_packages() {
+    print_action "Setting up Rust environment and packages"
+
+    # Check if rustup is already installed
+    if command -v rustup &>/dev/null; then
+        print_detail "Rustup already installed, updating rustup and toolchains..."
+        rustup update
+        print_detail "Rustup and toolchains updated successfully"
+    else
+        print_detail "Installing rustup..."
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+        print_detail "Rustup installation successful"
+
+        # Source cargo environment to make it available in current session
+        if [[ -f ~/.cargo/env ]]; then
+            source "${HOME}/.cargo/env"
+            print_detail "Cargo environment sourced successfully"
+        else
+            print_warning "Cargo environment file not found at ~/.cargo/env"
+        fi
+    fi
+
+    # Install Rust packages via Cargo
+    if command -v cargo &>/dev/null; then
+        print_detail "Installing Rust packages..."
+        cargo install protols
+        print_detail "Rust packages installed successfully"
+    else
+        print_warning "Cargo command not found! Skipping Rust packages installation..."
+        return 1
+    fi
+
+    print_success "Rust environment setup complete"
+    print_newline
+}
+
 # Install shell packages and plugins
 install_shell_packages() {
     print_action "Installing shell packages and plugins"
