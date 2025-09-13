@@ -7,10 +7,6 @@
         "branch": "main",
         "commit": "bae4bae0eedd1fa55f34b685862e94a222d5c6f8"
     },
-    "catppuccin": {
-        "branch": "main",
-        "commit": "30fa4d122d9b22ad8b2e0ab1b533c8c26c4dde86"
-    },
     "colorful-menu.nvim": {
         "branch": "master",
         "commit": "bc3e82609f2fcf7dad7ca87c20e65e51d5d9d87c"
@@ -45,7 +41,7 @@
     },
     "mason-lspconfig.nvim": {
         "branch": "main",
-        "commit": "5e085efe67fccb13372d54331d849219662a7e93"
+        "commit": "7f9a39fcd2ac6e979001f857727d606888f5909c"
     },
     "mason.nvim": {
         "branch": "main",
@@ -61,7 +57,7 @@
     },
     "nvim-lspconfig": {
         "branch": "master",
-        "commit": "bc09aa236d7d2af66f56a5a35d0577588eca7800"
+        "commit": "d89f4891f0720cd2598e4bdd60010d8784b2ac8a"
     },
     "nvim-surround": {
         "branch": "main",
@@ -73,7 +69,7 @@
     },
     "nvim-treesitter": {
         "branch": "main",
-        "commit": "7f8dd2e48bc47227d8138a5b5b1fb5a6d6e42237"
+        "commit": "682d083292f01636622362cf9eb0e4b2f9de2b13"
     },
     "nvim-treesitter-context": {
         "branch": "master",
@@ -110,6 +106,10 @@
     "todo-comments.nvim": {
         "branch": "main",
         "commit": "304a8d204ee787d2544d8bc23cd38d2f929e7cc5"
+    },
+    "tokyonight.nvim": {
+        "branch": "main",
+        "commit": "057ef5d260c1931f1dffd0f052c685dcd14100a3"
     },
     "treesitter-modules.nvim": {
         "branch": "main",

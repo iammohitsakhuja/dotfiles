@@ -1,17 +1,17 @@
+---@module "lazy"
+---@type LazySpec
 return {
   -- Colorschemes
   {
-    "catppuccin/nvim",
-    name = "catppuccin",
+    "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
-    config = function()
-      require("catppuccin").setup({
-        flavour = "auto", -- latte, frappe, macchiato, mocha
-        auto_integrations = true,
-      })
-
-      vim.cmd.colorscheme("catppuccin")
+    ---@module "tokyonight"
+    ---@type tokyonight.Config
+    opts = {},
+    config = function(_, opts)
+      require("tokyonight").setup(opts)
+      vim.cmd.colorscheme("tokyonight")
     end,
   },
 
