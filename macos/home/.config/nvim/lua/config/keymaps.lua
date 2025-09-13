@@ -5,7 +5,8 @@ local opts = { noremap = true, silent = true }
 keymap("i", "jk", "<ESC>", opts)
 
 -- Save file
-keymap("n", "<leader>w", ":w!<CR>", opts)
+keymap("n", "<leader>w", ":write<CR>", opts)
+keymap("n", "<leader>W", ":write!<CR>", opts)
 
 -- Window navigation
 keymap("n", "<leader>t", "<C-w>w", opts)
