@@ -12,31 +12,11 @@ return {
         },
     },
 
-    -- Mason: Package manager for LSP servers, DAP servers, linters, and formatters
+    -- LSP Configuration and Diagnostics
     {
-        "mason-org/mason.nvim",
-        cmd = "Mason",
-        build = ":MasonUpdate",
-        opts = {
-            ui = {
-                icons = {
-                    package_installed = "✓",
-                    package_pending = "➜",
-                    package_uninstalled = "✗"
-                }
-            }
-        },
-    },
-
-    -- Mason-LSPConfig: Bridge between mason.nvim and nvim-lspconfig
-    -- Combined configuration for Mason-LSPConfig & Nvim-LSPConfig to ensure plugin order
-    -- Also includes LSP Diagnostic and Keymap configuration.
-    {
-        "mason-org/mason-lspconfig.nvim",
+        "neovim/nvim-lspconfig",
         event = "VeryLazy",
         dependencies = {
-            "mason-org/mason.nvim",
-            "neovim/nvim-lspconfig",
             "saghen/blink.cmp", -- Make sure `blink.cmp` is present before setting up more configs.
         },
         config = function()
@@ -72,33 +52,23 @@ return {
                 },
             })
 
-            -- Manually enable Dart LS since it's not available via Mason.
+            -- Enable LSP servers
+            vim.lsp.enable("bashls")
+            vim.lsp.enable("basedpyright")
+            vim.lsp.enable("cssls")
             vim.lsp.enable("dartls")
-
-            -- Setup Mason-LSPConfig while auto-enabling certain servers
-            require("mason-lspconfig").setup({
-                ensure_installed = {
-                    "bashls",
-                    "clangd",
-                    "cssls",
-                    "dockerls",
-                    "gopls",
-                    "helm_ls",
-                    "html",
-                    "jdtls",
-                    "jsonls",
-                    "lua_ls",
-                    "marksman",
-                    "protols",
-                    "pyright",
-                    "rust_analyzer",
-                    "sqlls",
-                    "ts_ls",
-                    "vimls",
-                    "yamlls",
-                },
-                automatic_enable = true,
-            })
+            vim.lsp.enable("docker_language_server")
+            vim.lsp.enable("gopls")
+            vim.lsp.enable("helm_ls")
+            vim.lsp.enable("html")
+            vim.lsp.enable("jdtls")
+            vim.lsp.enable("jsonls")
+            vim.lsp.enable("lua_ls")
+            vim.lsp.enable("marksman")
+            vim.lsp.enable("protols")
+            vim.lsp.enable("rust_analyzer")
+            vim.lsp.enable("ts_ls")
+            vim.lsp.enable("yamlls")
         end,
     },
 
@@ -106,6 +76,9 @@ return {
     {
         "j-hui/fidget.nvim",
         event = "VeryLazy",
+        dependencies = {
+            "neovim/nvim-lspconfig",
+        },
         opts = {},
     },
 }

@@ -36,8 +36,7 @@ install_go_packages() {
     # Install Go packages
     if command -v go &>/dev/null; then
         print_detail "Installing Go packages..."
-        # Uncomment the following line, and add package names to install global go packages.
-        # go install
+        go install github.com/docker/docker-language-server/cmd/docker-language-server@latest
         print_detail "Go packages installed successfully"
     else
         print_warning "Go command not found! Skipping Go packages installation..."
@@ -193,6 +192,16 @@ install_rust_packages() {
         else
             print_warning "Cargo environment file not found at ~/.cargo/env"
         fi
+    fi
+
+    # Install rustup components
+    if command -v rustup &>/dev/null; then
+        print_detail "Installing rustup components..."
+        rustup component add rust-src rust-analyzer
+        print_detail "Rustup components installed successfully"
+    else
+        print_warning "Rustup command not found! Skipping rustup components installation..."
+        return 1
     fi
 
     # Install Rust packages via Cargo

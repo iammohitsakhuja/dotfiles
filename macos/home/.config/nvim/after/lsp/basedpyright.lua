@@ -1,6 +1,6 @@
 return {
     settings = {
-        python = {
+        basedpyright = {
             analysis = {
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,

@@ -39,14 +39,6 @@
         "branch": "master",
         "commit": "b8c23159c0161f4b89196f74ee3a6d02cdc3a955"
     },
-    "mason-lspconfig.nvim": {
-        "branch": "main",
-        "commit": "7f9a39fcd2ac6e979001f857727d606888f5909c"
-    },
-    "mason.nvim": {
-        "branch": "main",
-        "commit": "7dc4facca9702f95353d5a1f87daf23d78e31c2a"
-    },
     "neoscroll.nvim": {
         "branch": "master",
         "commit": "f957373912e88579e26fdaea4735450ff2ef5c9c"
