@@ -32,7 +32,6 @@ return {
                         i = {
                             ["<C-j>"] = actions.move_selection_next,
                             ["<C-k>"] = actions.move_selection_previous,
-                            ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
                         },
                     },
                     -- `hidden = true` is not supported in text grep commands.
@@ -102,7 +101,7 @@ return {
                 registers = false,
             },
             win = {
-                border = "rounded",
+                border = "rounded", -- We need this even if we set `winborder` globally via `vim.opt`
             },
         },
         keys = {

@@ -1,7 +1,7 @@
--- Bootstrap lazy.nvim
-require('config.lazy')
-
 -- Load core configurations
-require('config.options')
-require('config.keymaps')
-require('config.autocmds')
+require("config.options")
+require("config.keymaps")
+require("config.autocmds")
+
+-- Bootstrap lazy.nvim
+require("config.lazy")

@@ -1,3 +1,7 @@
+-- Set leader & localleader keys
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
 local opt = vim.opt
 
 -- General
@@ -6,6 +10,7 @@ local opt = vim.opt
 opt.updatetime = 1000 -- Reduce the time after typing stops, to write the swap to disk
 
 -- UI
+opt.winborder = "rounded"
 opt.number = true -- Show line numbers
 opt.relativenumber = false -- Can be toggled
 opt.cmdheight = 3 -- Increase the height of the command-line. Default is 1.

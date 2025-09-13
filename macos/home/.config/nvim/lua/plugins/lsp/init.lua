@@ -18,7 +18,6 @@ return {
         build = ":MasonUpdate",
         opts = {
             ui = {
-                border = "rounded",
                 icons = {
                     package_installed = "✓",
                     package_pending = "➜",
@@ -164,50 +163,10 @@ return {
                 update_in_insert = false,
                 severity_sort = true,
                 float = {
-                    border = "rounded",
                     source = true,
                     header = "",
                     prefix = "",
                 },
-            })
-
-            -- Configure LSP floating windows with borders (Neovim 0.11+ approach)
-            local _hover = vim.lsp.buf.hover
-            vim.lsp.buf.hover = function(opts)
-                opts = opts or {}
-                opts.border = opts.border or 'rounded'
-                return _hover(opts)
-            end
-
-            local _signature_help = vim.lsp.buf.signature_help
-            vim.lsp.buf.signature_help = function(opts)
-                opts = opts or {}
-                opts.border = opts.border or 'rounded'
-                return _signature_help(opts)
-            end
-
-            local _open_floating_preview = vim.lsp.util.open_floating_preview
-            vim.lsp.util.open_floating_preview = function(contents, syntax, opts, ...)
-                opts = opts or {}
-                opts.border = opts.border or 'rounded' -- or whichever border kind you want
-                return _open_floating_preview(contents, syntax, opts, ...)
-            end
-
-            -- LspAttach autocmd for additional keymaps not covered by defaults
-            vim.api.nvim_create_autocmd("LspAttach", {
-                desc = "LSP actions",
-                callback = function(event)
-                    local opts = { buffer = event.buf, noremap = true, silent = true }
-
-                    -- Essential keymaps missing from Neovim 0.11 defaults
-                    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-                    vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
-                    vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
-
-                    -- Note: LSP completion is handled by blink.cmp via capabilities.
-                    -- It even reports the capabilities on its own.
-                    -- Hence, no need to enable native LSP completion.
-                end,
             })
 
             -- Manually enable Dart LS since it's not available via Mason.
