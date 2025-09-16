@@ -136,7 +136,7 @@ return {
                     if success and node and vim.tbl_contains({ "comment", "line_comment", "block_comment" }, node:type()) then
                         return { "buffer" }
                     elseif vim.bo.filetype == "lua" then
-                        return { "lsp", "path" }
+                        return { "lazydev", "lsp", "path" }
                     else
                         return { "lsp", "path", "snippets", "buffer" }
                     end
@@ -144,6 +144,13 @@ return {
                 providers = {
                     buffer = {
                         min_keyword_length = 3, -- Only trigger buffer completion after 3+ characters
+                    },
+
+                    lazydev = {
+                        name = "LazyDev",
+                        module = "lazydev.integrations.blink",
+                        -- make lazydev completions top priority (see `:h blink.cmp`)
+                        score_offset = 100,
                     },
 
                     -- Get path completion from `cwd` instead of current buffer"s directory.
