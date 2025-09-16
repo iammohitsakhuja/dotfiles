@@ -115,8 +115,8 @@ list_available_backups() {
             local total_count=$(get_total_file_count "${manifest_file}")
 
             echo "  ${timestamp} (Files backed up - Total: ${total_count} [Stow: ${stow_count}, Non-Stow: ${non_stow_count}])"
-            print_detail "Date: ${backup_date}" 2
-            print_detail "Location: ${backup_dir}" 2
+            print_detail "Date: ${backup_date}"
+            print_detail "Location: ${backup_dir}"
         else
             echo "  ${timestamp} (manifest file missing - backup may be incomplete)"
         fi
@@ -205,8 +205,8 @@ restore_stow_files() {
 
         # Show what file will be restored
         print_action "Restoring stow file: ${relative_path}"
-        print_detail "From: ${backup_file}" 3
-        print_detail "To: ${target_file}" 3
+        print_detail "From: ${backup_file}"
+        print_detail "To: ${target_file}"
 
         if [[ ${dry_run_flag} == "dry-run" ]]; then
             # In dry-run mode, just count and continue
@@ -312,8 +312,8 @@ restore_non_stow_files() {
 
         # Show what file will be restored
         print_action "Restoring non-stow file: ${source_location}"
-        print_detail "From: ${backup_file}" 3
-        print_detail "To: ${target_file}" 3
+        print_detail "From: ${backup_file}"
+        print_detail "To: ${target_file}"
 
         if [[ ${dry_run_flag} == "dry-run" ]]; then
             # In dry-run mode, just count and continue

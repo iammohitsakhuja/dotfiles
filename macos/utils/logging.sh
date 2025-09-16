@@ -156,7 +156,7 @@ print_preview() {
 # Print detailed/secondary information in gray color
 print_detail() {
     local message="$1"
-    local indent_level="${2:-2}"
+    local indent_level="${2:-3}"
     local indent=$(get_indent "${indent_level}")
     echo "${indent}${COLOR_GRAY}${message}${COLOR_RESET}" >&2
 }

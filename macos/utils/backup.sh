@@ -255,15 +255,15 @@ create_backup_manifest() {
     # Create backup directory structure.
     print_action "Creating backup directory: ${backup_dir}"
     ensure_backup_structure "${backup_dir}"
-    print_detail "Manifest file path: ${manifest_file}" 3
+    print_detail "Manifest file path: ${manifest_file}"
 
     # Count conflicts (handle empty strings properly)
     local stowing_count=0
     [[ -n ${stowing_conflicts} ]] && stowing_count=$(echo "${stowing_conflicts}" | tr ',' '\n' | grep -c .)
-    print_detail "Stowing conflicts: ${stowing_conflicts}" 3
+    print_detail "Stowing conflicts: ${stowing_conflicts}"
     local ownership_count=0
     [[ -n ${ownership_conflicts} ]] && ownership_count=$(echo "${ownership_conflicts}" | tr ',' '\n' | grep -c .)
-    print_detail "Ownership conflicts: ${ownership_conflicts}" 3
+    print_detail "Ownership conflicts: ${ownership_conflicts}"
     local stow_count=$((stowing_count + ownership_count))
     local non_stow_count=0
     [[ -n ${non_stow_conflicts} ]] && non_stow_count=$(echo "${non_stow_conflicts}" | tr ',' '\n' | grep -c .)
@@ -421,7 +421,7 @@ backup_conflicting_stow_files() {
             # Move file to backup location (atomic operation)
             if mv "${target_file}" "${backup_file}" 2>/dev/null; then
                 add_stow_file_to_manifest "${manifest_file}" "${relative_path}" "moved_successfully" "${conflict_type}" "${file_size}"
-                print_detail "Moved stow file to backup: ${relative_path}" 3
+                print_detail "Moved stow file to backup: ${relative_path}"
                 ((backed_up++))
                 ((size += file_size))
             else
@@ -469,7 +469,7 @@ backup_conflicting_non_stow_files() {
 
             if mv "${absolute_path}" "${backup_file}" 2>/dev/null; then
                 add_non_stow_file_to_manifest "${manifest_file}" "${backup_relative}" "moved_successfully" "${absolute_path}" "${file_size}"
-                print_detail "Moved non-stow file to backup: ${absolute_path}" 3
+                print_detail "Moved non-stow file to backup: ${absolute_path}"
                 ((backed_up++))
                 ((size += file_size))
             else
@@ -600,11 +600,11 @@ backup_existing_files() {
     if [[ ${total_backed_up} -gt 0 ]]; then
         print_newline
         print_success "Backup completed successfully!"
-        print_detail "Location: ${backup_dir}" 3
-        print_detail "Stow files backed up: ${stow_backed_up}" 3
-        print_detail "Non-stow files backed up: ${non_stow_backed_up}" 3
-        print_detail "Total files backed up: ${total_backed_up}" 3
-        print_detail "Manifest file path: ${manifest_file}" 3
+        print_detail "Location: ${backup_dir}"
+        print_detail "Stow files backed up: ${stow_backed_up}"
+        print_detail "Non-stow files backed up: ${non_stow_backed_up}"
+        print_detail "Total files backed up: ${total_backed_up}"
+        print_detail "Manifest file path: ${manifest_file}"
         print_newline
         # Return the backup directory path to stdout
         echo "${backup_dir}"

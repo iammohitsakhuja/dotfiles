@@ -69,7 +69,7 @@ auth       sufficient     pam_tid.so
     # Check if SSH keys already exist
     if [[ -f "${HOME}/.ssh/id_ed25519" ]]; then
         print_success "SSH key already exists at ${HOME}/.ssh/id_ed25519"
-        print_detail "Skipping key generation to avoid overwriting existing key" 3
+        print_detail "Skipping key generation to avoid overwriting existing key"
     else
         # Generate SSH key non-interactively
         ssh-keygen -t ed25519 -C "${email}" -f "${HOME}/.ssh/id_ed25519" -N "" -q
@@ -97,22 +97,22 @@ auth       sufficient     pam_tid.so
 
     # Add modern Bash 4 to /etc/shells (installed via Brewfile).
     if ! grep -F -q "${brew_prefix}/bin/bash" /etc/shells; then
-        print_detail "Adding Bash to /etc/shells..." 3
+        print_detail "Adding Bash to /etc/shells..."
         echo "${brew_prefix}/bin/bash" | sudo tee -a /etc/shells >/dev/null
-        print_detail "Bash added to /etc/shells" 3
+        print_detail "Bash added to /etc/shells"
     else
-        print_detail "Bash already in /etc/shells" 3
+        print_detail "Bash already in /etc/shells"
     fi
 
     # Add modern Zsh to /etc/shells and set as default shell (installed via Brewfile).
     if ! grep -F -q "${brew_prefix}/bin/zsh" /etc/shells; then
-        print_detail "Adding Zsh to /etc/shells..." 3
+        print_detail "Adding Zsh to /etc/shells..."
         echo "${brew_prefix}/bin/zsh" | sudo tee -a /etc/shells >/dev/null
-        print_detail "Changing default shell to Zsh..." 3
+        print_detail "Changing default shell to Zsh..."
         chsh -s "${brew_prefix}/bin/zsh"
-        print_detail "Zsh configured as default shell" 3
+        print_detail "Zsh configured as default shell"
     else
-        print_detail "Zsh already configured" 3
+        print_detail "Zsh already configured"
     fi
 
     print_success "Shell configuration completed"
