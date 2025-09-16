@@ -131,26 +131,25 @@ print_success "Administrator authentication confirmed"
 print_newline
 
 # Install essential dependencies before proceeding
-print_step 1 5 "Checking and installing essential dependencies"
+print_step 1 6 "Checking and installing essential dependencies"
 print_newline
 bootstrap_dependencies
 print_newline
 print_success "Essential dependencies are ready!"
 print_newline
 
-print_header "Package Installation & Setup"
+print_header "Software Installation"
 print_newline
 
-# Run installation scripts.
-print_step 2 5 "Installing packages and applications"
+# Install software.
+print_step 2 6 "Installing Software"
 print_newline
-
 install_all_packages "${STOW_DIR}"
 BREW_PREFIX=$(brew --prefix)
-print_success "Package and application installation complete!"
+print_success "Software installation complete!"
 print_newline
 
-print_header "Backup & File Management"
+print_header "Configuration Management"
 print_newline
 
 # Ask for administrator password upfront (we will need to ask for this again explicitly once after homebrew operations are done).
@@ -164,7 +163,9 @@ print_success "Administrator authentication confirmed"
 print_newline
 
 # Backup existing files before stow operations
-print_step 3 5 "Backing up existing files and linking dotfiles"
+print_step 3 6 "Configuration management"
+print_newline
+
 BACKUP_DIR=$(backup_existing_files "${backup}" "${STOW_DIR}")
 
 # Stow will handle all dotfile symlinking.
@@ -175,11 +176,21 @@ stow -d "${STOW_DIR}" -t "${HOME}" --no-folding home --verbose=1
 print_success "Dotfiles linked successfully!"
 print_newline
 
+print_header "Plugin Installation"
+print_newline
+
+# Install all plugins now that config files are available
+print_step 4 6 "Plugin installation"
+print_newline
+
+install_all_plugins
+print_newline
+
 print_header "System Configuration"
 print_newline
 
-# Configure system and user settings.
-print_step 4 5 "Configuring system and user settings"
+# Configure system and user settings
+print_step 5 6 "System configuration"
 print_newline
 
 print_action "Configuring system settings..."
@@ -190,21 +201,23 @@ print_newline
 print_header "Installation Complete!"
 print_newline
 
-print_step 5 5 "Summary of completed installation"
+print_step 6 6 "Installation summary"
 print_newline
 
 print_success "Essential dependencies installed (Homebrew, Stow, Command Line Tools)"
+print_success "Core software and applications installed (Homebrew, Mac App Store)"
+print_success "Language environments installed (Go, Node, Python, Ruby, Rust)"
 if [[ ${backup} == 1 ]]; then
     print_success "Existing dotfiles backed up (if any conflicts found)"
 else
     print_success "Backup skipped as requested"
 fi
 print_success "Dotfiles linked to home directory"
+print_success "Application plugins installed (Shell, Vim, Tmux, Yazi)"
 print_success "Touch ID configured for sudo authentication"
 print_success "Git configured with user credentials (${name} <${email}>)"
 print_success "SSH key pair generated (if not already present)"
 print_success "API keys storage file created"
-print_success "Development packages and tools installed"
 print_success "Terminal colors configured for Tmux"
 print_success "macOS system preferences applied"
 print_newline
@@ -214,6 +227,7 @@ echo "Next steps:"
 echo "  • Add your SSH public key to GitHub/GitLab"
 echo "  • Restart your terminal or run 'source ~/.zshrc'"
 echo "  • Review installed applications and configure as needed"
+echo "  • Use 'prefix + I' to install new tmux plugins (prefix key is Ctrl-a)"
 print_newline
 echo "SSH public key location: ${HOME}/.ssh/id_ed25519.pub"
 if [[ -n ${BACKUP_DIR} ]]; then
