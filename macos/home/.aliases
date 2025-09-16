@@ -8,15 +8,6 @@ alias ll="eza -HblA --group-directories-first --color=always --icons=always --cl
 alias vcat="cat"
 alias cat="bat"
 
-# Prevent opening Vi accidentally.
-alias vi="nvim"
-
-# Use Neovim instead of Vim.
-alias vim="nvim"
-
-# Alias for Neovim tabs.
-alias nvim="nvim -p"
-
 # Start python3 and pip3 by default.
 alias python="python3"
 alias pip="pip3"
