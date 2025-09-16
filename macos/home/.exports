@@ -109,9 +109,11 @@ export LESS_TERMCAP_us=$green
 # Disable Virtualenv's prompt.
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
-# Use XDG config directory for applications that support it.
-# Useful for applications like Neovim or `lazygit`
+# Use XDG directories for applications that support it.
+# Useful for applications like Neovim, lazygit, and tmux
 export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
 
 # Disable security audit of folders that `oh-my-zsh` uses for completions.
 # In particular, they are:

@@ -89,7 +89,7 @@ install_tmux_plugins() {
     # Make sure tmux is installed
     install_package_if_missing "tmux"
 
-    local tpm_dir="${HOME}/.tmux/plugins/tpm"
+    local tpm_dir="${XDG_DATA_HOME:-${HOME}/.local/share}/tmux/plugins/tpm"
 
     # Install TPM if not already installed
     if [[ -d ${tpm_dir} ]]; then
