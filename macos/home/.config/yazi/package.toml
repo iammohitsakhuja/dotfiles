@@ -1,0 +1,29 @@
+[[plugin.deps]]
+use = "yazi-rs/plugins:full-border"
+rev = "d7588f6"
+hash = "3996fc74044bc44144b323686f887e1"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:chmod"
+rev = "d7588f6"
+hash = "1adc12c2b2b025411ab61eb8f0879574"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:smart-enter"
+rev = "d7588f6"
+hash = "56fdabc96fc1f4d53c96eb884b02a5be"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:zoom"
+rev = "d7588f6"
+hash = "4a47a9cd4d8b3a963cb4cc593664b77e"
+
+[[plugin.deps]]
+use = "Lil-Dank/lazygit"
+rev = "8f37dc5"
+hash = "ee71543790f0ce3951161045a3787abd"
+
+[[flavor.deps]]
+use = "yazi-rs/flavors:dracula"
+rev = "9cd2ac4"
+hash = "c0bfefbff165007a76c0933ed0432e3f"
