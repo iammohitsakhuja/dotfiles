@@ -33,7 +33,7 @@
     },
     "lazydev.nvim": {
         "branch": "main",
-        "commit": "2367a6c0a01eb9edb0464731cc0fb61ed9ab9d2c"
+        "commit": "5cd2aca2f75261668e0ec6ff6bbbbd1f46c0ebed"
     },
     "lspkind.nvim": {
         "branch": "master",
@@ -85,7 +85,7 @@
     },
     "render-markdown.nvim": {
         "branch": "main",
-        "commit": "2c6cf127c577712bd29d38f6391b3045c5f0180a"
+        "commit": "5f437a26a8a8b964eff683dd6f68bc2a0d38c5db"
     },
     "telescope-file-browser.nvim": {
         "branch": "master",
