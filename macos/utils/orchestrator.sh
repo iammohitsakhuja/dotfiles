@@ -70,6 +70,7 @@ install_all_plugins() {
     install_vim_plugins
     install_tmux_plugins
     install_yazi_plugins
+    install_bat_themes
 
     print_success "Plugin installation complete"
 }

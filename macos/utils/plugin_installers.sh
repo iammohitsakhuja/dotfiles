@@ -179,3 +179,19 @@ install_yazi_plugins() {
     print_success "Yazi plugins and themes installation complete"
     print_newline
 }
+
+# Setup bat themes by rebuilding cache.
+install_bat_themes() {
+    print_action "Setting up bat themes"
+
+    # Make sure bat is installed
+    install_package_if_missing "bat"
+
+    # Rebuild cache to register custom themes
+    print_detail "Rebuilding bat cache to register custom themes..."
+    bat cache --build || print_warning "Failed to rebuild bat cache"
+    print_detail "Bat themes setup completed"
+
+    print_success "Bat themes installation complete"
+    print_newline
+}
