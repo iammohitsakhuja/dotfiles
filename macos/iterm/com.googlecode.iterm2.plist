@@ -2627,6 +2627,8 @@
 	<integer>0</integer>
 	<key>UseBorder</key>
 	<false/>
+	<key>UseMetal</key>
+	<true/>
 	<key>VisualIndicatorForEsc</key>
 	<false/>
 	<key>disableMetalWhenUnplugged</key>
