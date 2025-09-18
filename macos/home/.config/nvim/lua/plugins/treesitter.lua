@@ -82,7 +82,7 @@ return {
       -- Just install all parsers, they take up ~300MB storage space. Not worth the headache of loading them on-demand.
       ensure_installed = "all",
       auto_install = true,
-      fold = { enable = true },
+      fold = { enable = false }, -- Disabled in favor of nvim-ufo
       highlight = { enable = true },
       indent = { enable = true },
       incremental_selection = {

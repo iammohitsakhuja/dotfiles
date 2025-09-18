@@ -14,7 +14,7 @@ opt.winborder = "rounded"
 opt.number = true -- Show line numbers
 opt.relativenumber = false -- Can be toggled
 opt.cmdheight = 3 -- Increase the height of the command-line. Default is 1.
-opt.pumheight = 10 -- Reduce the no. of items suggested by autocomplete/popup menu. Default is 0 which means "use available screen space"
+opt.pumheight = 10 -- Reduce the no. of items suggested by the built-in autocomplete/popup menu. Default is 0 which means "use available screen space"
 opt.showmode = false -- Don't show mode separately (shown in statusline). Saves vertical space too!
 opt.signcolumn = "auto:2-5" -- Reserve space for signs. Min: 2 and Max: 5.
 opt.scrolloff = 7
@@ -23,6 +23,19 @@ opt.virtualedit = "block" -- Allows slightly better selection of text when in Vi
 opt.inccommand = "split" -- Show preview of incremental commands in a separate preview buffer.
 opt.splitbelow = true -- Split new windows below the current one
 opt.splitright = true -- Vertical split new windows to the right of the current one
+
+-- Folding
+opt.foldcolumn = "1"
+opt.foldenable = true
+opt.foldlevel = 99
+opt.foldlevelstart = 99
+opt.fillchars = {
+    eob = " ",
+    foldopen = "",
+    foldclose = "",
+    fold = " ",
+    foldsep = " ",
+}
 
 -- Search
 opt.ignorecase = true -- Ignore case during search (& some other operations)
