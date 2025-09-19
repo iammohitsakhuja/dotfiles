@@ -126,6 +126,9 @@ return {
             completions = {
                 lsp = { enabled = true },
             },
+            latex = {
+                enabled = false,
+            },
         },
     },
 
