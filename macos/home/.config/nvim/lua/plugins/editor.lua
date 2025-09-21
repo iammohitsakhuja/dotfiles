@@ -59,6 +59,7 @@ return {
             -- Load extensions after Telescope itself has been setup.
             telescope.load_extension("fzf")
             telescope.load_extension("file_browser")
+            telescope.load_extension("fidget")
         end,
         keys = {
             { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Telescope find files" },

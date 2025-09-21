@@ -80,6 +80,14 @@ return {
         dependencies = {
             "neovim/nvim-lspconfig",
         },
-        opts = {},
+        opts = {
+            ---@module "fidget.notification"
+            ---@type Config
+            notification = {
+                window = {
+                    winblend = 0,
+                },
+            },
+        },
     },
 }
