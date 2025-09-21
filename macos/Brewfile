@@ -141,7 +141,6 @@ cask "lm-studio"
 cask "msty"
 
 # Productivity & utilities.
-cask "capslocknodelay" # Remove built-in caps lock delay.
 cask "itsycal" # Utility for displaying calendar events in the menu bar.
 cask "keyboardcleantool" # Utility for locking keyboard input while cleaning.
 cask "maccy" # Clipboard manager.

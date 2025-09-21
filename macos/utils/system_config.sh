@@ -12,6 +12,62 @@ fi
 source "${SYSTEM_SCRIPT_DIR}/logging.sh"
 source "${SYSTEM_SCRIPT_DIR}/platform.sh"
 
+# Function to register launch agents
+register_launch_agents() {
+    local plist_name="$1"
+    local plist_path="${HOME}/Library/LaunchAgents/${plist_name}"
+
+    # Validate required parameter
+    if [[ -z ${plist_name} ]]; then
+        die "ERROR: Missing required parameter. Usage: register_launch_agents <plist_name>"
+    fi
+
+    # Check if plist file exists
+    if [[ ! -f ${plist_path} ]]; then
+        print_warning "Launch agent plist not found: ${plist_path}"
+        print_detail "Skipping registration for ${plist_name}"
+        return 0
+    fi
+
+    # Validate plist syntax
+    print_action "Validating plist syntax for ${plist_name}..."
+    if ! plutil -lint "${plist_path}" >/dev/null 2>&1; then
+        print_error "Invalid plist syntax in ${plist_path}"
+        print_detail "Run 'plutil -lint ${plist_path}' for details"
+        return 1
+    fi
+    print_detail "Plist syntax validation passed"
+
+    # Extract label from plist for better error handling
+    local label
+    label=$(plutil -extract Label raw "${plist_path}" 2>/dev/null || echo "${plist_name%.*}")
+
+    # Check if already loaded using modern list command
+    if launchctl print "gui/$(id -u)/${label}" >/dev/null 2>&1; then
+        print_success "Launch agent already registered: ${label}"
+        return 0
+    fi
+
+    # Register using modern bootstrap command
+    print_action "Registering launch agent: ${label}..."
+    if launchctl bootstrap "gui/$(id -u)" "${plist_path}" 2>/dev/null; then
+        print_success "Launch agent registered successfully: ${label}"
+    else
+        local exit_code=$?
+        case ${exit_code} in
+        5)
+            print_warning "Launch agent registration failed (already loaded or permission issue): ${label}"
+            print_detail "This is usually harmless if the agent is already active"
+            ;;
+        *)
+            print_error "Launch agent registration failed with exit code ${exit_code}: ${label}"
+            print_detail "Check plist permissions and syntax in ${plist_path}"
+            return "${exit_code}"
+            ;;
+        esac
+    fi
+}
+
 # Function to configure system authentication and user settings
 configure_system_settings() {
     local email="$1"
@@ -135,6 +191,12 @@ auth       sufficient     pam_tid.so
     tic -x "${stow_dir}/utils/terminfo/xterm-256color-italic.terminfo"
     tic -x "${stow_dir}/utils/terminfo/tmux-256color.terminfo"
     print_success "Tmux terminal colors configured"
+    print_newline
+
+    # Register launch agents.
+    print_action "Registering launch agents..."
+    register_launch_agents "local.removecapslockdelay.plist"
+    print_success "Launch agent registration completed"
     print_newline
 
     # Configure MacOS settings.
