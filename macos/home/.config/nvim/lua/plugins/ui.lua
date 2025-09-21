@@ -10,6 +10,13 @@ return {
         ---@type CatppuccinOptions
         opts = {
             auto_integrations = true,
+            integrations = {
+                indent_blankline = {
+                    enabled = true,
+                    scope_color = "lavender",
+                    colored_indent_levels = false,
+                },
+            },
             background = {
                 light = "latte",
                 dark = "macchiato",
@@ -129,7 +136,9 @@ return {
                 char = "│",
                 tab_char = "│",
             },
-            scope = { enabled = false },
+            scope = {
+                enabled = true,
+            },
             exclude = {
                 filetypes = { "help", "alpha", "dashboard", "neo-tree", "Trouble", "lazy", "notify" },
             },
