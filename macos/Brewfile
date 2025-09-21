@@ -142,7 +142,9 @@ cask "msty"
 
 # Productivity & utilities.
 cask "itsycal" # Utility for displaying calendar events in the menu bar.
+cask "karabiner-elements" # Utility for custom keymaps.
 cask "keyboardcleantool" # Utility for locking keyboard input while cleaning.
+cask "keyclu" # Show keyboard shortcuts for any app
 cask "maccy" # Clipboard manager.
 cask "rectangle" # Window Manager. Alternative to Spectacle as it is no longer maintained.
 
