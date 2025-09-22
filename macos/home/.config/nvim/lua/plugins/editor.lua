@@ -24,6 +24,8 @@ return {
             -- But not in the `.git` directory.
             table.insert(vimgrep_arguments, "--glob")
             table.insert(vimgrep_arguments, "!**/.git/*")
+            -- Follow symlinks.
+            table.insert(vimgrep_arguments, "--follow")
 
             telescope.setup({
                 defaults = {
@@ -44,6 +46,7 @@ return {
                 pickers = {
                     find_files = {
                         find_command = { "fd", "--type", "f", "--hidden", "--exclude", ".git" },
+                        follow = true, -- Follow symlinks
                     },
                 },
                 extensions = {
