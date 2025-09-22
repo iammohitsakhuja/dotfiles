@@ -15,8 +15,9 @@ keymap("n", "<C-j>", "<C-w>j", opts)
 keymap("n", "<C-k>", "<C-w>k", opts)
 keymap("n", "<C-l>", "<C-w>l", opts)
 
--- Buffer navigation
+-- Close buffers
 keymap("n", "<leader>bd", ":bdelete<CR>", opts)
+keymap("n", "<leader>bD", ":bdelete!<CR>", opts)
 
 -- Clear search highlighting
 keymap("n", "<leader>l", ":nohl<CR>", opts)

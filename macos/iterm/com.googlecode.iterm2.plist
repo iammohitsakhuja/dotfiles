@@ -2572,6 +2572,8 @@
 	</array>
 	<key>OpenBookmark</key>
 	<false/>
+	<key>PassOnControlClick</key>
+	<true/>
 	<key>PointerActions</key>
 	<dict>
 		<key>Button,1,1,,</key>
@@ -2607,6 +2609,8 @@
 	</dict>
 	<key>PromptOnQuit</key>
 	<false/>
+	<key>ReportRightClick</key>
+	<true/>
 	<key>RestoreWindowsToSameSpaces</key>
 	<true/>
 	<key>SeparateWindowTitlePerTab</key>

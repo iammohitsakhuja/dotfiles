@@ -7,6 +7,10 @@
         "branch": "main",
         "commit": "bae4bae0eedd1fa55f34b685862e94a222d5c6f8"
     },
+    "bufferline.nvim": {
+        "branch": "main",
+        "commit": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3"
+    },
     "catppuccin": {
         "branch": "main",
         "commit": "30fa4d122d9b22ad8b2e0ab1b533c8c26c4dde86"
@@ -69,7 +73,7 @@
     },
     "nvim-treesitter": {
         "branch": "main",
-        "commit": "c41b3b9841588e956663345cf01842a232d5eece"
+        "commit": "20fc6b1270dddff7e16220e0a51d17614d41fd43"
     },
     "nvim-treesitter-context": {
         "branch": "master",
