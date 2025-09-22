@@ -17,6 +17,7 @@ return {
         "neovim/nvim-lspconfig",
         event = "VeryLazy",
         dependencies = {
+            "folke/lazydev.nvim",
             "saghen/blink.cmp", -- Make sure `blink.cmp` is present before setting up more configs.
         },
         config = function()

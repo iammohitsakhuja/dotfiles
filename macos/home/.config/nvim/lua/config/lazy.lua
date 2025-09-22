@@ -20,6 +20,7 @@ vim.opt.rtp:prepend(lazypath)
 -- This is also a good place to setup other settings (vim.opt)
 
 -- Setup lazy.nvim
+---@type LazyConfig
 require("lazy").setup({
   spec = {
     -- Load plugins from `plugins` directory
@@ -58,4 +59,7 @@ require("lazy").setup({
       },
     },
   },
+    ui = {
+        border = "rounded",
+    },
 })

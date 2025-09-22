@@ -35,6 +35,7 @@ return {
         name = "catppuccin",
         lazy = false,
         priority = 1000,
+        ---@module "catppuccin"
         ---@type CatppuccinOptions
         opts = {
             auto_integrations = true,
