@@ -36,36 +36,36 @@ show_help() {
 # Parse command line arguments.
 while :; do
     case $1 in
-    -h | -\? | --help)
-        show_help
-        exit
-        ;;
-    --list)
-        list_backups=1
-        shift
-        ;;
-    --backup)
-        if [[ -n $2 ]]; then
-            backup_timestamp="$2"
-            shift 2
-        else
+        -h | -\? | --help)
+            show_help
+            exit
+            ;;
+        --list)
+            list_backups=1
+            shift
+            ;;
+        --backup)
+            if [[ -n $2 ]]; then
+                backup_timestamp="$2"
+                shift 2
+            else
+                die 'ERROR: "--backup" requires a non-empty option argument.'
+            fi
+            ;;
+        --backup=?*)
+            backup_timestamp=${1#*=}
+            shift
+            ;;
+        --backup=)
             die 'ERROR: "--backup" requires a non-empty option argument.'
-        fi
-        ;;
-    --backup=?*)
-        backup_timestamp=${1#*=}
-        shift
-        ;;
-    --backup=)
-        die 'ERROR: "--backup" requires a non-empty option argument.'
-        ;;
-    --dry-run)
-        dry_run=1
-        shift
-        ;;
-    *)
-        break
-        ;;
+            ;;
+        --dry-run)
+            dry_run=1
+            shift
+            ;;
+        *)
+            break
+            ;;
     esac
 done
 
@@ -224,23 +224,23 @@ restore_stow_files() {
                 echo -n "  Choose action - (r)eplace, (s)kip, (q)uit: " >&2
                 read -r action </dev/tty
                 case "${action}" in
-                r | R | replace)
-                    print_action "Replacing existing file..."
-                    ;;
-                s | S | skip)
-                    print_action "Skipping file..."
-                    ((files_skipped++))
-                    continue
-                    ;;
-                q | Q | quit)
-                    echo "Restoration cancelled by user." >&2
-                    exit 0
-                    ;;
-                *)
-                    print_action "Invalid choice, skipping file..."
-                    ((files_skipped++))
-                    continue
-                    ;;
+                    r | R | replace)
+                        print_action "Replacing existing file..."
+                        ;;
+                    s | S | skip)
+                        print_action "Skipping file..."
+                        ((files_skipped++))
+                        continue
+                        ;;
+                    q | Q | quit)
+                        echo "Restoration cancelled by user." >&2
+                        exit 0
+                        ;;
+                    *)
+                        print_action "Invalid choice, skipping file..."
+                        ((files_skipped++))
+                        continue
+                        ;;
                 esac
             fi
 
@@ -331,23 +331,23 @@ restore_non_stow_files() {
                 echo -n "  Choose action - (r)eplace, (s)kip, (q)uit: " >&2
                 read -r action </dev/tty
                 case "${action}" in
-                r | R | replace)
-                    print_action "Replacing existing file..."
-                    ;;
-                s | S | skip)
-                    print_action "Skipping file..."
-                    ((files_skipped++))
-                    continue
-                    ;;
-                q | Q | quit)
-                    echo "Restoration cancelled by user." >&2
-                    exit 0
-                    ;;
-                *)
-                    print_action "Invalid choice, skipping file..."
-                    ((files_skipped++))
-                    continue
-                    ;;
+                    r | R | replace)
+                        print_action "Replacing existing file..."
+                        ;;
+                    s | S | skip)
+                        print_action "Skipping file..."
+                        ((files_skipped++))
+                        continue
+                        ;;
+                    q | Q | quit)
+                        echo "Restoration cancelled by user." >&2
+                        exit 0
+                        ;;
+                    *)
+                        print_action "Invalid choice, skipping file..."
+                        ((files_skipped++))
+                        continue
+                        ;;
                 esac
             fi
 

@@ -55,15 +55,15 @@ register_launch_agents() {
     else
         local exit_code=$?
         case ${exit_code} in
-        5)
-            print_warning "Launch agent registration failed (already loaded or permission issue): ${label}"
-            print_detail "This is usually harmless if the agent is already active"
-            ;;
-        *)
-            print_error "Launch agent registration failed with exit code ${exit_code}: ${label}"
-            print_detail "Check plist permissions and syntax in ${plist_path}"
-            return "${exit_code}"
-            ;;
+            5)
+                print_warning "Launch agent registration failed (already loaded or permission issue): ${label}"
+                print_detail "This is usually harmless if the agent is already active"
+                ;;
+            *)
+                print_error "Launch agent registration failed with exit code ${exit_code}: ${label}"
+                print_detail "Check plist permissions and syntax in ${plist_path}"
+                return "${exit_code}"
+                ;;
         esac
     fi
 }

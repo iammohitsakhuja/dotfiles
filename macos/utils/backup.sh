@@ -127,18 +127,18 @@ get_backup_metadata() {
     local field="$2"
 
     case "${field}" in
-    "date")
-        jq -r '.metadata.backup_date' "${manifest_file}" 2>/dev/null || echo "Unknown"
-        ;;
-    "file_count")
-        jq -r '.summary.total.files_backed_up' "${manifest_file}" 2>/dev/null || echo "0"
-        ;;
-    "repository_path")
-        jq -r '.metadata.repository_path' "${manifest_file}" 2>/dev/null || echo "Unknown"
-        ;;
-    *)
-        die "ERROR: Unknown metadata field: ${field}"
-        ;;
+        "date")
+            jq -r '.metadata.backup_date' "${manifest_file}" 2>/dev/null || echo "Unknown"
+            ;;
+        "file_count")
+            jq -r '.summary.total.files_backed_up' "${manifest_file}" 2>/dev/null || echo "0"
+            ;;
+        "repository_path")
+            jq -r '.metadata.repository_path' "${manifest_file}" 2>/dev/null || echo "Unknown"
+            ;;
+        *)
+            die "ERROR: Unknown metadata field: ${field}"
+            ;;
     esac
 }
 

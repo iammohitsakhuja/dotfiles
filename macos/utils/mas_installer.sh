@@ -46,35 +46,35 @@ prompt_apple_account_login() {
     read -r -p "Your choice [1/2]: " choice
 
     case ${choice} in
-    1)
-        print_action "Opening App Store for sign-in..."
-        # Open App Store application
-        # Hack to force Login page/dialog: we open Updates page
-        open "macappstore://showUpdatesPage"
+        1)
+            print_action "Opening App Store for sign-in..."
+            # Open App Store application
+            # Hack to force Login page/dialog: we open Updates page
+            open "macappstore://showUpdatesPage"
 
-        print_newline
-        echo "Please sign in to your Apple ID in the App Store."
-        echo "Once signed in, press Enter to continue..."
-        read -r
+            print_newline
+            echo "Please sign in to your Apple ID in the App Store."
+            echo "Once signed in, press Enter to continue..."
+            read -r
 
-        # Check again if signed in
-        # shellcheck disable=SC2310
-        if is_signed_into_apple_id; then
-            print_success "Successfully signed into Apple ID!"
-            return 0
-        else
-            print_warning "Still not signed in. Skipping Mac App Store apps."
+            # Check again if signed in
+            # shellcheck disable=SC2310
+            if is_signed_into_apple_id; then
+                print_success "Successfully signed into Apple ID!"
+                return 0
+            else
+                print_warning "Still not signed in. Skipping Mac App Store apps."
+                return 1
+            fi
+            ;;
+        2)
+            print_warning "Skipping Mac App Store apps installation as per user choice."
             return 1
-        fi
-        ;;
-    2)
-        print_warning "Skipping Mac App Store apps installation as per user choice."
-        return 1
-        ;;
-    *)
-        print_warning "Invalid choice. Skipping Mac App Store apps."
-        return 1
-        ;;
+            ;;
+        *)
+            print_warning "Invalid choice. Skipping Mac App Store apps."
+            return 1
+            ;;
     esac
 }
 

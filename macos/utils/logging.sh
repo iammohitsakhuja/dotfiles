@@ -24,20 +24,20 @@ get_color() {
     fi
 
     case "${color_name}" in
-    "reset") if command -v tput >/dev/null 2>&1; then tput sgr0; else echo -e "\033[0m"; fi ;;
-    "bold") if command -v tput >/dev/null 2>&1; then tput bold; else echo -e "\033[1m"; fi ;;
-    "red") if command -v tput >/dev/null 2>&1; then tput setaf 1; else echo -e "\033[31m"; fi ;;
-    "green") if command -v tput >/dev/null 2>&1; then tput setaf 2; else echo -e "\033[32m"; fi ;;
-    "yellow") if command -v tput >/dev/null 2>&1; then tput setaf 3; else echo -e "\033[33m"; fi ;;
-    "blue") if command -v tput >/dev/null 2>&1; then tput setaf 4; else echo -e "\033[34m"; fi ;;
-    "magenta") if command -v tput >/dev/null 2>&1; then tput setaf 5; else echo -e "\033[35m"; fi ;;
-    "cyan") if command -v tput >/dev/null 2>&1; then tput setaf 6; else echo -e "\033[36m"; fi ;;
-    "white") if command -v tput >/dev/null 2>&1; then tput setaf 7; else echo -e "\033[37m"; fi ;;
-    "gray") if command -v tput >/dev/null 2>&1; then tput setaf 8; else echo -e "\033[90m"; fi ;;
-    *)
-        echo ""
-        return 1
-        ;;
+        "reset") if command -v tput >/dev/null 2>&1; then tput sgr0; else echo -e "\033[0m"; fi ;;
+        "bold") if command -v tput >/dev/null 2>&1; then tput bold; else echo -e "\033[1m"; fi ;;
+        "red") if command -v tput >/dev/null 2>&1; then tput setaf 1; else echo -e "\033[31m"; fi ;;
+        "green") if command -v tput >/dev/null 2>&1; then tput setaf 2; else echo -e "\033[32m"; fi ;;
+        "yellow") if command -v tput >/dev/null 2>&1; then tput setaf 3; else echo -e "\033[33m"; fi ;;
+        "blue") if command -v tput >/dev/null 2>&1; then tput setaf 4; else echo -e "\033[34m"; fi ;;
+        "magenta") if command -v tput >/dev/null 2>&1; then tput setaf 5; else echo -e "\033[35m"; fi ;;
+        "cyan") if command -v tput >/dev/null 2>&1; then tput setaf 6; else echo -e "\033[36m"; fi ;;
+        "white") if command -v tput >/dev/null 2>&1; then tput setaf 7; else echo -e "\033[37m"; fi ;;
+        "gray") if command -v tput >/dev/null 2>&1; then tput setaf 8; else echo -e "\033[90m"; fi ;;
+        *)
+            echo ""
+            return 1
+            ;;
     esac
 }
 

@@ -16,6 +16,7 @@ indent_size = 4
 [*.{sh,bash,zsh}]
 indent_style = space
 indent_size = 4
+switch_case_indent = true
 
 # YAML files typically use 2 spaces
 [*.{yml,yaml}]

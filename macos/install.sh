@@ -49,65 +49,65 @@ show_help() {
 # Ensure proper usage.
 while :; do
     case $1 in
-    -h | -\? | --help)
-        show_help
-        exit
-        ;;
-    --no-backup)
-        backup=0
-        shift
-        ;;
-    -e | --email)
-        # TODO: Handle the case where the next argument to email is another option e.g. `-e -c`.
-        if [[ -n $2 ]]; then
-            email=$2
-            shift 2
-        else
+        -h | -\? | --help)
+            show_help
+            exit
+            ;;
+        --no-backup)
+            backup=0
+            shift
+            ;;
+        -e | --email)
+            # TODO: Handle the case where the next argument to email is another option e.g. `-e -c`.
+            if [[ -n $2 ]]; then
+                email=$2
+                shift 2
+            else
+                die 'ERROR: "--email" requires a non-empty option argument.'
+            fi
+            ;;
+        --email=?*)
+            email=${1#*=} # Delete everything up to "=" and assign the remainder.
+            shift
+            ;;
+        --email=) # Handle the case of an empty --email=.
             die 'ERROR: "--email" requires a non-empty option argument.'
-        fi
-        ;;
-    --email=?*)
-        email=${1#*=} # Delete everything up to "=" and assign the remainder.
-        shift
-        ;;
-    --email=) # Handle the case of an empty --email=.
-        die 'ERROR: "--email" requires a non-empty option argument.'
-        ;;
-    -n | --name)
-        # TODO: Handle the case where the next argument to name is another option e.g. `-n -c`.
-        if [[ -n $2 ]]; then
-            name=$2
-            shift 2
-        else
+            ;;
+        -n | --name)
+            # TODO: Handle the case where the next argument to name is another option e.g. `-n -c`.
+            if [[ -n $2 ]]; then
+                name=$2
+                shift 2
+            else
+                die 'ERROR: "--name" requires a non-empty option argument.'
+            fi
+            ;;
+        --name=?*)
+            name=${1#*=} # Delete everything up to "=" and assign the remainder.
+            shift
+            ;;
+        --name=) # Handle the case of an empty --name=.
             die 'ERROR: "--name" requires a non-empty option argument.'
-        fi
-        ;;
-    --name=?*)
-        name=${1#*=} # Delete everything up to "=" and assign the remainder.
-        shift
-        ;;
-    --name=) # Handle the case of an empty --name=.
-        die 'ERROR: "--name" requires a non-empty option argument.'
-        ;;
-    *) # Default case: No more options, so break out of the loop.
-        print_header "macOS Dotfiles Installation"
-        print_newline
-        print_subheader "Configuration:"
-        print_config_item "Backup existing files" "$(if [[ ${backup} == 1 ]]; then echo "Yes"; else echo "No"; fi)"
-        print_config_item "Email" "${email}"
-        print_config_item "Name" "${name}"
-        print_config_item "Stow directory" "${STOW_DIR}"
-        print_newline
+            ;;
+        *) # Default case: No more options, so break out of the loop.
+            print_header "macOS Dotfiles Installation"
+            print_newline
+            print_subheader "Configuration:"
+            print_config_item "Backup existing files" "$(if [[ ${backup} == 1 ]]; then echo "Yes"; else echo "No"; fi)"
+            print_config_item "Email" "${email}"
+            print_config_item "Name" "${name}"
+            print_config_item "Stow directory" "${STOW_DIR}"
+            print_newline
 
-        # Argument Validations.
-        if [[ -z ${email} ]]; then
-            die 'ERROR: "--email" is required.'
-        fi
-        if [[ -z ${name} ]]; then
-            die 'ERROR: "--name" is required.'
-        fi
-        break
-        ;;
+            # Argument Validations.
+            if [[ -z ${email} ]]; then
+                die 'ERROR: "--email" is required.'
+            fi
+            if [[ -z ${name} ]]; then
+                die 'ERROR: "--name" is required.'
+            fi
+            break
+            ;;
     esac
 done
 
