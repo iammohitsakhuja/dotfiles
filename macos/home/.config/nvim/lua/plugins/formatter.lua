@@ -10,6 +10,11 @@ return {
         ---@module "conform"
         ---@type conform.setupOpts
         opts = {
+            formatters = {
+                jq = {
+                    args = { "--indent", "4", "." },
+                },
+            },
             formatters_by_ft = {
                 bash = { "shellcheck", "shfmt" },
                 css = { "biome-check", "prettier", stop_after_first = true },
