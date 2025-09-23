@@ -33,15 +33,15 @@ return {
                         [vim.diagnostic.severity.ERROR] = "",
                         [vim.diagnostic.severity.WARN] = "",
                         [vim.diagnostic.severity.HINT] = "",
-                        [vim.diagnostic.severity.INFO] = ""
+                        [vim.diagnostic.severity.INFO] = "",
                     },
                     -- Color line numbers based on diagnostic severity
                     numhl = {
                         [vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
                         [vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
                         [vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
-                        [vim.diagnostic.severity.INFO] = "DiagnosticSignInfo"
-                    }
+                        [vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
+                    },
                 },
                 underline = true,
                 update_in_insert = false,
@@ -85,6 +85,7 @@ return {
             ---@module "fidget.notification"
             ---@type Config
             notification = {
+                override_vim_notify = true,
                 window = {
                     winblend = 0,
                 },

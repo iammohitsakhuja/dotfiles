@@ -81,6 +81,7 @@ brew "clang-format"
 brew "google-java-format"
 brew "shellcheck"
 brew "shfmt"
+brew "stylua"
 
 # LSP (Language Server Protocol) servers.
 brew "bash-language-server"
