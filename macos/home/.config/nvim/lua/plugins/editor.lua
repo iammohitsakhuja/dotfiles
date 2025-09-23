@@ -41,7 +41,7 @@ return {
                     preview = {
                         -- Ignore preview for files bigger than a threshold.
                         filesize_limit = 0.5, -- MB
-                    }
+                    },
                 },
                 pickers = {
                     find_files = {
@@ -75,7 +75,11 @@ return {
             { "<leader>fr", "<cmd>Telescope registers<cr>", desc = "Telescope list vim registers" },
             { "<leader>fk", "<cmd>Telescope keymaps<cr>", desc = "Telescope list keymaps" },
             { "<leader>fe", "<cmd>Telescope file_browser<cr>", desc = "Telescope file browser" },
-            { "<leader>fE", "<cmd>Telescope file_browser path=%:p:h select_buffer=true<cr>", desc = "Telescope file browser (current dir)" },
+            {
+                "<leader>fE",
+                "<cmd>Telescope file_browser path=%:p:h select_buffer=true<cr>",
+                desc = "Telescope file browser (current dir)",
+            },
             { "<leader>flr", "<cmd>Telescope lsp_references<cr>", desc = "Telescope list LSP references" },
             { "<leader>fli", "<cmd>Telescope lsp_implementations<cr>", desc = "Telescope goto LSP implementation" },
             { "<leader>fld", "<cmd>Telescope lsp_definitions<cr>", desc = "Telescope goto LSP defintion" },
@@ -160,11 +164,25 @@ return {
     {
         "folke/todo-comments.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
-        event = {"BufReadPost", "BufNewFile"},
+        event = { "BufReadPost", "BufNewFile" },
         cmd = { "TodoFzfLua", "TodoLocList", "TodoQuickFix", "TodoTelescope", "TodoTrouble" },
         keys = {
-            { "]t", function() require("todo-comments").jump_next() end, mode = "n", desc = "Next todo comment" },
-            { "[t", function() require("todo-comments").jump_prev() end, mode = "n", desc = "Previous todo comment" },
+            {
+                "]t",
+                function()
+                    require("todo-comments").jump_next()
+                end,
+                mode = "n",
+                desc = "Next todo comment",
+            },
+            {
+                "[t",
+                function()
+                    require("todo-comments").jump_prev()
+                end,
+                mode = "n",
+                desc = "Previous todo comment",
+            },
         },
         opts = {},
     },
@@ -201,8 +219,8 @@ return {
                     require("statuscol").setup({
                         relculright = true,
                         segments = {
-                            { text = { builtin.foldfunc },      click = "v:lua.ScFa" },
-                            { text = { "%s" },                  click = "v:lua.ScSa" },
+                            { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
+                            { text = { "%s" }, click = "v:lua.ScSa" },
                             { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
                         },
                     })
@@ -222,11 +240,14 @@ return {
                         end
                     end
 
-                    return require("ufo").getFolds(bufnr, "lsp"):catch(function(err)
-                        return handleFallbackException(err, "treesitter")
-                    end):catch(function(err)
-                        return handleFallbackException(err, "indent")
-                    end)
+                    return require("ufo")
+                        .getFolds(bufnr, "lsp")
+                        :catch(function(err)
+                            return handleFallbackException(err, "treesitter")
+                        end)
+                        :catch(function(err)
+                            return handleFallbackException(err, "indent")
+                        end)
                 end
 
                 return customizeSelector
@@ -236,8 +257,8 @@ return {
                     scrollU = "<C-u>",
                     scrollD = "<C-d>",
                     jumpTop = "gg",
-                    jumpBot = "G"
-                }
+                    jumpBot = "G",
+                },
             },
         },
         keys = {

@@ -7,9 +7,9 @@ local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis)
     return function(str)
         local win_width = vim.fn.winwidth(0)
         if hide_width and win_width < hide_width then
-            return ''
+            return ""
         elseif trunc_width and trunc_len and win_width < trunc_width and #str > trunc_len then
-            return str:sub(1, trunc_len) .. (no_ellipsis and '' or '...')
+            return str:sub(1, trunc_len) .. (no_ellipsis and "" or "...")
         end
         return str
     end
@@ -21,7 +21,7 @@ local function diff_source()
         return {
             added = gitsigns.added,
             modified = gitsigns.changed,
-            removed = gitsigns.removed
+            removed = gitsigns.removed,
         }
     end
 end
@@ -87,8 +87,8 @@ return {
                         symbols = {
                             added = " ",
                             modified = " ",
-                            removed = " "
-                        }
+                            removed = " ",
+                        },
                     },
                     {
                         "diagnostics",
@@ -96,9 +96,9 @@ return {
                             error = "󰅚 ",
                             warn = "󰀪 ",
                             info = "󰋽 ",
-                            hint = "󰌶 "
-                        }
-                    }
+                            hint = "󰌶 ",
+                        },
+                    },
                 },
                 lualine_c = {
                     {
@@ -111,8 +111,8 @@ return {
                             readonly = "󰌾 ",
                             unnamed = "[No Name]",
                             newfile = "󰎔 ",
-                        }
-                    }
+                        },
+                    },
                 },
                 lualine_x = { "lsp_status", "encoding", "fileformat", "filetype" },
                 lualine_y = { "progress", "searchcount", "selectioncount" },
@@ -216,8 +216,8 @@ return {
         "lukas-reineke/virt-column.nvim",
         event = { "BufReadPost", "BufNewFile" },
         opts = {
-            virtcolumn = "+1,120" -- Highlight the 1st column after 120 columns.
-        }
+            virtcolumn = "+1,120", -- Highlight the 1st column after 120 columns.
+        },
     },
 
     -- Smooth scrolling
@@ -232,7 +232,7 @@ return {
             stop_eof = true,
             respect_scrolloff = true,
             cursor_scrolls_alone = true,
-        }
+        },
     },
 
     -- Buffer line
@@ -260,8 +260,8 @@ return {
                     },
                 },
                 get_element_icon = function(element)
-                    local icon, hl = require("nvim-web-devicons").get_icon_by_filetype(element.filetype,
-                        { default = false })
+                    local icon, hl =
+                        require("nvim-web-devicons").get_icon_by_filetype(element.filetype, { default = false })
                     return icon, hl
                 end,
                 sort_by = "insert_after_current",
@@ -284,15 +284,15 @@ return {
             })
         end,
         keys = {
-            { "[b",          "<cmd>BufferLineCyclePrev<cr>",   desc = "Prev Buffer" },
-            { "]b",          "<cmd>BufferLineCycleNext<cr>",   desc = "Next Buffer" },
-            { "[B",          "<cmd>BufferLineMovePrev<cr>",    desc = "Move buffer prev" },
-            { "]B",          "<cmd>BufferLineMoveNext<cr>",    desc = "Move buffer next" },
-            { "<leader>bp",  "<Cmd>BufferLinePick<CR>",        desc = "Pick buffer" },
-            { "<leader>bP",  "<Cmd>BufferLineTogglePin<CR>",   desc = "Toggle Pin" },
+            { "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
+            { "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
+            { "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
+            { "]B", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
+            { "<leader>bp", "<Cmd>BufferLinePick<CR>", desc = "Pick buffer" },
+            { "<leader>bP", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle Pin" },
             { "<leader>bco", "<Cmd>BufferLineCloseOthers<CR>", desc = "Close Other Buffers" },
-            { "<leader>bcr", "<Cmd>BufferLineCloseRight<CR>",  desc = "Delete Buffers to the Right" },
-            { "<leader>bcl", "<Cmd>BufferLineCloseLeft<CR>",   desc = "Delete Buffers to the Left" },
+            { "<leader>bcr", "<Cmd>BufferLineCloseRight<CR>", desc = "Delete Buffers to the Right" },
+            { "<leader>bcl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete Buffers to the Left" },
         },
     },
 

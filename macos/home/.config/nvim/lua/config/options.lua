@@ -66,7 +66,7 @@ opt.whichwrap:append("<,>,[,],h,l")
 opt.termguicolors = true
 
 opt.list = true
-opt.listchars = { lead = '·', tab = '→ ' }
+opt.listchars = { lead = "·", tab = "→ " }
 
 -- Disable netrw (using nvim-tree instead)
 vim.g.loaded_netrw = 1

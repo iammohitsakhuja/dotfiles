@@ -19,16 +19,56 @@ return {
             -- Use default keymap preset (Ctrl+Y to accept completion)
             keymap = {
                 preset = "default",
-                ["<A-1>"] = { function(cmp) cmp.accept({ index = 1 }) end },
-                ["<A-2>"] = { function(cmp) cmp.accept({ index = 2 }) end },
-                ["<A-3>"] = { function(cmp) cmp.accept({ index = 3 }) end },
-                ["<A-4>"] = { function(cmp) cmp.accept({ index = 4 }) end },
-                ["<A-5>"] = { function(cmp) cmp.accept({ index = 5 }) end },
-                ["<A-6>"] = { function(cmp) cmp.accept({ index = 6 }) end },
-                ["<A-7>"] = { function(cmp) cmp.accept({ index = 7 }) end },
-                ["<A-8>"] = { function(cmp) cmp.accept({ index = 8 }) end },
-                ["<A-9>"] = { function(cmp) cmp.accept({ index = 9 }) end },
-                ["<A-0>"] = { function(cmp) cmp.accept({ index = 10 }) end },
+                ["<A-1>"] = {
+                    function(cmp)
+                        cmp.accept({ index = 1 })
+                    end,
+                },
+                ["<A-2>"] = {
+                    function(cmp)
+                        cmp.accept({ index = 2 })
+                    end,
+                },
+                ["<A-3>"] = {
+                    function(cmp)
+                        cmp.accept({ index = 3 })
+                    end,
+                },
+                ["<A-4>"] = {
+                    function(cmp)
+                        cmp.accept({ index = 4 })
+                    end,
+                },
+                ["<A-5>"] = {
+                    function(cmp)
+                        cmp.accept({ index = 5 })
+                    end,
+                },
+                ["<A-6>"] = {
+                    function(cmp)
+                        cmp.accept({ index = 6 })
+                    end,
+                },
+                ["<A-7>"] = {
+                    function(cmp)
+                        cmp.accept({ index = 7 })
+                    end,
+                },
+                ["<A-8>"] = {
+                    function(cmp)
+                        cmp.accept({ index = 8 })
+                    end,
+                },
+                ["<A-9>"] = {
+                    function(cmp)
+                        cmp.accept({ index = 9 })
+                    end,
+                },
+                ["<A-0>"] = {
+                    function(cmp)
+                        cmp.accept({ index = 10 })
+                    end,
+                },
             },
 
             appearance = {
@@ -50,12 +90,14 @@ return {
                         columns = {
                             { "item_idx" },
                             { "label" },
-                            { "kind_icon", "kind", gap = 1 } -- Component gap
+                            { "kind_icon", "kind", gap = 1 }, -- Component gap
                         },
                         components = {
                             item_idx = {
-                                text = function(ctx) return tostring(ctx.idx) end,
-                                highlight = "BlinkCmpItemIdx"
+                                text = function(ctx)
+                                    return tostring(ctx.idx)
+                                end,
+                                highlight = "BlinkCmpItemIdx",
                             },
 
                             label = {
@@ -99,7 +141,7 @@ return {
                             kind = {
                                 highlight = function(ctx)
                                     local hl = "BlinkCmpKind" .. ctx.kind
-                                    or require("blink.cmp.completion.windows.render.tailwind").get_hl(ctx)
+                                        or require("blink.cmp.completion.windows.render.tailwind").get_hl(ctx)
                                     if vim.tbl_contains({ "Path" }, ctx.source_name) then
                                         local dev_icon, dev_hl = require("nvim-web-devicons").get_icon(ctx.label)
                                         if dev_icon then
@@ -108,7 +150,7 @@ return {
                                     end
                                     return hl
                                 end,
-                            }
+                            },
                         },
 
                         -- TODO: Check if this is still required if we are using `colorful-menu`.
@@ -133,7 +175,11 @@ return {
                 -- Dynamically pick providers by treesitter node/filetype.
                 default = function()
                     local success, node = pcall(vim.treesitter.get_node)
-                    if success and node and vim.tbl_contains({ "comment", "line_comment", "block_comment" }, node:type()) then
+                    if
+                        success
+                        and node
+                        and vim.tbl_contains({ "comment", "line_comment", "block_comment" }, node:type())
+                    then
                         return { "buffer" }
                     elseif vim.bo.filetype == "lua" then
                         return { "lazydev", "lsp", "path" }
@@ -169,9 +215,9 @@ return {
                 implementation = "prefer_rust_with_warning",
                 sorts = {
                     -- Always prioritize exact matches first.
-                    'exact',
-                    'score',
-                    'sort_text',
+                    "exact",
+                    "score",
+                    "sort_text",
                 },
             },
 

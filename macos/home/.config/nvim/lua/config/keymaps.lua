@@ -32,14 +32,9 @@ keymap("v", "<A-k>", ":m '<-2<CR>gv=gv", opts)
 keymap("n", "0", "^", opts)
 
 -- Toggle relative numbers
-keymap(
-  "n",
-  "<leader>nt",
-  function()
+keymap("n", "<leader>nt", function()
     vim.opt.relativenumber = not vim.opt.relativenumber:get()
-  end,
-  { desc = "Toggle relative numbers" }
-)
+end, { desc = "Toggle relative numbers" })
 
 -- Better indenting
 keymap("v", "<", "<gv", opts)

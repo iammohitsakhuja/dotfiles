@@ -74,14 +74,27 @@ autocmd("LspAttach", {
         local opts = { buffer = event.buf, noremap = true, silent = true }
 
         -- Essential keymaps missing from Neovim 0.11 defaults
-        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to declaration" }))
+        vim.keymap.set(
+            "n",
+            "gD",
+            vim.lsp.buf.declaration,
+            vim.tbl_extend("force", opts, { desc = "Go to declaration" })
+        )
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to definition" }))
-        vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist,
-            vim.tbl_extend("force", opts, { desc = "Open diagnostics in location list" }))
-        vim.keymap.set("n", "<leader>Q", vim.diagnostic.setqflist,
-            vim.tbl_extend("force", opts, { desc = "Open diagnostics in quickfix list" }))
+        vim.keymap.set(
+            "n",
+            "<leader>q",
+            vim.diagnostic.setloclist,
+            vim.tbl_extend("force", opts, { desc = "Open diagnostics in location list" })
+        )
+        vim.keymap.set(
+            "n",
+            "<leader>Q",
+            vim.diagnostic.setqflist,
+            vim.tbl_extend("force", opts, { desc = "Open diagnostics in quickfix list" })
+        )
     end,
 })
 
 -- Markdown fenced languages
-vim.g.markdown_fenced_languages = { 'bash=sh', 'c', 'cpp', 'java', 'lua', 'python', 'sql' }
+vim.g.markdown_fenced_languages = { "bash=sh", "c", "cpp", "java", "lua", "python", "sql" }
