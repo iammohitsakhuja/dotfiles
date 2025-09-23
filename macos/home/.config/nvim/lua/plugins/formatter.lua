@@ -11,7 +11,13 @@ return {
         ---@type conform.setupOpts
         opts = {
             formatters_by_ft = {
+                bash = { "shfmt" },
+                dart = { "dart_format" },
+                go = { "gofmt" },
+                java = { "google-java-format" },
                 lua = { "stylua" },
+                rust = { "rustfmt" },
+                sh = { "shfmt" },
             },
             default_format_opts = {
                 lsp_format = "fallback",
