@@ -77,11 +77,14 @@ brew "pyenv"
 brew "rbenv"
 
 # Formatting, linting, code quality and analysis tools.
+brew "biome"
 brew "clang-format"
+brew "goimports"
 brew "google-java-format"
 brew "shellcheck"
 brew "shfmt"
 brew "stylua"
+brew "yamlfmt"
 
 # LSP (Language Server Protocol) servers.
 brew "bash-language-server"

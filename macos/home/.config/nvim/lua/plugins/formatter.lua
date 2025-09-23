@@ -11,13 +11,34 @@ return {
         ---@type conform.setupOpts
         opts = {
             formatters_by_ft = {
-                bash = { "shfmt" },
+                bash = { "shellcheck", "shfmt" },
+                css = { "biome-check", "prettier", stop_after_first = true },
                 dart = { "dart_format" },
-                go = { "gofmt" },
+                go = { "goimports", "gofmt", stop_after_first = true },
+                html = { "biome-check", "prettier", stop_after_first = true },
                 java = { "google-java-format" },
+                javascript = { "biome-check", "prettier", stop_after_first = true },
+                javascriptreact = { "biome-check", "prettier", stop_after_first = true },
+                json = { "biome-check", "prettier", "jq", stop_after_first = true },
+                jsonc = { "biome-check", "prettier", "jq", stop_after_first = true },
+                less = { "prettier" },
                 lua = { "stylua" },
+                python = function(bufnr)
+                    -- Check if ruff is available
+                    if require("conform").get_formatter_info("ruff_format", bufnr).available then
+                        return { "ruff_organize_imports", "ruff_fix", "ruff_format" }
+                    else
+                        return { "isort", "black" }
+                    end
+                end,
                 rust = { "rustfmt" },
-                sh = { "shfmt" },
+                scss = { "prettier" },
+                sh = { "shellcheck", "shfmt" },
+                typescript = { "biome-check", "prettier", stop_after_first = true },
+                typescriptreact = { "biome-check", "prettier", stop_after_first = true },
+                yaml = { "prettier", "yamlfmt", "yq", stop_after_first = true },
+                -- Fallback formatters for file types without explicit configuration
+                ["_"] = { "trim_whitespace", "trim_newlines" },
             },
             default_format_opts = {
                 lsp_format = "fallback",
