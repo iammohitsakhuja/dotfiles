@@ -2,23 +2,12 @@ set nocompatible
 filetype off
 
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-commentary'
 Plug 'junegunn/goyo.vim'
 Plug 'preservim/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'airblade/vim-gitgutter'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'mattn/emmet-vim'
-Plug 'ap/vim-css-color', { 'for': ['css', 'scss'] }
-Plug 'itchyny/vim-gitbranch'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => General
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" :W sudo saves the file. Useful for handling the permission-denied error.
-command W w !sudo tee % > /dev/null
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -34,14 +23,8 @@ else
     set wildignore+=.git\*,.hg\*,.svn\*
 endif
 
-" A buffer becomes hidden when it is abandoned.
-set hid
-
 " Don't redraw while executing macros (good performance config).
 set lazyredraw
-
-" Add a bit extra margin to the left.
-set foldcolumn=1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
@@ -72,18 +55,6 @@ let g:user_emmet_settings = {
             \       'extends' : 'jsx',
             \   },
             \}
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Auto-completion settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Enable CSS autocompletion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Vim-commentary settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Change default comment style for JSX files.
-" autocmd FileType javascript.jsx setlocal commentstring={/*\ %s\ */}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => NERDTree settings
