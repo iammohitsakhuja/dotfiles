@@ -18,7 +18,7 @@ return {
                 local gitsigns = require("gitsigns")
 
                 -- Navigation between hunks
-                vim.keymap.set("n", "]c", function()
+                vim.keymap.set("n", "]h", function()
                     if vim.wo.diff then
                         vim.cmd.normal({ "]c", bang = true })
                     else
@@ -26,7 +26,7 @@ return {
                     end
                 end, { buffer = bufnr, desc = "Next hunk" })
 
-                vim.keymap.set("n", "[c", function()
+                vim.keymap.set("n", "[h", function()
                     if vim.wo.diff then
                         vim.cmd.normal({ "[c", bang = true })
                     else
