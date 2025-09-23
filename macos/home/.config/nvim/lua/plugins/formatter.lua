@@ -100,12 +100,6 @@ return {
                 mode = "n",
                 desc = "Toggle auto-formatting for the session",
             },
-            {
-                "<leader>ci",
-                "<cmd>ConformInfo<cr>",
-                mode = "n",
-                desc = "Show conform info",
-            },
         },
         init = function()
             -- Initialize autoformat state (default: enabled)
