@@ -114,7 +114,19 @@ return {
                         },
                     },
                 },
-                lualine_x = { "lsp_status", "encoding", "fileformat", "filetype" },
+                lualine_x = {
+                    {
+                        function()
+                            return require("auto-session.lib").current_session_name(true)
+                        end,
+                        icon = "",
+                        fmt = trunc(100, 20),
+                    },
+                    "lsp_status",
+                    "encoding",
+                    "fileformat",
+                    "filetype",
+                },
                 lualine_y = { "progress", "searchcount", "selectioncount" },
                 lualine_z = { "location" },
             },

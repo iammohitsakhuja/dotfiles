@@ -77,7 +77,6 @@ brew "pyenv"
 brew "rbenv"
 
 # Formatting, linting, code quality and analysis tools.
-brew "biome"
 brew "clang-format"
 brew "goimports"
 brew "google-java-format"

@@ -76,7 +76,7 @@ install_node_packages() {
     # Install global NPM packages
     if command -v npm &>/dev/null; then
         print_detail "Installing global NPM packages..."
-        npm install -g prettier
+        # npm install -g <package_name>
         print_detail "NPM packages installed successfully"
     else
         print_warning "npm command not found! Skipping NPM packages installation..."
