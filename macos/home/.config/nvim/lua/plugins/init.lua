@@ -7,4 +7,5 @@ return {
     { import = "plugins.formatter" },
     { import = "plugins.treesitter" },
     { import = "plugins.completion" },
+    { import = "plugins.ai" },
 }

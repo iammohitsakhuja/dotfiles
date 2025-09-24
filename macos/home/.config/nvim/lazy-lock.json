@@ -5,7 +5,7 @@
     },
     "auto-session": {
         "branch": "main",
-        "commit": "fef6a233884f387e5fd0506bd239f4e27b82714b"
+        "commit": "af683b2cb176aa8e0cddb3cdc2dada21f09bb09b"
     },
     "blink.cmp": {
         "branch": "main",
@@ -26,6 +26,14 @@
     "conform.nvim": {
         "branch": "master",
         "commit": "b4aab989db276993ea5dcb78872be494ce546521"
+    },
+    "copilot-lsp": {
+        "branch": "main",
+        "commit": "5030766af6dce2181d48b928537ebe1919ec8d22"
+    },
+    "copilot.lua": {
+        "branch": "master",
+        "commit": "304fc5f2dadb5067ed26c60fa69fb7ba8a57eaf3"
     },
     "fidget.nvim": {
         "branch": "main",
@@ -73,7 +81,7 @@
     },
     "nvim-lspconfig": {
         "branch": "master",
-        "commit": "aafecf5b8bc0a768f1a97e3a6d5441e64dee79f9"
+        "commit": "b3cce1419ca67871ae782b3e529652f8a016f0de"
     },
     "nvim-surround": {
         "branch": "main",
@@ -157,6 +165,6 @@
     },
     "which-key.nvim": {
         "branch": "main",
-        "commit": "370ec46f710e058c9c1646273e6b225acf47cbed"
+        "commit": "904308e6885bbb7b60714c80ab3daf0c071c1492"
     }
 }
