@@ -281,7 +281,7 @@ return {
         },
         config = function(_, opts)
             if (vim.g.colors_name or ""):find("catppuccin") then
-                opts.highlights = require("catppuccin.groups.integrations.bufferline").get_theme()
+                opts.highlights = require("catppuccin.special.bufferline").get_theme()
             end
 
             require("bufferline").setup(opts)
