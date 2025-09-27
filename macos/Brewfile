@@ -1,19 +1,25 @@
 # Each section is arranged alphabetically.
 
 # GNU utilities (replace macOS defaults - those that come with macOS are outdated or have weird behaviors).
-# Add `$(brew --prefix <package_name>)/libexec/ghubin` to `$PATH`.
+# Make sure to add `$(brew --prefix <package_name>)/libexec/ghubin` to `$PATH`.
 brew "coreutils"
 brew "findutils"
-brew "gnu-getopt"
+brew "gawk"
 brew "gnu-sed"
+brew "gnu-tar"
+brew "gnu-time"
+brew "grep" # GNU grep.
+brew "inetutils" # Includes GNU version of telnet.
 
 # System utility overrides.
+# These may or may not be GNU, but are not included above as they are present in `bin` instead of `libexec/gnubin`.
+# Make sure to add `$(brew --prefix <package_name>)/bin` to `$PATH`.
 brew "bash"
 brew "curl"
-brew "grep"
-brew "less" # Updated version of less.
+brew "gnu-getopt"
+brew "less"
+brew "netcat"
 brew "screen"
-brew "telnet"
 brew "wget"
 brew "zsh"
 

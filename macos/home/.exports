@@ -3,50 +3,58 @@
 # Homebrew.
 BREW_PREFIX="$(brew --prefix)"
 export HOMEBREW_AUTO_UPDATE_SECS=86400 # 24 hours. Make it less annoying.
-export HOMEBREW_NO_ENV_HINTS=1 # Disable environment variable hints.
+export HOMEBREW_NO_ENV_HINTS=1         # Disable environment variable hints.
+
+# Use XDG directories for applications that support it.
+# Useful for applications like Neovim, lazygit, and tmux
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
 
 # Go related things.
-export GOENV_ROOT="$HOME/.goenv"
-PATH="$GOENV_ROOT/bin:$PATH"
+export GOENV_ROOT="${HOME}/.goenv"
+PATH="${GOENV_ROOT}/bin:${PATH}"
 
 # PATH Configuration: GNU Utilities Override
 #
-# Prioritizes GNU/Linux utilities installed via Homebrew over macOS BSD versions.
+# Prioritize GNU/Linux utilities installed via Homebrew over macOS BSD versions.
 # Benefits: Linux compatibility, GNU features, better cross-platform script portability.
 #
 # Note: May cause behavior differences from standard macOS. For compatibility issues,
 # use explicit BSD versions from /usr/bin/ when needed.
-PATH="$BREW_PREFIX/opt/curl/bin:$PATH"                                      # Curl.
-PATH="$BREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH"                      # Coreutils.
-PATH="$BREW_PREFIX/opt/findutils/libexec/gnubin:$PATH"                      # Find, xargs, etc.
-PATH="$BREW_PREFIX/opt/gnu-sed/libexec/gnubin:$PATH"                        # GNU Sed.
-PATH="$BREW_PREFIX/opt/gnu-getopt/bin:$PATH"                                # GNU getopt.
-PATH="$BREW_PREFIX/opt/grep/libexec/gnubin:$PATH"                           # Grep.
-PATH="$BREW_PREFIX/opt/libressl/bin:$PATH"                                  # LibreSSL.
-PATH="$BREW_PREFIX/sbin:$PATH"                                              # Homebrew formulae.
+for d in "${BREW_PREFIX}"/opt/*/libexec/gnubin; do
+    [[ -d "${d}" ]] && PATH="${d}:${PATH}"
+done
+
+# Add other keg-only homebrew utilities to PATH that don't have `libexec/gnubin` directories.
+PATH="${BREW_PREFIX}/opt/curl/bin:${PATH}"       # Curl.
+PATH="${BREW_PREFIX}/opt/gnu-getopt/bin:${PATH}" # GNU getopt.
+PATH="${BREW_PREFIX}/opt/libressl/bin:${PATH}"   # LibreSSL.
+PATH="${BREW_PREFIX}/sbin:${PATH}"               # Other homebrew formulae.
 
 # Required by Claude Code.
-PATH="$PATH:$HOME/.local/bin"
+PATH="${PATH}:${HOME}/.local/bin"
 
 # Added by LM Studio CLI (lms)
-export PATH="$PATH:$HOME/.lmstudio/bin"
+PATH="${PATH}:${HOME}/.lmstudio/bin"
 # End of LM Studio CLI section
 
 # Android development settings.
-export ANDROID_HOME=$HOME/Library/Android/sdk
-PATH="$PATH:$ANDROID_HOME/emulator"
-PATH="$PATH:$ANDROID_HOME/tools"
-PATH="$PATH:$ANDROID_HOME/tools/bin"
-PATH="$PATH:$ANDROID_HOME/platform-tools"
-PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin"
+export ANDROID_HOME=${HOME}/Library/Android/sdk
+PATH="${PATH}:${ANDROID_HOME}/emulator"
+PATH="${PATH}:${ANDROID_HOME}/tools"
+PATH="${PATH}:${ANDROID_HOME}/tools/bin"
+PATH="${PATH}:${ANDROID_HOME}/platform-tools"
+PATH="${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin"
 
 # Add system frameworks and developer tools to PATH.
-PATH="$PATH:/System/Library/Frameworks:/Library/Developer"
+PATH="${PATH}:/System/Library/Frameworks:/Library/Developer"
 export PATH
 
 # Control Zsh history.
 export HISTSIZE=100000
-export SAVEHIST=$HISTSIZE
+export SAVEHIST=${HISTSIZE}
 export HIST_STAMPS="%F %T"
 export HISTCONTROL=ignoreboth
 setopt EXTENDED_HISTORY
@@ -72,11 +80,20 @@ export FZF_DEFAULT_OPTS='--preview "bat --style=numbers --color=always --line-ra
 export FZF_DEFAULT_COMMAND='fd --hidden --exclude .git'
 export FZF_CTRL_T_COMMAND='fd --hidden --exclude .git'
 
-# Add, path to custom manpages to the MANPATH variable.
-# Also, update MANPATH so that there is no need to prefix 'g' for utilities
-# like sha256sum and sha512sum.
-MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
-export MANPATH="$MANPATH:/usr/local/man:/usr/local/share/man:/usr/share/man:/usr/man"
+# Update path for Manpages.
+#
+# Homebrew installs manpages in at least these two ways (that I know of):
+# 1. `$(brew --prefix <package_name>)/libexec/gnuman` for each package that **can conflict** with macOS' versions.
+# 2. `$(brew --prefix)/share/man` with all the rest - think of it like Homebrew global.
+#
+# We prioritize these manpages as we prioritize homebrew commands too.
+# View all manpages via `man -a <manpage>` and list them with `man -aw <manpage>`.
+for d in "${BREW_PREFIX}"/opt/*/libexec/gnuman; do
+    [[ -d "${d}" ]] && MANPATH="${d}:${MANPATH}"
+done
+
+# Now, include the main Homebrew manpath too
+export MANPATH="${BREW_PREFIX}/share/man:${MANPATH}"
 
 ############################# Colors for Manpages #############################
 
@@ -90,30 +107,24 @@ orange=$(tput setaf 9)
 # Less colors for man pages.
 export PAGER=less
 # Begin blinking.
-export LESS_TERMCAP_mb=$red
+export LESS_TERMCAP_mb=${red}
 # Begin bold.
-export LESS_TERMCAP_md=$orange
+export LESS_TERMCAP_md=${orange}
 # End mode.
-export LESS_TERMCAP_me=$default
+export LESS_TERMCAP_me=${default}
 # End standout-mode.
-export LESS_TERMCAP_se=$default
+export LESS_TERMCAP_se=${default}
 # Begin standout-mode - info box.
-export LESS_TERMCAP_so=$purple
+export LESS_TERMCAP_so=${purple}
 # End underline.
-export LESS_TERMCAP_ue=$default
+export LESS_TERMCAP_ue=${default}
 # Begin underline.
-export LESS_TERMCAP_us=$green
+export LESS_TERMCAP_us=${green}
 
 ############################# Miscellaneous #############################
 
 # Disable Virtualenv's prompt.
 export VIRTUAL_ENV_DISABLE_PROMPT=1
-
-# Use XDG directories for applications that support it.
-# Useful for applications like Neovim, lazygit, and tmux
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_STATE_HOME="$HOME/.local/state"
 
 # Disable security audit of folders that `oh-my-zsh` uses for completions.
 # In particular, they are:
