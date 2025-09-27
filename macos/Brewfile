@@ -192,7 +192,7 @@ cask "webpquicklook"
 
 # Languages and SDKs.
 cask "flutter"
-cask "temurin@21"
+cask "temurin"
 
 # Fonts.
 cask "font-cascadia-code-nf" # Default terminal font
