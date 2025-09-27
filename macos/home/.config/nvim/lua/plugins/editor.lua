@@ -149,9 +149,9 @@ return {
     -- CSS colors
     {
         "catgoose/nvim-colorizer.lua",
-        ft = { "css", "scss", "html", "javascript" },
+        ft = { "css", "scss", "html", "javascript", "php", "toml", "xml", "yaml" },
         opts = {
-            filetypes = { "css", "scss", "html", "javascript" },
+            filetypes = { "css", "scss", "html", "javascript", "php", "toml", "xml", "yaml" },
             lazy_load = true,
             user_default_options = {
                 RGB = true,
