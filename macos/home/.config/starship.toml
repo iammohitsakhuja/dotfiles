@@ -81,7 +81,6 @@ $meson\
 $spack\
 $memory_usage\
 $aws\
-$gcloud\
 $openstack\
 $azure\
 $nats\
@@ -104,6 +103,8 @@ $netns\
 $shell\
 $character"""
 
+command_timeout = 1000 # Increase the timeout as there are some commands that exceed the default 500ms budget at times.
+
 [directory]
 # Show full path (or N last directories)
 fish_style_pwd_dir_length = 2
@@ -111,6 +112,10 @@ truncation_length = 3               # Show last 3 directories
 truncate_to_repo = false            # Don't stop truncating at repo root
 read_only = " "                    # Optional: shows icon if dir is read-only
 read_only_style = "red"
+
+[kubernetes]
+disabled = false
+style = "bright-blue bold"
 
 [fill]
 symbol = "·"
