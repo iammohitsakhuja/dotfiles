@@ -2,13 +2,25 @@
 
 gui:
   # Catppuccin Macchiato Theme
+  # theme:
+  #   activeBorderColor:
+  #     - "#f5a97f" # peach
+  #     - bold
+  #   inactiveBorderColor:
+  #     - "#6e738d" # overlay0
+  #   selectedLineBgColor:
+  #     - "#363a4f" # surface0
+  #   optionsTextColor:
+  #     - "#f5a97f" # peach
+
+  # Catppuccin Mocha Theme
   theme:
     activeBorderColor:
-      - "#f5a97f" # peach
+      - "#fab387" # peach
       - bold
     inactiveBorderColor:
-      - "#6e738d" # overlay0
+      - "#6c7086" # overlay0
     selectedLineBgColor:
-      - "#363a4f" # surface0
+      - "#313244" # surface0
     optionsTextColor:
-      - "#f5a97f" # peach
+      - "#fab387" # peach

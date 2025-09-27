@@ -48,7 +48,7 @@ return {
             },
             background = {
                 light = "latte",
-                dark = "macchiato",
+                dark = "mocha",
             },
             flavour = "auto",
             float = {

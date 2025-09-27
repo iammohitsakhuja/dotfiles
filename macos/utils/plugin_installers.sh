@@ -144,7 +144,10 @@ install_yazi_plugins() {
 
     # Define flavors/themes to install
     local flavors=(
+        "yazi-rs/flavors:catppuccin-latte"
+        "yazi-rs/flavors:catppuccin-frappe"
         "yazi-rs/flavors:catppuccin-macchiato"
+        "yazi-rs/flavors:catppuccin-mocha"
     )
 
     # Get currently installed packages to avoid re-adding
