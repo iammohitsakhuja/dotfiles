@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Show files/folders vertically and produce a colored output.
-alias ls="eza -A --group-directories-first --color=always --icons=always --classify=always"
-alias ll="eza -HblA --group-directories-first --color=always --icons=always --classify=always --group --time-style=long-iso"
+alias ls="eza -A --group-directories-first --color=auto --icons=auto --classify=always"
+alias ll="eza -HblA --group-directories-first --color=auto --icons=auto --classify=always --group --time-style=long-iso"
 
 # Use bat instead of cat; alias original cat command to `vcat`.
 alias vcat="cat"
