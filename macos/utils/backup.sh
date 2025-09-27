@@ -21,6 +21,7 @@ readonly TIMESTAMP_PATTERN="^[0-9]{8}-[0-9]{6}$"
 # Non-stow files to backup (absolute paths)
 readonly NON_STOW_FILES=(
     "${HOME}/.gitconfig"
+    "${XDG_CONFIG_HOME:-${HOME}/.config}/nvim/init.vim"
     # Add more files as needed
 )
 
