@@ -93,7 +93,7 @@
     },
     "nvim-tree.lua": {
         "branch": "master",
-        "commit": "e179ad2f83b5955ab0af653069a493a1828c2697"
+        "commit": "321bc61580fd066b76861c32de3319c3a6d089e7"
     },
     "nvim-treesitter": {
         "branch": "main",
@@ -131,13 +131,13 @@
         "branch": "main",
         "commit": "c46172d0911aa5d49ba5f39f4351d1bb7aa289cc"
     },
-    "telescope-file-browser.nvim": {
-        "branch": "master",
-        "commit": "3610dc7dc91f06aa98b11dca5cc30dfa98626b7e"
-    },
     "telescope-fzf-native.nvim": {
         "branch": "main",
         "commit": "1f08ed60cafc8f6168b72b80be2b2ea149813e55"
+    },
+    "telescope-ui-select.nvim": {
+        "branch": "master",
+        "commit": "6e51d7da30bd139a6950adf2a47fda6df9fa06d2"
     },
     "telescope.nvim": {
         "branch": "master",

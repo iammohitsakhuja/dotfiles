@@ -14,6 +14,7 @@ return {
             },
             virtualtext = {
                 auto_trigger_ft = { "*" },
+                auto_trigger_ignore_ft = { "TelescopePrompt" },
                 keymap = {
                     accept = "<M-l>",
                     prev = "<M-[>",

@@ -9,7 +9,7 @@ return {
                 "nvim-telescope/telescope-fzf-native.nvim",
                 build = "make",
             },
-            "nvim-telescope/telescope-file-browser.nvim",
+            "nvim-telescope/telescope-ui-select.nvim",
             "folke/trouble.nvim",
         },
         config = function()
@@ -55,23 +55,17 @@ return {
                         follow = true, -- Follow symlinks
                     },
                 },
-                extensions = {
-                    file_browser = {
-                        theme = "ivy",
-                        hijack_netrw = true,
-                        hidden = { file_browser = true, folder_browser = true },
-                        grouped = true,
-                    },
-                },
+                extensions = {}, -- Add any extension specific configuration here.
             })
 
             -- Load extensions after Telescope itself has been setup.
             telescope.load_extension("fzf")
-            telescope.load_extension("file_browser")
+            telescope.load_extension("ui-select")
             telescope.load_extension("fidget")
         end,
         keys = {
             { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Telescope find files" },
+            { "<leader>fs", "<cmd>Telescope grep_string<cr>", desc = "Telescope grep string under cursor" },
             { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Telescope live grep" },
             { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Telescope buffers" },
             { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Telescope help tags" },
@@ -80,12 +74,6 @@ return {
             { "<leader>fm", "<cmd>Telescope man_pages<cr>", desc = "Telescope list manpages" },
             { "<leader>fr", "<cmd>Telescope registers<cr>", desc = "Telescope list vim registers" },
             { "<leader>fk", "<cmd>Telescope keymaps<cr>", desc = "Telescope list keymaps" },
-            { "<leader>fe", "<cmd>Telescope file_browser<cr>", desc = "Telescope file browser" },
-            {
-                "<leader>fE",
-                "<cmd>Telescope file_browser path=%:p:h select_buffer=true<cr>",
-                desc = "Telescope file browser (current dir)",
-            },
             { "<leader>flr", "<cmd>Telescope lsp_references<cr>", desc = "Telescope list LSP references" },
             { "<leader>fli", "<cmd>Telescope lsp_implementations<cr>", desc = "Telescope goto LSP implementation" },
             { "<leader>fld", "<cmd>Telescope lsp_definitions<cr>", desc = "Telescope goto LSP defintion" },
