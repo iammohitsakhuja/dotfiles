@@ -19,7 +19,7 @@ keymap("n", "<leader>bd", ":bdelete<CR>", opts)
 keymap("n", "<leader>bD", ":bdelete!<CR>", opts)
 
 -- Clear search highlighting
-keymap("n", "<leader>l", ":nohl<CR>", opts)
+keymap("n", "<leader>nh", ":nohl<CR>", opts)
 
 -- Move lines up/down
 keymap("n", "<A-j>", ":m .+1<CR>==", opts)
