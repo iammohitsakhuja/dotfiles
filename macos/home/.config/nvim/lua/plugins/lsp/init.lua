@@ -63,6 +63,7 @@ return {
             vim.lsp.enable("gopls")
             vim.lsp.enable("helm_ls")
             vim.lsp.enable("html")
+            vim.lsp.enable("intelephense")
             vim.lsp.enable("jdtls")
             vim.lsp.enable("jsonls")
             vim.lsp.enable("lua_ls")
