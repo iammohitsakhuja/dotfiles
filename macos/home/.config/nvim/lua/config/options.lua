@@ -74,3 +74,7 @@ vim.g.loaded_netrwPlugin = 1
 
 -- Session management
 opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
+-- AI Mode Configuration
+-- Available modes: "copilot", "minimal", "none"
+vim.g.ai_mode = "minimal"

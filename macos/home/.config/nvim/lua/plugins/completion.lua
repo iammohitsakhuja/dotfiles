@@ -201,6 +201,10 @@ return {
 
                     -- Get path completion from `cwd` instead of current buffer"s directory.
                     path = {
+                        -- Path sources triggered by "/" interfere with CopilotChat commands
+                        enabled = function()
+                            return vim.bo.filetype ~= "copilot-chat"
+                        end,
                         opts = {
                             get_cwd = function(_)
                                 return vim.fn.getcwd()

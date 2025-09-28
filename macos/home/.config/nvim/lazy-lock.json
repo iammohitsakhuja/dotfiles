@@ -1,4 +1,8 @@
 {
+    "CopilotChat.nvim": {
+        "branch": "main",
+        "commit": "2f3e07398ba81ccc0cf3d1fca9805aaca126264e"
+    },
     "alpha-nvim": {
         "branch": "main",
         "commit": "2b3cbcdd980cae1e022409289245053f62fb50f6"
@@ -25,15 +29,15 @@
     },
     "conform.nvim": {
         "branch": "master",
-        "commit": "b4aab989db276993ea5dcb78872be494ce546521"
+        "commit": "3bad87250ed85246fe8c5bc10005ab5a6289ae4c"
     },
     "copilot-lsp": {
         "branch": "main",
-        "commit": "5030766af6dce2181d48b928537ebe1919ec8d22"
+        "commit": "a80e0c17e7366614d39506825f49a25d285fead9"
     },
     "copilot.lua": {
         "branch": "master",
-        "commit": "619493a538c140393f0c80fd386144e0b5d3b96f"
+        "commit": "36c220b816d07989186731ca771c15e2df419d68"
     },
     "fidget.nvim": {
         "branch": "main",
@@ -93,7 +97,7 @@
     },
     "nvim-treesitter": {
         "branch": "main",
-        "commit": "5a70b1eb8cbdf6c7f0a59dfb7356ad198421b620"
+        "commit": "9176343647ad99583becbcec7b17fc7fd5bd4782"
     },
     "nvim-treesitter-context": {
         "branch": "master",
@@ -109,7 +113,7 @@
     },
     "nvim-web-devicons": {
         "branch": "master",
-        "commit": "6e51ca170563330e063720449c21f43e27ca0bc1"
+        "commit": "f6b0920f452bfd7595ee9a9efe5e1ae78e0e2997"
     },
     "plenary.nvim": {
         "branch": "master",
