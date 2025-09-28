@@ -67,70 +67,88 @@ return {
     {
         "nvim-lualine/lualine.nvim",
         event = "VeryLazy",
-        dependencies = { "nvim-tree/nvim-web-devicons", "lewis6991/gitsigns.nvim" },
-        opts = {
-            options = {
-                theme = "auto",
-                globalstatus = true, -- Have a single statusline instead of one per each split
-                component_separators = { left = "│", right = "│" },
-                section_separators = { left = "", right = "" },
-            },
-            sections = {
-                lualine_a = {
-                    { "mode", fmt = trunc(80, 4, nil, true) },
-                },
-                lualine_b = {
-                    { "b:gitsigns_head", icon = "" },
-                    {
-                        "diff",
-                        source = diff_source,
-                        symbols = {
-                            added = " ",
-                            modified = " ",
-                            removed = " ",
-                        },
-                    },
-                    {
-                        "diagnostics",
-                        symbols = {
-                            error = "󰅚 ",
-                            warn = "󰀪 ",
-                            info = "󰋽 ",
-                            hint = "󰌶 ",
-                        },
-                    },
-                },
-                lualine_c = {
-                    {
-                        "filename",
-                        file_status = true,
-                        path = 1,
-                        fmt = trunc(90, 30, 50),
-                        symbols = {
-                            modified = "● ",
-                            readonly = "󰌾 ",
-                            unnamed = "[No Name]",
-                            newfile = "󰎔 ",
-                        },
-                    },
-                },
-                lualine_x = {
-                    {
-                        function()
-                            return require("auto-session.lib").current_session_name(true)
-                        end,
-                        icon = "",
-                        fmt = trunc(100, 20),
-                    },
-                    "lsp_status",
-                    "encoding",
-                    "fileformat",
-                    "filetype",
-                },
-                lualine_y = { "progress", "searchcount", "selectioncount" },
-                lualine_z = { "location" },
-            },
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+            "lewis6991/gitsigns.nvim",
+            "milanglacier/minuet-ai.nvim",
         },
+        config = function()
+            require("lualine").setup({
+                options = {
+                    theme = "auto",
+                    globalstatus = true, -- Have a single statusline instead of one per each split
+                    component_separators = { left = "│", right = "│" },
+                    section_separators = { left = "", right = "" },
+                },
+                sections = {
+                    lualine_a = {
+                        { "mode", fmt = trunc(80, 4, nil, true) },
+                    },
+                    lualine_b = {
+                        { "b:gitsigns_head", icon = "" },
+                        {
+                            "diff",
+                            source = diff_source,
+                            symbols = {
+                                added = " ",
+                                modified = " ",
+                                removed = " ",
+                            },
+                        },
+                        {
+                            "diagnostics",
+                            symbols = {
+                                error = "󰅚 ",
+                                warn = "󰀪 ",
+                                info = "󰋽 ",
+                                hint = "󰌶 ",
+                            },
+                        },
+                    },
+                    lualine_c = {
+                        {
+                            "filename",
+                            file_status = true,
+                            path = 1,
+                            fmt = trunc(90, 30, 50),
+                            symbols = {
+                                modified = "● ",
+                                readonly = "󰌾 ",
+                                unnamed = "[]",
+                                newfile = "󰎔 ",
+                            },
+                        },
+                    },
+                    lualine_x = {
+                        {
+                            function()
+                                return require("auto-session.lib").current_session_name(true)
+                            end,
+                            icon = "",
+                            fmt = trunc(100, 20),
+                        },
+                        "lsp_status",
+                        vim.g.ai_mode == "minimal"
+                                and {
+                                    require("minuet.lualine"),
+                                    -- the follwing is the default configuration
+                                    -- the name displayed in the lualine. Set to "provider", "model" or "both"
+                                    -- display_name = 'both',
+                                    -- separator between provider and model name for option "both"
+                                    -- provider_model_separator = ':',
+                                    -- whether show display_name when no completion requests are active
+                                    display_on_idle = true,
+                                }
+                            or nil,
+                        "encoding",
+                        "fileformat",
+                        "filetype",
+                    },
+                    lualine_y = { "progress", "searchcount", "selectioncount" },
+                    lualine_z = { "location" },
+                },
+            })
+        end,
     },
 
     -- File explorer

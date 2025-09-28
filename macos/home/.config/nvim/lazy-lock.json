@@ -31,10 +31,6 @@
         "branch": "master",
         "commit": "3bad87250ed85246fe8c5bc10005ab5a6289ae4c"
     },
-    "copilot-lsp": {
-        "branch": "main",
-        "commit": "a80e0c17e7366614d39506825f49a25d285fead9"
-    },
     "copilot.lua": {
         "branch": "master",
         "commit": "36c220b816d07989186731ca771c15e2df419d68"
@@ -70,6 +66,10 @@
     "lualine.nvim": {
         "branch": "master",
         "commit": "b8c23159c0161f4b89196f74ee3a6d02cdc3a955"
+    },
+    "minuet-ai.nvim": {
+        "branch": "main",
+        "commit": "2083b86ea01cb18dc9e7cb7a68f932ea06e999e8"
     },
     "neoscroll.nvim": {
         "branch": "master",

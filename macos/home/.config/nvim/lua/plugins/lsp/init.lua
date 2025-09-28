@@ -1,3 +1,5 @@
+---@module "lazy"
+---@type LazySpec
 return {
     -- LSP Configuration for Neovim Lua files
     {
