@@ -103,7 +103,7 @@ return {
         dependencies = {
             "nvim-tree/nvim-web-devicons",
             "lewis6991/gitsigns.nvim",
-            "milanglacier/minuet-ai.nvim",
+            vim.g.ai_mode == "copilot" and "AndreM222/copilot-lualine" or "milanglacier/minuet-ai.nvim",
         },
         config = function()
             require("lualine").setup({
@@ -161,18 +161,10 @@ return {
                             fmt = trunc(100, 20),
                         },
                         "lsp_status",
-                        vim.g.ai_mode == "minimal"
-                                and {
-                                    require("minuet.lualine"),
-                                    -- the follwing is the default configuration
-                                    -- the name displayed in the lualine. Set to "provider", "model" or "both"
-                                    -- display_name = 'both',
-                                    -- separator between provider and model name for option "both"
-                                    -- provider_model_separator = ':',
-                                    -- whether show display_name when no completion requests are active
-                                    display_on_idle = true,
-                                }
-                            or nil,
+                        vim.g.ai_mode == "copilot" and "copilot" or {
+                            require("minuet.lualine"),
+                            display_on_idle = true,
+                        },
                         "encoding",
                         "fileformat",
                         "filetype",

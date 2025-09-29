@@ -31,6 +31,14 @@
         "branch": "master",
         "commit": "3bad87250ed85246fe8c5bc10005ab5a6289ae4c"
     },
+    "copilot-lsp": {
+        "branch": "main",
+        "commit": "a80e0c17e7366614d39506825f49a25d285fead9"
+    },
+    "copilot-lualine": {
+        "branch": "main",
+        "commit": "6bc29ba1fcf8f0f9ba1f0eacec2f178d9be49333"
+    },
     "copilot.lua": {
         "branch": "master",
         "commit": "36c220b816d07989186731ca771c15e2df419d68"
