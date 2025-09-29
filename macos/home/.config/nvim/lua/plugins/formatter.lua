@@ -18,7 +18,7 @@ return {
             formatters_by_ft = {
                 bash = { "shellcheck", "shfmt" },
                 css = { "biome-check", "prettier", stop_after_first = true },
-                dart = { "dart_format" },
+                dart = { "lsp_format" },
                 go = { "goimports", "gofmt", stop_after_first = true },
                 html = { "biome-check", "prettier", stop_after_first = true },
                 java = { "google-java-format" },
