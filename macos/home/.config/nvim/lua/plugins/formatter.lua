@@ -42,8 +42,6 @@ return {
                 typescript = { "biome-check", "prettier", stop_after_first = true },
                 typescriptreact = { "biome-check", "prettier", stop_after_first = true },
                 yaml = { "prettier", "yamlfmt", "yq", stop_after_first = true },
-                -- Fallback formatters for file types without explicit configuration
-                ["_"] = { "trim_whitespace", "trim_newlines" },
             },
             default_format_opts = {
                 lsp_format = "fallback",
