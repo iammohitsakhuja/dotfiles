@@ -19,52 +19,52 @@ return {
             -- Use default keymap preset (Ctrl+Y to accept completion)
             keymap = {
                 preset = "default",
-                ["<A-1>"] = {
+                ["<C-1>"] = {
                     function(cmp)
                         cmp.accept({ index = 1 })
                     end,
                 },
-                ["<A-2>"] = {
+                ["<C-2>"] = {
                     function(cmp)
                         cmp.accept({ index = 2 })
                     end,
                 },
-                ["<A-3>"] = {
+                ["<C-3>"] = {
                     function(cmp)
                         cmp.accept({ index = 3 })
                     end,
                 },
-                ["<A-4>"] = {
+                ["<C-4>"] = {
                     function(cmp)
                         cmp.accept({ index = 4 })
                     end,
                 },
-                ["<A-5>"] = {
+                ["<C-5>"] = {
                     function(cmp)
                         cmp.accept({ index = 5 })
                     end,
                 },
-                ["<A-6>"] = {
+                ["<C-6>"] = {
                     function(cmp)
                         cmp.accept({ index = 6 })
                     end,
                 },
-                ["<A-7>"] = {
+                ["<C-7>"] = {
                     function(cmp)
                         cmp.accept({ index = 7 })
                     end,
                 },
-                ["<A-8>"] = {
+                ["<C-8>"] = {
                     function(cmp)
                         cmp.accept({ index = 8 })
                     end,
                 },
-                ["<A-9>"] = {
+                ["<C-9>"] = {
                     function(cmp)
                         cmp.accept({ index = 9 })
                     end,
                 },
-                ["<A-0>"] = {
+                ["<C-0>"] = {
                     function(cmp)
                         cmp.accept({ index = 10 })
                     end,

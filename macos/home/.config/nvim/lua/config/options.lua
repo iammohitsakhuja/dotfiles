@@ -78,3 +78,6 @@ opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,te
 -- AI Mode Configuration
 -- Available modes: "copilot", "minimal", "none"
 vim.g.ai_mode = "minimal"
+
+-- Disable mappings created automatically by tmux navigator, as we use our own mappings.
+vim.g.tmux_navigator_no_mappings = 1
