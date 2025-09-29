@@ -18,7 +18,7 @@ return {
             formatters_by_ft = {
                 bash = { "shellcheck", "shfmt" },
                 css = { "biome-check", "prettier", stop_after_first = true },
-                dart = { "lsp_format" },
+                dart = { "dart_format" },
                 go = { "goimports", "gofmt", stop_after_first = true },
                 html = { "biome-check", "prettier", stop_after_first = true },
                 java = { "google-java-format" },
@@ -42,8 +42,6 @@ return {
                 typescript = { "biome-check", "prettier", stop_after_first = true },
                 typescriptreact = { "biome-check", "prettier", stop_after_first = true },
                 yaml = { "prettier", "yamlfmt", "yq", stop_after_first = true },
-                -- Fallback formatters for file types without explicit configuration
-                ["_"] = { "trim_whitespace", "trim_newlines" },
             },
             default_format_opts = {
                 lsp_format = "fallback",
