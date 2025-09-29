@@ -1,0 +1,44 @@
+[[plugin.deps]]
+use = "yazi-rs/plugins:full-border"
+rev = "d7588f6"
+hash = "3996fc74044bc44144b323686f887e1"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:chmod"
+rev = "d7588f6"
+hash = "1adc12c2b2b025411ab61eb8f0879574"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:smart-enter"
+rev = "d7588f6"
+hash = "56fdabc96fc1f4d53c96eb884b02a5be"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:zoom"
+rev = "d7588f6"
+hash = "4a47a9cd4d8b3a963cb4cc593664b77e"
+
+[[plugin.deps]]
+use = "Lil-Dank/lazygit"
+rev = "8f37dc5"
+hash = "ee71543790f0ce3951161045a3787abd"
+
+[[flavor.deps]]
+use = "yazi-rs/flavors:catppuccin-macchiato"
+rev = "4296a38"
+hash = "1e2cc3f0f96197f3dac9591be50bb2af"
+
+[[flavor.deps]]
+use = "yazi-rs/flavors:catppuccin-latte"
+rev = "2d73b79"
+hash = "9e789c612c34f941a2afd42e7ded39f"
+
+[[flavor.deps]]
+use = "yazi-rs/flavors:catppuccin-frappe"
+rev = "2d73b79"
+hash = "ca94f5dc2b87919439b5be2a62cf4871"
+
+[[flavor.deps]]
+use = "yazi-rs/flavors:catppuccin-mocha"
+rev = "2d73b79"
+hash = "d4c41d713b325710a9dd5ae86c3f8a5f"

@@ -1,0 +1,5 @@
+syntax = "LuaJIT"
+indent_type = "Spaces"
+
+[sort_requires]
+enabled = true

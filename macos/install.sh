@@ -49,65 +49,65 @@ show_help() {
 # Ensure proper usage.
 while :; do
     case $1 in
-    -h | -\? | --help)
-        show_help
-        exit
-        ;;
-    --no-backup)
-        backup=0
-        shift
-        ;;
-    -e | --email)
-        # TODO: Handle the case where the next argument to email is another option e.g. `-e -c`.
-        if [[ -n $2 ]]; then
-            email=$2
-            shift 2
-        else
+        -h | -\? | --help)
+            show_help
+            exit
+            ;;
+        --no-backup)
+            backup=0
+            shift
+            ;;
+        -e | --email)
+            # TODO: Handle the case where the next argument to email is another option e.g. `-e -c`.
+            if [[ -n $2 ]]; then
+                email=$2
+                shift 2
+            else
+                die 'ERROR: "--email" requires a non-empty option argument.'
+            fi
+            ;;
+        --email=?*)
+            email=${1#*=} # Delete everything up to "=" and assign the remainder.
+            shift
+            ;;
+        --email=) # Handle the case of an empty --email=.
             die 'ERROR: "--email" requires a non-empty option argument.'
-        fi
-        ;;
-    --email=?*)
-        email=${1#*=} # Delete everything up to "=" and assign the remainder.
-        shift
-        ;;
-    --email=) # Handle the case of an empty --email=.
-        die 'ERROR: "--email" requires a non-empty option argument.'
-        ;;
-    -n | --name)
-        # TODO: Handle the case where the next argument to name is another option e.g. `-n -c`.
-        if [[ -n $2 ]]; then
-            name=$2
-            shift 2
-        else
+            ;;
+        -n | --name)
+            # TODO: Handle the case where the next argument to name is another option e.g. `-n -c`.
+            if [[ -n $2 ]]; then
+                name=$2
+                shift 2
+            else
+                die 'ERROR: "--name" requires a non-empty option argument.'
+            fi
+            ;;
+        --name=?*)
+            name=${1#*=} # Delete everything up to "=" and assign the remainder.
+            shift
+            ;;
+        --name=) # Handle the case of an empty --name=.
             die 'ERROR: "--name" requires a non-empty option argument.'
-        fi
-        ;;
-    --name=?*)
-        name=${1#*=} # Delete everything up to "=" and assign the remainder.
-        shift
-        ;;
-    --name=) # Handle the case of an empty --name=.
-        die 'ERROR: "--name" requires a non-empty option argument.'
-        ;;
-    *) # Default case: No more options, so break out of the loop.
-        print_header "macOS Dotfiles Installation"
-        print_newline
-        print_subheader "Configuration:"
-        print_config_item "Backup existing files" "$(if [[ ${backup} == 1 ]]; then echo "Yes"; else echo "No"; fi)"
-        print_config_item "Email" "${email}"
-        print_config_item "Name" "${name}"
-        print_config_item "Stow directory" "${STOW_DIR}"
-        print_newline
+            ;;
+        *) # Default case: No more options, so break out of the loop.
+            print_header "macOS Dotfiles Installation"
+            print_newline
+            print_subheader "Configuration:"
+            print_config_item "Backup existing files" "$(if [[ ${backup} == 1 ]]; then echo "Yes"; else echo "No"; fi)"
+            print_config_item "Email" "${email}"
+            print_config_item "Name" "${name}"
+            print_config_item "Stow directory" "${STOW_DIR}"
+            print_newline
 
-        # Argument Validations.
-        if [[ -z ${email} ]]; then
-            die 'ERROR: "--email" is required.'
-        fi
-        if [[ -z ${name} ]]; then
-            die 'ERROR: "--name" is required.'
-        fi
-        break
-        ;;
+            # Argument Validations.
+            if [[ -z ${email} ]]; then
+                die 'ERROR: "--email" is required.'
+            fi
+            if [[ -z ${name} ]]; then
+                die 'ERROR: "--name" is required.'
+            fi
+            break
+            ;;
     esac
 done
 
@@ -131,26 +131,25 @@ print_success "Administrator authentication confirmed"
 print_newline
 
 # Install essential dependencies before proceeding
-print_step 1 5 "Checking and installing essential dependencies"
+print_step 1 6 "Checking and installing essential dependencies"
 print_newline
 bootstrap_dependencies
 print_newline
 print_success "Essential dependencies are ready!"
 print_newline
 
-print_header "Package Installation & Setup"
+print_header "Software Installation"
 print_newline
 
-# Run installation scripts.
-print_step 2 5 "Installing packages and applications"
+# Install software.
+print_step 2 6 "Installing Software"
 print_newline
-
 install_all_packages "${STOW_DIR}"
 BREW_PREFIX=$(brew --prefix)
-print_success "Package and application installation complete!"
+print_success "Software installation complete!"
 print_newline
 
-print_header "Backup & File Management"
+print_header "Configuration Management"
 print_newline
 
 # Ask for administrator password upfront (we will need to ask for this again explicitly once after homebrew operations are done).
@@ -164,7 +163,9 @@ print_success "Administrator authentication confirmed"
 print_newline
 
 # Backup existing files before stow operations
-print_step 3 5 "Backing up existing files and linking dotfiles"
+print_step 3 6 "Configuration management"
+print_newline
+
 BACKUP_DIR=$(backup_existing_files "${backup}" "${STOW_DIR}")
 
 # Stow will handle all dotfile symlinking.
@@ -175,11 +176,21 @@ stow -d "${STOW_DIR}" -t "${HOME}" --no-folding home --verbose=1
 print_success "Dotfiles linked successfully!"
 print_newline
 
+print_header "Plugin Installation"
+print_newline
+
+# Install all plugins now that config files are available
+print_step 4 6 "Plugin installation"
+print_newline
+
+install_all_plugins
+print_newline
+
 print_header "System Configuration"
 print_newline
 
-# Configure system and user settings.
-print_step 4 5 "Configuring system and user settings"
+# Configure system and user settings
+print_step 5 6 "System configuration"
 print_newline
 
 print_action "Configuring system settings..."
@@ -190,21 +201,23 @@ print_newline
 print_header "Installation Complete!"
 print_newline
 
-print_step 5 5 "Summary of completed installation"
+print_step 6 6 "Installation summary"
 print_newline
 
 print_success "Essential dependencies installed (Homebrew, Stow, Command Line Tools)"
+print_success "Core software and applications installed (Homebrew, Mac App Store)"
+print_success "Language environments installed (Go, Node, Python, Ruby, Rust)"
 if [[ ${backup} == 1 ]]; then
     print_success "Existing dotfiles backed up (if any conflicts found)"
 else
     print_success "Backup skipped as requested"
 fi
 print_success "Dotfiles linked to home directory"
+print_success "Application plugins installed (Shell, Vim, Tmux, Yazi)"
 print_success "Touch ID configured for sudo authentication"
 print_success "Git configured with user credentials (${name} <${email}>)"
 print_success "SSH key pair generated (if not already present)"
 print_success "API keys storage file created"
-print_success "Development packages and tools installed"
 print_success "Terminal colors configured for Tmux"
 print_success "macOS system preferences applied"
 print_newline
@@ -214,6 +227,7 @@ echo "Next steps:"
 echo "  • Add your SSH public key to GitHub/GitLab"
 echo "  • Restart your terminal or run 'source ~/.zshrc'"
 echo "  • Review installed applications and configure as needed"
+echo "  • Use 'prefix + I' to install new tmux plugins (prefix key is Ctrl-a)"
 print_newline
 echo "SSH public key location: ${HOME}/.ssh/id_ed25519.pub"
 if [[ -n ${BACKUP_DIR} ]]; then

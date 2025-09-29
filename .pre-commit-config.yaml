@@ -28,12 +28,16 @@ repos:
       - id: shellcheck # Already runs in docker.
         args: [--severity=style]
 
-  # Shell script formatting (uses .editorconfig for 4-space indent)
+  # Shell script formatting
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: v3.12.0-2
     hooks:
       - id: shfmt-docker
-        args: [-w, -s, -i, "4"]
+        # We need to provide these arguments separately from settings in `.editorconfig` simply because we require the
+        # `simplify` flag. There's no way to specify this flag with `.editorconfig`.
+        # If we provide ONLY that particular flag here, then `shfmt` ignores the rest of the config. Hence, we need to
+        # provide all flags individually.
+        args: [--write, --simplify, --indent, "4", --case-indent]
 
   # YAML formatting (2 spaces as per .editorconfig)
   - repo: https://github.com/google/yamlfmt
@@ -41,6 +45,12 @@ repos:
     hooks:
       - id: yamlfmt
         args: ["-formatter", "indent=2,retain_line_breaks=true"]
+
+  # Lua formatting (uses .stylua.toml configuration)
+  - repo: https://github.com/JohnnyMorganz/StyLua
+    rev: v2.2.0
+    hooks:
+      - id: stylua-system
 
   # Markdown linting
   - repo: https://github.com/igorshubovych/markdownlint-cli

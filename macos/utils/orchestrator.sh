@@ -13,11 +13,14 @@ source "${ORCHESTRATOR_SCRIPT_DIR}/logging.sh"
 source "${ORCHESTRATOR_SCRIPT_DIR}/platform.sh"
 source "${ORCHESTRATOR_SCRIPT_DIR}/mas_installer.sh"
 source "${ORCHESTRATOR_SCRIPT_DIR}/package_installers.sh"
+source "${ORCHESTRATOR_SCRIPT_DIR}/plugin_installers.sh"
 
-# Main orchestration function for all package and application installation
-# Returns the Homebrew prefix path for use by calling script
+# Main orchestration function for all software installation
+# This function handles Homebrew, Mac App Store apps, and language environments
 install_all_packages() {
     local stow_dir="$1"
+
+    print_subheader "Core Software Installation"
     # Install Homebrew for Apple Silicon
     install_homebrew
 
@@ -31,6 +34,7 @@ install_all_packages() {
     # Upgrade any previously installed packages
     brew upgrade
     print_success "Homebrew updated & upgraded successfully"
+    print_newline
 
     # Install all packages from main Brewfile (this excludes Mac App Store apps)
     print_action "Installing Homebrew packages (excluding Mac App Store apps)"
@@ -48,13 +52,25 @@ install_all_packages() {
     print_success "Homebrew cleanup completed"
     print_newline
 
-    print_subheader "Language Environments & Packages"
+    print_subheader "Language Environment Installation"
     install_go_packages
     install_node_packages
     install_python_packages
     install_ruby_gems
+    install_rust_packages
+    print_success "Language Environment installation complete"
+}
 
-    print_subheader "Shell & Editor Plugins"
-    install_shell_packages
-    install_vim_packages "${stow_dir}"
+# Main orchestration function for all plugin installation
+# This function is called post-stow to ensure all config files are available
+install_all_plugins() {
+    print_subheader "Plugin Installation"
+
+    install_shell_plugins
+    install_vim_plugins
+    install_tmux_plugins
+    install_yazi_plugins
+    install_bat_themes
+
+    print_success "Plugin installation complete"
 }

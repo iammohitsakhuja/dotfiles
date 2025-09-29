@@ -36,30 +36,30 @@ show_help() {
 # Parse command line arguments
 while :; do
     case $1 in
-    -h | -\? | --help)
-        show_help
-        exit
-        ;;
-    -v | --version)
-        if [[ -n $2 ]]; then
-            validate_version "$2"
-            version=$2
-            shift 2
-        else
+        -h | -\? | --help)
+            show_help
+            exit
+            ;;
+        -v | --version)
+            if [[ -n $2 ]]; then
+                validate_version "$2"
+                version=$2
+                shift 2
+            else
+                die 'ERROR: "--version" requires a non-empty option argument.'
+            fi
+            ;;
+        --version=?*)
+            version=${1#*=} # Delete everything up to "=" and assign the remainder.
+            validate_version "${version}"
+            shift
+            ;;
+        --version=) # Handle the case of an empty --version=.
             die 'ERROR: "--version" requires a non-empty option argument.'
-        fi
-        ;;
-    --version=?*)
-        version=${1#*=} # Delete everything up to "=" and assign the remainder.
-        validate_version "${version}"
-        shift
-        ;;
-    --version=) # Handle the case of an empty --version=.
-        die 'ERROR: "--version" requires a non-empty option argument.'
-        ;;
-    *) # Default case: No more options, so break out of the loop.
-        break
-        ;;
+            ;;
+        *) # Default case: No more options, so break out of the loop.
+            break
+            ;;
     esac
 done
 

@@ -36,36 +36,36 @@ show_help() {
 # Parse command line arguments.
 while :; do
     case $1 in
-    -h | -\? | --help)
-        show_help
-        exit
-        ;;
-    --list)
-        list_backups=1
-        shift
-        ;;
-    --backup)
-        if [[ -n $2 ]]; then
-            backup_timestamp="$2"
-            shift 2
-        else
+        -h | -\? | --help)
+            show_help
+            exit
+            ;;
+        --list)
+            list_backups=1
+            shift
+            ;;
+        --backup)
+            if [[ -n $2 ]]; then
+                backup_timestamp="$2"
+                shift 2
+            else
+                die 'ERROR: "--backup" requires a non-empty option argument.'
+            fi
+            ;;
+        --backup=?*)
+            backup_timestamp=${1#*=}
+            shift
+            ;;
+        --backup=)
             die 'ERROR: "--backup" requires a non-empty option argument.'
-        fi
-        ;;
-    --backup=?*)
-        backup_timestamp=${1#*=}
-        shift
-        ;;
-    --backup=)
-        die 'ERROR: "--backup" requires a non-empty option argument.'
-        ;;
-    --dry-run)
-        dry_run=1
-        shift
-        ;;
-    *)
-        break
-        ;;
+            ;;
+        --dry-run)
+            dry_run=1
+            shift
+            ;;
+        *)
+            break
+            ;;
     esac
 done
 
@@ -115,8 +115,8 @@ list_available_backups() {
             local total_count=$(get_total_file_count "${manifest_file}")
 
             echo "  ${timestamp} (Files backed up - Total: ${total_count} [Stow: ${stow_count}, Non-Stow: ${non_stow_count}])"
-            print_detail "Date: ${backup_date}" 2
-            print_detail "Location: ${backup_dir}" 2
+            print_detail "Date: ${backup_date}"
+            print_detail "Location: ${backup_dir}"
         else
             echo "  ${timestamp} (manifest file missing - backup may be incomplete)"
         fi
@@ -205,8 +205,8 @@ restore_stow_files() {
 
         # Show what file will be restored
         print_action "Restoring stow file: ${relative_path}"
-        print_detail "From: ${backup_file}" 3
-        print_detail "To: ${target_file}" 3
+        print_detail "From: ${backup_file}"
+        print_detail "To: ${target_file}"
 
         if [[ ${dry_run_flag} == "dry-run" ]]; then
             # In dry-run mode, just count and continue
@@ -224,23 +224,23 @@ restore_stow_files() {
                 echo -n "  Choose action - (r)eplace, (s)kip, (q)uit: " >&2
                 read -r action </dev/tty
                 case "${action}" in
-                r | R | replace)
-                    print_action "Replacing existing file..."
-                    ;;
-                s | S | skip)
-                    print_action "Skipping file..."
-                    ((files_skipped++))
-                    continue
-                    ;;
-                q | Q | quit)
-                    echo "Restoration cancelled by user." >&2
-                    exit 0
-                    ;;
-                *)
-                    print_action "Invalid choice, skipping file..."
-                    ((files_skipped++))
-                    continue
-                    ;;
+                    r | R | replace)
+                        print_action "Replacing existing file..."
+                        ;;
+                    s | S | skip)
+                        print_action "Skipping file..."
+                        ((files_skipped++))
+                        continue
+                        ;;
+                    q | Q | quit)
+                        echo "Restoration cancelled by user." >&2
+                        exit 0
+                        ;;
+                    *)
+                        print_action "Invalid choice, skipping file..."
+                        ((files_skipped++))
+                        continue
+                        ;;
                 esac
             fi
 
@@ -312,8 +312,8 @@ restore_non_stow_files() {
 
         # Show what file will be restored
         print_action "Restoring non-stow file: ${source_location}"
-        print_detail "From: ${backup_file}" 3
-        print_detail "To: ${target_file}" 3
+        print_detail "From: ${backup_file}"
+        print_detail "To: ${target_file}"
 
         if [[ ${dry_run_flag} == "dry-run" ]]; then
             # In dry-run mode, just count and continue
@@ -331,23 +331,23 @@ restore_non_stow_files() {
                 echo -n "  Choose action - (r)eplace, (s)kip, (q)uit: " >&2
                 read -r action </dev/tty
                 case "${action}" in
-                r | R | replace)
-                    print_action "Replacing existing file..."
-                    ;;
-                s | S | skip)
-                    print_action "Skipping file..."
-                    ((files_skipped++))
-                    continue
-                    ;;
-                q | Q | quit)
-                    echo "Restoration cancelled by user." >&2
-                    exit 0
-                    ;;
-                *)
-                    print_action "Invalid choice, skipping file..."
-                    ((files_skipped++))
-                    continue
-                    ;;
+                    r | R | replace)
+                        print_action "Replacing existing file..."
+                        ;;
+                    s | S | skip)
+                        print_action "Skipping file..."
+                        ((files_skipped++))
+                        continue
+                        ;;
+                    q | Q | quit)
+                        echo "Restoration cancelled by user." >&2
+                        exit 0
+                        ;;
+                    *)
+                        print_action "Invalid choice, skipping file..."
+                        ((files_skipped++))
+                        continue
+                        ;;
                 esac
             fi
 
