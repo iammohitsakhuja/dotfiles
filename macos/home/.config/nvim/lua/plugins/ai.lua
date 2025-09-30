@@ -16,7 +16,7 @@ return {
                 auto_trigger_ft = { "*" },
                 auto_trigger_ignore_ft = { "TelescopePrompt" },
                 keymap = {
-                    accept = "<M-l>",
+                    accept = "<M-;>",
                     prev = "<M-[>",
                     next = "<M-]>",
                     dismiss = "<C-]>",
@@ -164,6 +164,12 @@ return {
                 auto_trigger = true,
                 hide_during_completion = true,
                 debounce = 250, -- Increase debounce to reduce annoyance of suggestions.
+                keymap = {
+                    accept = "<M-;>",
+                    prev = "<M-[>",
+                    next = "<M-]>",
+                    dismiss = "<C-]>",
+                },
             },
 
             nes = {

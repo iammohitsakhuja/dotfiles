@@ -377,6 +377,9 @@ configure_macos_preferences() {
     # Speed up Mission Control animations.
     defaults write com.apple.dock expose-animation-duration -float 0.1
 
+    # Group Expose windows by application. Also helps in playing nicely with Aerospace.
+    defaults write com.apple.dock expose-group-apps -bool true
+
     # Disable Dashboard.
     defaults write com.apple.dashboard mcx-disabled -bool true
 
@@ -385,6 +388,11 @@ configure_macos_preferences() {
 
     # Don't automatically rearrange Spaces based on most recent use.
     defaults write com.apple.dock mru-spaces -bool false
+
+    # Since MacOS' public APIs for 'Displays have Separate Spaces' isn't as stable, disable this feature.
+    # Better for Aerospace.
+    # Change this if you face issues with multi-monitor setup.
+    defaults write com.apple.spaces spans-displays -bool true
 
     # Automatically hide and show the Dock.
     defaults write com.apple.dock autohide -bool true
