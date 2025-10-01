@@ -108,7 +108,7 @@ install_tmux_plugins() {
     if [[ -f ${tpm_dir}/bin/install_plugins ]]; then
         print_detail "Installing tmux plugins..."
         # Run plugin installation in a way that works even if tmux server isn't running
-        "${tpm_dir}/bin/install_plugins" 2>/dev/null || {
+        "${tpm_dir}/bin/install_plugins" || {
             print_detail "Plugin installation via script failed, trying alternative method..."
             # Alternative: start a detached tmux session, install plugins, then kill it
             tmux new-session -d -s "tpm_install" 2>/dev/null || true
