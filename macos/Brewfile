@@ -64,6 +64,7 @@ brew "iperf3" # Network performance measurement tool.
 # Media processing.
 brew "ffmpeg"
 brew "imagemagick" # For conversion of images from one format to another.
+brew "poppler" # For PDF previews in Yazi.
 
 # Package managers & utilities.
 brew "mas" # Mac App Store CLI.
