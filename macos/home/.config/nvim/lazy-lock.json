@@ -1,7 +1,7 @@
 {
     "CopilotChat.nvim": {
         "branch": "main",
-        "commit": "2f3e07398ba81ccc0cf3d1fca9805aaca126264e"
+        "commit": "1e06be97df058fa0bb4af54659c39918a4999c86"
     },
     "alpha-nvim": {
         "branch": "main",
@@ -21,7 +21,7 @@
     },
     "catppuccin": {
         "branch": "main",
-        "commit": "5af9374957a65be8770696da295dc9016b96f241"
+        "commit": "c89184526212e04feffbddda9d06b041a8fca416"
     },
     "colorful-menu.nvim": {
         "branch": "master",
@@ -29,7 +29,7 @@
     },
     "conform.nvim": {
         "branch": "master",
-        "commit": "3bad87250ed85246fe8c5bc10005ab5a6289ae4c"
+        "commit": "9d6f881a4047a51c7709223dcf24e967633c6523"
     },
     "copilot-lsp": {
         "branch": "main",
@@ -41,7 +41,7 @@
     },
     "copilot.lua": {
         "branch": "master",
-        "commit": "36c220b816d07989186731ca771c15e2df419d68"
+        "commit": "3cd5086c28c5769f5db147721f457a3e081de254"
     },
     "fidget.nvim": {
         "branch": "main",
@@ -53,7 +53,7 @@
     },
     "gitsigns.nvim": {
         "branch": "main",
-        "commit": "23ae90a2a52fdc9b8c50dc61d6c30ebb18521343"
+        "commit": "1ee5c1fd068c81f9dd06483e639c2aa4587dc197"
     },
     "indent-blankline.nvim": {
         "branch": "master",
@@ -61,7 +61,7 @@
     },
     "lazy.nvim": {
         "branch": "main",
-        "commit": "6c3bda4aca61a13a9c63f1c1d1b16b9d3be90d7a"
+        "commit": "59334064f8604ca073791c25dcc5c9698865406e"
     },
     "lazydev.nvim": {
         "branch": "main",
@@ -97,7 +97,7 @@
     },
     "nvim-lspconfig": {
         "branch": "master",
-        "commit": "336b388c272555d2ae94627a50df4c2f89a5e257"
+        "commit": "b8c3630ce37dfbe51910b68785a71620b072c41a"
     },
     "nvim-surround": {
         "branch": "main",
@@ -109,7 +109,7 @@
     },
     "nvim-treesitter": {
         "branch": "main",
-        "commit": "9176343647ad99583becbcec7b17fc7fd5bd4782"
+        "commit": "99bd52ba56a4b7c9a8cc50a6140180755e76fac6"
     },
     "nvim-treesitter-context": {
         "branch": "master",
@@ -125,7 +125,7 @@
     },
     "nvim-web-devicons": {
         "branch": "master",
-        "commit": "f6b0920f452bfd7595ee9a9efe5e1ae78e0e2997"
+        "commit": "b8221e42cf7287c4dcde81f232f58d7b947c210d"
     },
     "plenary.nvim": {
         "branch": "master",
@@ -137,7 +137,7 @@
     },
     "render-markdown.nvim": {
         "branch": "main",
-        "commit": "9ab9dade85d8c7d411cc89b592028da3d1b7955a"
+        "commit": "7e6af36c846017122e07e68803bbf95f3c729ca3"
     },
     "statuscol.nvim": {
         "branch": "main",

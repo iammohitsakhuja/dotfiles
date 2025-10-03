@@ -15,7 +15,7 @@ enable-normalization-opposite-orientation-for-nested-containers = false
 accordion-padding = 30
 
 # Possible values: tiles|accordion
-default-root-container-layout = "accordion"
+default-root-container-layout = "tiles"
 
 # Possible values: horizontal|vertical|auto
 # 'auto' means: wide monitor (anything wider than high) gets horizontal orientation,
@@ -335,9 +335,21 @@ if.app-id = "org.RedisLabs.RedisInsight-V2"
 run = "move-node-to-workspace W"
 
 [[on-window-detected]]
-if.app-id = "dbeaver.corp.dbeaver"
+if.app-id = "org.jkiss.dbeaver.core.product"
 run = "move-node-to-workspace W"
 
 [[on-window-detected]]
 if.app-id = "com.utmapp.UTM"
+run = "move-node-to-workspace W"
+
+[[on-window-detected]]
+if.app-id = "com.microsoft.Word"
+run = "move-node-to-workspace W"
+
+[[on-window-detected]]
+if.app-id = "com.microsoft.Excel"
+run = "move-node-to-workspace W"
+
+[[on-window-detected]]
+if.app-id = "com.microsoft.Powerpoint"
 run = "move-node-to-workspace W"
