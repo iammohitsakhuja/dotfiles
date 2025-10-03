@@ -15,7 +15,7 @@ enable-normalization-opposite-orientation-for-nested-containers = false
 accordion-padding = 30
 
 # Possible values: tiles|accordion
-default-root-container-layout = "accordion"
+default-root-container-layout = "tiles"
 
 # Possible values: horizontal|vertical|auto
 # 'auto' means: wide monitor (anything wider than high) gets horizontal orientation,
@@ -226,6 +226,10 @@ run = "move-node-to-workspace N"
 
 # Utilities
 [[on-window-detected]]
+if.app-id = "com.apple.ActivityMonitor"
+run = "move-node-to-workspace U"
+
+[[on-window-detected]]
 if.app-id = "com.apple.finder"
 run = "move-node-to-workspace U"
 
@@ -309,9 +313,17 @@ run = "move-node-to-workspace M"
 if.app-id = "com.apple.Music"
 run = "move-node-to-workspace M"
 
+[[on-window-detected]]
+if.app-id = "com.apple.TV"
+run = "move-node-to-workspace M"
+
+[[on-window-detected]]
+if.app-id = "com.colliderli.iina"
+run = "move-node-to-workspace M"
+
 # Work tools and development infrastructure
 [[on-window-detected]]
-if.app-id = "com.docker.docker"
+if.app-id = "com.electron.dockerdesktop"
 run = "move-node-to-workspace W"
 
 [[on-window-detected]]
@@ -324,4 +336,24 @@ run = "move-node-to-workspace W"
 
 [[on-window-detected]]
 if.app-id = "org.RedisLabs.RedisInsight-V2"
+run = "move-node-to-workspace W"
+
+[[on-window-detected]]
+if.app-id = "org.jkiss.dbeaver.core.product"
+run = "move-node-to-workspace W"
+
+[[on-window-detected]]
+if.app-id = "com.utmapp.UTM"
+run = "move-node-to-workspace W"
+
+[[on-window-detected]]
+if.app-id = "com.microsoft.Word"
+run = "move-node-to-workspace W"
+
+[[on-window-detected]]
+if.app-id = "com.microsoft.Excel"
+run = "move-node-to-workspace W"
+
+[[on-window-detected]]
+if.app-id = "com.microsoft.Powerpoint"
 run = "move-node-to-workspace W"

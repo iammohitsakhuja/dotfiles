@@ -108,7 +108,7 @@ install_tmux_plugins() {
     if [[ -f ${tpm_dir}/bin/install_plugins ]]; then
         print_detail "Installing tmux plugins..."
         # Run plugin installation in a way that works even if tmux server isn't running
-        "${tpm_dir}/bin/install_plugins" 2>/dev/null || {
+        "${tpm_dir}/bin/install_plugins" || {
             print_detail "Plugin installation via script failed, trying alternative method..."
             # Alternative: start a detached tmux session, install plugins, then kill it
             tmux new-session -d -s "tpm_install" 2>/dev/null || true
@@ -133,50 +133,8 @@ install_yazi_plugins() {
     # Make sure yazi is installed
     install_package_if_missing "yazi"
 
-    # Define plugins to install
-    local plugins=(
-        "yazi-rs/plugins:full-border"
-        "yazi-rs/plugins:chmod"
-        "yazi-rs/plugins:smart-enter"
-        "yazi-rs/plugins:zoom"
-        "Lil-Dank/lazygit"
-    )
-
-    # Define flavors/themes to install
-    local flavors=(
-        "yazi-rs/flavors:catppuccin-latte"
-        "yazi-rs/flavors:catppuccin-frappe"
-        "yazi-rs/flavors:catppuccin-macchiato"
-        "yazi-rs/flavors:catppuccin-mocha"
-    )
-
-    # Get currently installed packages to avoid re-adding
-    local installed_packages=$(ya pkg list 2>/dev/null | grep -E "^\s+" | sed 's/^\s*//' | cut -d' ' -f1)
-
-    # Install plugins
+    # Install all plugins via package.toml
     print_detail "Installing Yazi plugins..."
-    for plugin in "${plugins[@]}"; do
-        if echo "${installed_packages}" | grep -q "^${plugin}$"; then
-            print_detail "Plugin already installed: ${plugin}"
-        else
-            print_detail "Installing plugin: ${plugin}"
-            ya pkg add "${plugin}" || print_warning "Failed to (re)install plugin: ${plugin}"
-        fi
-    done
-
-    # Install flavors/themes
-    print_detail "Installing Yazi flavors/themes..."
-    for flavor in "${flavors[@]}"; do
-        if echo "${installed_packages}" | grep -q "^${flavor}$"; then
-            print_detail "Flavor already installed: ${flavor}"
-        else
-            print_detail "Installing flavor: ${flavor}"
-            ya pkg add "${flavor}" || print_warning "Failed to install flavor: ${flavor}"
-        fi
-    done
-
-    # Install all packages (syncs package.toml)
-    print_detail "Installing all packages..."
     ya pkg install
 
     print_success "Yazi plugins and themes installation complete"

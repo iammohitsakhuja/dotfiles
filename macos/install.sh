@@ -24,6 +24,10 @@ require_full_disk_access
 print_success "Full Disk Access confirmed for terminal application"
 print_newline
 
+export_required_variables
+print_success "Required variables exported"
+print_newline
+
 # Get the stow directory (directory containing this script).
 STOW_DIR=$(cd "$(dirname "$0")" && pwd)
 
