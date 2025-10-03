@@ -4,8 +4,8 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
 -- Font settings
-config.font_size = 15
 config.font = wezterm.font_with_fallback({
+    { family = "Cascadia Code" },
     {
         family = "Monaspace Argon",
         -- Enable Monaspace Texture Healing and Coding Ligatures
@@ -13,33 +13,41 @@ config.font = wezterm.font_with_fallback({
     },
     { family = "Symbols Nerd Font" },
 })
+config.font_size = 15
 
-config.color_scheme = "Catppuccin Mocha"
+-- Appearance
+local color_scheme = "Catppuccin Mocha"
+local base = wezterm.color.get_builtin_schemes()[color_scheme]
 
--- Window decoration settings
-config.hide_tab_bar_if_only_one_tab = true
+config.color_scheme = color_scheme -- Provide base color scheme.
+config.colors = base -- Explicitly ensure colors are applied in all elements of the terminal.
+
 config.window_decorations = "RESIZE"
-config.window_padding = {
-    right = 0,
-    left = 4,
-}
+config.hide_tab_bar_if_only_one_tab = true
+config.show_new_tab_button_in_tab_bar = false -- Since we can't theme it.
 
--- WezTerm tabbar settings
 config.window_frame = {
-    font = wezterm.font({ family = "Monaspace Argon", weight = "Bold" }),
-    font_size = 14,
-    active_titlebar_bg = "#13151f",
+    font = wezterm.font({ family = "Cascadia Code", weight = "Bold" }),
+    font_size = 13,
+    active_titlebar_bg = base.cursor_fg,
+    active_titlebar_fg = base.foreground,
+    inactive_titlebar_bg = base.cursor_fg,
+    inactive_titlebar_fg = base.foreground,
+    button_bg = base.cursor_fg,
+    button_fg = base.foreground,
 }
 
-config.colors = {
-    tab_bar = {
-        active_tab = {
-            bg_color = "#1e1e2e",
-            fg_color = "#ffffff",
-        },
-    },
-}
+-- Command Palette
+config.command_palette_bg_color = base.cursor_fg
+config.command_palette_fg_color = base.foreground
+config.command_palette_font = wezterm.font({ family = "Cascadia Code" })
+config.command_palette_font_size = 15
 
+-- Miscellaneous
+config.max_fps = 120
+config.scrollback_lines = 10000
 config.audible_bell = "Disabled"
+config.initial_cols = 150 -- Useful when not using a TWM
+config.initial_rows = 45
 
 return config
