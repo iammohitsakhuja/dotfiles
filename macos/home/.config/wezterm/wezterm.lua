@@ -44,6 +44,7 @@ config.command_palette_font = wezterm.font({ family = "Cascadia Code" })
 config.command_palette_font_size = 15
 
 -- Miscellaneous
+config.front_end = "WebGpu" -- Use Metal/Vulkan/DX12 rather than OpenGL.
 config.max_fps = 120
 config.scrollback_lines = 10000
 config.audible_bell = "Disabled"
