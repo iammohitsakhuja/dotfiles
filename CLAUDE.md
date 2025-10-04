@@ -16,7 +16,6 @@ This is a macOS dotfiles repository with the following structure:
   - `iterm/` - iTerm2 configuration files
   - `themes/` - Color themes for iTerm and Terminal
   - `utils/` - Utility modules (logging, platform detection, package installers, system config)
-  - `extras/` - Additional utilities
 
 **Note**: Repository has transitioned from individual script architecture to utility-based modules located in `macos/utils/`.
 
@@ -79,10 +78,12 @@ Package installation and system configuration are now handled through utility-ba
 Files are installed via symlinks using GNU Stow:
 
 - Dotfiles in `macos/home/` are stowed to `$HOME/`
-- `.config/` subdirectories: nvim/, bat/, lazygit/, yazi/
+- `.config/` subdirectories: nvim/, bat/, lazygit/, yazi/, wezterm/, aerospace/
 - Starship prompt config via `starship.toml`
 - Startup scripts go to `$HOME/.startup_scripts/` (includes greeting.sh)
 - Use `stow` command directly for selective package management
+
+**Terminal Emulator**: WezTerm is the primary terminal emulator (iTerm2 being phased out). WezTerm configuration uses WebGpu renderer for Metal API support.
 
 ## System Configuration Automation
 
@@ -128,7 +129,11 @@ When modifying shell configurations:
 
 ### Key Integration Points
 
-- Starship prompt for enhanced shell experience
+- **Terminal Emulator**: WezTerm (primary), using Catppuccin Mocha theme
+- **Window Manager**: AeroSpace for tiling window management with workspace assignments
+- **Starship prompt** for enhanced shell experience
+- **Neovim**: Configured with lazy.nvim plugin manager (plugins in `macos/home/.config/nvim/lua/plugins/`)
+- **Tmux**: Custom configuration with network speed monitoring
 - Multiple language version managers with proper initialization order
 - Terminal color configuration for tmux compatibility
 - Extensive Homebrew package management with GUI applications
