@@ -553,11 +553,6 @@ configure_macos_preferences() {
     # Disable the annoying line marks.
     defaults write com.apple.Terminal ShowLineMarks -int 0
 
-    # Install iTerm themes (Ayu, Material Design and Argonaut).
-    # open "../themes/iterm-colors/ayu.itermcolors"
-    # open "../themes/iterm-colors/Argonaut.itermcolors"
-    # open "../themes/iterm-colors/Material-Design-Colors.itermcolors"
-
     # Don't display the annoying prompt when quitting iTerm.
     defaults write com.googlecode.iterm2 PromptOnQuit -bool false
 

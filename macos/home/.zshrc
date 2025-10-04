@@ -68,9 +68,6 @@ source ~/.api_keys
 # Required by Homebrew.
 eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
 
-# Integrate Iterm utilities.
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
 # Hook Direnv into shell.
 (( ${+commands[direnv]} )) && emulate zsh -c "$(direnv hook zsh)"
 

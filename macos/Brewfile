@@ -137,12 +137,12 @@ cask "zen"
 # Development tools.
 cask "android-studio"
 cask "docker-desktop"
-cask "iterm2"
 cask "mongodb-compass"
 cask "postman"
 cask "raycast" # Alternative to Spotlight and Alfred with focus on development features.
 cask "redis-insight"
 cask "visual-studio-code"
+cask "wezterm@nightly" # Use nightly build as there hasn't been a stable release in a long time.
 
 # AI applications.
 cask "chatgpt"
