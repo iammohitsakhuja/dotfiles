@@ -1,59 +1,77 @@
-#########################################################
-####### Uncomment to install particular software. #######
-#########################################################
+# Each section is arranged alphabetically.
 
-#########################################################
-# To figure out leaf nodes and their dependencies, run:
-# brew leaves | xargs brew deps --installed --for-each | sed "s/^.*:/$(tput setaf 4)&$(tput sgr0)/"
-#########################################################
-
-# Taps.
-tap "homebrew/cask-fonts"
-tap "homebrew/cask-versions"    # Required to find alternate versions of Casks.
-
-# Install GNU core utilities (those that come with macOS are outdated).
-# Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
+# GNU utilities (replace macOS defaults - those that come with macOS are outdated or have weird behaviors).
+# Make sure to add `$(brew --prefix <package_name>)/libexec/ghubin` to `$PATH`.
 brew "coreutils"
-
-# Install GNU `sed`, overwriting the built-in `sed`.
-# Don’t forget to add `$(brew --prefix gnu-sed)/libexec/gnubin` to `$PATH`.
+brew "findutils"
+brew "gawk"
 brew "gnu-sed"
+brew "gnu-tar"
+brew "gnu-time"
+brew "grep" # GNU grep.
+brew "inetutils" # Includes GNU version of telnet.
 
-# Overrides of default utilities.
-brew "ack"
+# System utility overrides.
+# These may or may not be GNU, but are not included above as they are present in `bin` instead of `libexec/gnubin`.
+# Make sure to add `$(brew --prefix <package_name>)/bin` to `$PATH`.
 brew "bash"
 brew "curl"
-brew "grep"
-brew "less" # Updated version of less.
+brew "gnu-getopt"
+brew "less"
+brew "netcat"
 brew "screen"
-brew "telnet"
-brew "tmux"
-brew "tree"
-brew "vim"
 brew "wget"
 brew "zsh"
 
-# Utilities.
-brew "bat" # Alternative to `cat` command.
-brew "bitwarden-cli" # For using Bitwarden with Raycast.
-brew "diff-so-fancy" # For producing more human readable diffs.
-brew "fd" # Faster alternative to `find` command.
+# Shell & terminal enhancements.
 brew "fzf"
+brew "starship" # Cross-shell prompt.
+brew "tmux"
+brew "zoxide" # Smart cd replacement.
+
+# Version control & development tools.
+brew "gh" # GitHub CLI
 brew "git"
+brew "git-delta" # Modern syntax-highlighting pager for git diffs.
 brew "git-extras"
-brew "highlight"
-brew "htop" # Alternative to `top` command.
-brew "imagemagick" # For conversion of images from one format to another.
-brew "macos-trash"
-brew "mas" # Mac App Store CLI.
-brew "neofetch"
+brew "lazygit" # Terminal UI for git commands.
 brew "neovim"
-brew "ranger"
-brew "the_silver_searcher" # Provides the `ag` command.
+brew "pre-commit"
+brew "tree-sitter-cli" # For use with Neovim
+
+# File & directory management.
+brew "ack"
+brew "eza" # Modern replacement for `ls` command.
+brew "fd" # Faster alternative to `find` command.
+brew "stow" # Symlink manager for dotfiles.
+brew "tree"
+brew "yazi" # Terminal file manager.
+
+# Text processing & search.
+brew "bat" # Alternative to `cat` command.
+brew "highlight"
+brew "jq" # JSON processor.
+brew "ripgrep" # Fast text search tool.
+brew "yq" # YAML processor.
+
+# System monitoring & info.
+brew "btop" # Alternative to `top` and `htop` commands.
+brew "fastfetch" # Faster alternative to neofetch for system info.
+
+# Network tools.
+brew "iperf3" # Network performance measurement tool.
+
+# Media processing.
+brew "ffmpeg"
+brew "imagemagick" # For conversion of images from one format to another.
+brew "poppler" # For PDF previews in Yazi.
+
+# Package managers & utilities.
+brew "mas" # Mac App Store CLI.
+brew "uv" # Python package and project manager.
 
 # Programming languages to be installed without version managers.
-brew "lua" # For use with Vim.
-brew "perl"
+brew "lua" # For use with Neovim.
 
 # Language version managers.
 # We will use these to install the languages, rather than download the
@@ -65,57 +83,112 @@ brew "nodenv"
 brew "pyenv"
 brew "rbenv"
 
-# Docker, Kubernetes and more.
+# Formatting, linting, code quality and analysis tools.
+brew "clang-format"
+brew "goimports"
+brew "google-java-format"
+brew "shellcheck"
+brew "shfmt"
+brew "stylua"
+brew "yamlfmt"
+
+# LSP (Language Server Protocol) servers.
+brew "bash-language-server"
+brew "basedpyright"
+brew "gopls"
+brew "helm-ls"
+brew "jdtls"
+brew "lua-language-server"
+brew "marksman"
+brew "typescript-language-server"
+brew "vscode-langservers-extracted"
+brew "yaml-language-server"
+
+# Container, Kubernetes & cloud tools.
 brew "ctop" # Like `top` command, but for Docker.
 brew "dive" # Inspect Docker images in depth.
 brew "helm"
+brew "k9s"
 brew "kubernetes-cli"
 brew "kubectx"
-brew "k9s"
 brew "lazydocker"
 brew "stern"
 
-# Formatting, linting, code quality and analysis tools.
-brew "clang-format"
-brew "google-java-format"
-brew "pre-commit"
-brew "rust-analyzer"
-brew "shfmt"
+# AI & machine learning.
+brew "ccusage" # Tool for checking Claude Code usage.
+brew "gollama" # TUI for managing Ollama models.
+brew "ollama"
 
-# Other programming related packages.
-brew "kcat"
-brew "redis"
-brew "stdman"
+# Security & privacy.
+brew "bitwarden-cli" # For using Bitwarden with Raycast.
+
+# Media & entertainment.
+brew "yt-dlp"
 
 # Miscellaneous.
-# brew "khanhas/tap/spicetify-cli" # For customising the look of Spotify.
+brew "kcat" # Apache Kafka producer and consumer.
+brew "FelixKratz/formulae/borders" # Borders for Aerospace.
 
-# GUI applications.
-cask "adguard"
-cask "appcleaner"
-cask "arc"
-cask "cloudflare-warp" # Best general purpose VPN.
-cask "daisydisk"
-# cask "deepl"
-cask "downie"
-cask "dropbox"
+# Browsers.
 cask "firefox"
 cask "google-chrome"
-cask "iina" # Much better native alternative to VLC.
+cask "zen"
+
+# Development tools.
+cask "android-studio"
+cask "docker-desktop"
+cask "mongodb-compass"
+cask "postman"
+cask "raycast" # Alternative to Spotlight and Alfred with focus on development features.
+cask "redis-insight"
+cask "visual-studio-code"
+cask "wezterm@nightly" # Use nightly build as there hasn't been a stable release in a long time.
+
+# AI applications.
+cask "chatgpt"
+cask "claude"
+cask "claude-code"
+cask "lm-studio"
+cask "msty"
+
+# Productivity & utilities.
+cask "itsycal" # Utility for displaying calendar events in the menu bar.
+cask "karabiner-elements" # Utility for custom keymaps.
+cask "keyboardcleantool" # Utility for locking keyboard input while cleaning.
+cask "keyclu" # Show keyboard shortcuts for any app
+cask "maccy" # Clipboard manager.
+cask "nikitabobko/tap/aerospace" # Window Manager
+
+# System utilities.
+cask "adguard"
+cask "appcleaner"
+cask "betterdisplay"
+cask "cloudflare-warp" # Best general purpose VPN.
+cask "daisydisk"
 cask "imageoptim"
 cask "istat-menus"
-cask "itsycal" # Utility for displaying calendar events in the menu bar.
-cask "kap"
-cask "maccy" # Clipboard manager.
 cask "macmediakeyforwarder"
-cask "notunes" # Prevent iTunes or Apple Music from launching.
-cask "rectangle" # Alternative to Spectacle as it is no longer maintained.
+cask "mhaeuser/mhaeuser/battery-toolkit" # Battery management tool.
+cask "mos" # Mouse utility.
+cask "neo-network-utility" # Network diagnostic tool.
+cask "the-unarchiver"
+
+# Entertainment & media.
+cask "discord"
+cask "downie"
+cask "iina" # Much better native alternative to VLC.
+cask "lastfm" # Music scrobbling service.
+cask "qbittorrent" # Free and open-source BitTorrent client.
 cask "spotify"
-cask "transmission"
+cask "whatsapp"
+cask "xld" # Audio converter.
+
+# Content & reading.
+cask "netnewswire" # RSS reader.
+cask "notion"
 
 # Quick-look plugins.
 cask "qlcolorcode"
-cask "qlimagesize"
 cask "qlmarkdown"
 cask "qlstephen"
 cask "qlvideo"
@@ -127,32 +200,13 @@ cask "webpquicklook"
 
 # Languages and SDKs.
 cask "flutter"
-cask "temurin17"
-
-# Development utilities.
-# cask "android-studio"
-# cask "datagrip"
-cask "docker"
-# cask "google-cloud-sdk"
-# cask "intellij-idea"
-cask "iterm2"
-cask "mongodb-compass"
-cask "postman"
-cask "raycast" # Alternative to Spotlight and Alfred with focus on development features.
-cask "redisinsight"
-cask "visual-studio-code"
+cask "temurin"
 
 # Fonts.
-cask "font-fira-code"
-cask "font-hack-nerd-font"
-cask "font-meslo-lg-nerd-font" # Our terminal font.
-
-# Mac App Store apps.
-mas "Amphetamine", id: 937984704
-mas "Balance Lock", id: 1019371109 # Fix Mac bug which causes sound balance to shift when using bluetooth headphones.
-mas "Bitwarden", id: 1352778147
-mas "OneDrive", id: 823766827
-mas "PiPifier", id: 1160374471
-mas "Speedtest", id: 1153157709
-mas "Super Agent", id: 1568262835 # Automatically deals with cookie consent on Safari.
-mas "The Unarchiver", id: 425424353
+cask "font-cascadia-code" # Default terminal font
+cask "font-fira-code" # Backup programming/terminal font
+cask "font-ibm-plex-mono" # Postman font
+cask "font-ibm-plex-sans" # Better Sans font for applications that allow us to set it, e.g., Zen/Firefox
+cask "font-monaspace" # Default programming font
+cask "font-source-serif-4" # Better Serif font for applications that allow us to set it, e.g., Zen/Firefox
+cask "font-symbols-only-nerd-font" # Default non-ASCII terminal font

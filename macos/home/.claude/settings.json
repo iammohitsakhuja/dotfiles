@@ -1,0 +1,11 @@
+{
+    "alwaysThinkingEnabled": false,
+    "cleanupPeriodDays": 365,
+    "env": {
+        "DISABLE_AUTOUPDATER": "1"
+    },
+    "statusLine": {
+        "command": "ccusage statusline",
+        "type": "command"
+    }
+}

@@ -1,0 +1,16 @@
+BasedOnStyle: WebKit
+PointerAlignment: Right
+ColumnLimit: 120
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignTrailingComments: true
+AllowShortFunctionsOnASingleLine: Empty
+IndentCaseLabels: true
+---
+Language: Proto
+BasedOnStyle: Google
+AlignConsecutiveDeclarations: true
+AlignConsecutiveAssignments: true
+ColumnLimit: 120
+IndentWidth: 4
+---

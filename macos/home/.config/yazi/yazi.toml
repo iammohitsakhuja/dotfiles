@@ -1,0 +1,11 @@
+[mgr]
+ratio = [3, 6, 8]  # Makes preview panel larger
+sort_by = "natural"
+linemode = "size_and_mtime"
+show_hidden = true
+
+[preview]
+max_width = 3000
+max_height = 2250
+image_filter = "lanczos3"
+image_quality = 90

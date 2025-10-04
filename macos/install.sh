@@ -1,246 +1,243 @@
 #!/usr/bin/env bash
 
-# Helper function to exit the script.
-die() {
-    printf '%s\n' "$1" >&2
-    exit 1
-}
+# Enable strict error handling
+set -e          # Exit on any command failure
+set -o pipefail # Fail on any command in a pipeline
+
+# Source shared utilities
+INSTALL_SCRIPT_DIR=$(dirname "$0")
+source "${INSTALL_SCRIPT_DIR}/utils/logging.sh"
+source "${INSTALL_SCRIPT_DIR}/utils/miscellaneous.sh"
+source "${INSTALL_SCRIPT_DIR}/utils/platform.sh"
+source "${INSTALL_SCRIPT_DIR}/utils/backup.sh"
+source "${INSTALL_SCRIPT_DIR}/utils/bootstrap.sh"
+source "${INSTALL_SCRIPT_DIR}/utils/system_config.sh"
+source "${INSTALL_SCRIPT_DIR}/utils/orchestrator.sh"
+
+# Require Apple Silicon Mac - fail immediately if not supported
+require_apple_silicon
+print_newline
+print_success "macOS environment confirmed and Apple Silicon Mac detected"
+
+# Require Full Disk Access - fail immediately if not available
+require_full_disk_access
+print_success "Full Disk Access confirmed for terminal application"
+print_newline
+
+export_required_variables
+print_success "Required variables exported"
+print_newline
+
+# Get the stow directory (directory containing this script).
+STOW_DIR=$(cd "$(dirname "$0")" && pwd)
+
+# Actual backup directory path (set by backup function)
+BACKUP_DIR=""
 
 # Initialise the option variables.
 # This ensures we are not contaminated by variables from the environment.
-symlink=1 # 0 is for copy, 1 is for symlink.
+backup=1 # 0 is for no backup, 1 is for backup (default).
 email=
 name=
 
 # TODO: Add a verbose option.
 show_help() {
-    echo "Usage: ./install.sh [-h | --help] [-c | -l | --copy | --link] [-e | --email] [-n | --name]"
+    echo "Usage: ./install.sh [-h | --help] [--no-backup] [-e | --email] [-n | --name]"
     echo "       -h, --help     | Show this help."
-    echo "       -l, --link     | Link config files and startup scripts rather than copying (default)."
-    echo "       -c, --copy     | Copy config files and startup scripts rather than linking."
-    echo "       -e, --email    | The email that you would like to use for setting up things like git, ssh e.g. \"abc@example.com\"."
-    echo "       -n, --name     | The name that you would like to use for setting up things like git e.g. \"John Doe\"."
+    echo "       --no-backup    | Skip backing up existing files before stow operations."
+    echo '       -e, --email    | The email that you would like to use for setting up things like git, ssh e.g. "abc@example.com".'
+    echo '       -n, --name     | The name that you would like to use for setting up things like git e.g. "John Doe".'
     echo ""
-    echo "To remove the files that you don't need, simply open this installation script and delete their names."
 }
 
 # Ensure proper usage.
 while :; do
     case $1 in
-    -h | -\? | --help)
-        show_help
-        exit
-        ;;
-    -c | --copy)
-        symlink=0
-        shift
-        ;;
-    -l | --link)
-        symlink=1
-        shift
-        ;;
-    -e | --email)
-        # TODO: Handle the case where the next argument to email is another option e.g. `-e -c`.
-        if [[ "$2" ]]; then
-            email=$2
-            shift 2
-        else
-            die "ERROR: \"--email\" requires a non-empty option argument."
-        fi
-        ;;
-    --email=?*)
-        email=${1#*=} # Delete everything up to "=" and assign the remainder.
-        shift
-        ;;
-    --email=) # Handle the case of an empty --email=.
-        die "ERROR: \"--email\" requires a non-empty option argument."
-        ;;
-    -n | --name)
-        # TODO: Handle the case where the next argument to name is another option e.g. `-n -c`.
-        if [[ "$2" ]]; then
-            name=$2
-            shift 2
-        else
-            die "ERROR: \"--name\" requires a non-empty option argument."
-        fi
-        ;;
-    --name=?*)
-        name=${1#*=} # Delete everything up to "=" and assign the remainder.
-        shift
-        ;;
-    --name=) # Handle the case of an empty --name=.
-        die "ERROR: \"--name\" requires a non-empty option argument."
-        ;;
-    *) # Default case: No more options, so break out of the loop.
-        echo "Symlink = $symlink"
-        echo "Email = $email"
-        echo "Name = $name"
-        echo ""
-        if ! [[ $email ]]; then
-            die "ERROR: \"--email\" is required."
-        fi
-        if ! [[ $name ]]; then
-            die "ERROR: \"--name\" is required."
-        fi
-        break
-        ;;
+        -h | -\? | --help)
+            show_help
+            exit
+            ;;
+        --no-backup)
+            backup=0
+            shift
+            ;;
+        -e | --email)
+            # TODO: Handle the case where the next argument to email is another option e.g. `-e -c`.
+            if [[ -n $2 ]]; then
+                email=$2
+                shift 2
+            else
+                die 'ERROR: "--email" requires a non-empty option argument.'
+            fi
+            ;;
+        --email=?*)
+            email=${1#*=} # Delete everything up to "=" and assign the remainder.
+            shift
+            ;;
+        --email=) # Handle the case of an empty --email=.
+            die 'ERROR: "--email" requires a non-empty option argument.'
+            ;;
+        -n | --name)
+            # TODO: Handle the case where the next argument to name is another option e.g. `-n -c`.
+            if [[ -n $2 ]]; then
+                name=$2
+                shift 2
+            else
+                die 'ERROR: "--name" requires a non-empty option argument.'
+            fi
+            ;;
+        --name=?*)
+            name=${1#*=} # Delete everything up to "=" and assign the remainder.
+            shift
+            ;;
+        --name=) # Handle the case of an empty --name=.
+            die 'ERROR: "--name" requires a non-empty option argument.'
+            ;;
+        *) # Default case: No more options, so break out of the loop.
+            print_header "macOS Dotfiles Installation"
+            print_newline
+            print_subheader "Configuration:"
+            print_config_item "Backup existing files" "$(if [[ ${backup} == 1 ]]; then echo "Yes"; else echo "No"; fi)"
+            print_config_item "Email" "${email}"
+            print_config_item "Name" "${name}"
+            print_config_item "Stow directory" "${STOW_DIR}"
+            print_newline
+
+            # Argument Validations.
+            if [[ -z ${email} ]]; then
+                die 'ERROR: "--email" is required.'
+            fi
+            if [[ -z ${name} ]]; then
+                die 'ERROR: "--name" is required.'
+            fi
+            break
+            ;;
     esac
 done
 
-# Get the current working directory.
-PWD=$(pwd)
-
-# Config files. Remove the files that you don't need.
-CONFIG_FILES=(
-    ".aliases"
-    ".clang-format"
-    ".exports"
-    ".ideavimrc"
-    ".mongoshrc.js"
-    ".p10k.zsh"
-    ".sqliterc"
-    ".tmux.conf"
-    ".vimrc"
-    ".zprofile"
-    ".zshrc"
-)
-
-# Path to Neovim config file.
-NVIM_DIR="$HOME/.config/nvim"
-NVIM_FILE="nvim/init.vim"
-
-# Path to Bat config file.
-BAT_DIR="$HOME/.config/bat"
-BAT_FILE="bat/config"
-
-#### TODO: Add backup for Ranger. ####
-
-# Scripts that will run on the start of each session. Remove the ones that you don't need.
-STARTUP_SCRIPTS=(
-    "greeting.sh"
-)
-
-#### TODO: Backup any previously existing files. ####
-
-if [[ $symlink == 0 ]]; then
-    echo "Copying config files into $HOME/ ..."
-    for file in "${CONFIG_FILES[@]}"; do
-        echo "Copying $PWD/config/$file into $HOME/"
-        cp $PWD/config/$file $HOME
-    done
-
-    # Neovim.
-    if ! [[ -d $NVIM_DIR ]]; then
-        mkdir -p $NVIM_DIR
-    fi
-    cp $PWD/config/$NVIM_FILE $NVIM_DIR
-
-    # Bat.
-    if ! [[ -d $BAT_DIR ]]; then
-        mkdir -p $BAT_DIR
-    fi
-    cp $PWD/config/$BAT_FILE $BAT_DIR
-
-    echo "Copying startup scripts into $HOME/ ..."
-    for file in "${STARTUP_SCRIPTS[@]}"; do
-        echo "Copying $PWD/startup_scripts/$file into $HOME/"
-        cp $PWD/startup_scripts/$file $HOME
-    done
-else
-    echo "Linking config files into $HOME/ ..."
-    for file in "${CONFIG_FILES[@]}"; do
-        echo "Symlinking $PWD/config/$file into $HOME/"
-        ln -s $PWD/config/$file $HOME
-    done
-
-    # Neovim.
-    if ! [[ -d $NVIM_DIR ]]; then
-        mkdir -p $NVIM_DIR
-    fi
-    ln -s $PWD/config/$NVIM_FILE $NVIM_DIR
-
-    # Bat.
-    if ! [[ -d $BAT_DIR ]]; then
-        mkdir -p $BAT_DIR
-    fi
-    ln -s $PWD/config/$BAT_FILE $BAT_DIR
-
-    echo "Linking startup scripts into $HOME/ ..."
-    for file in "${STARTUP_SCRIPTS[@]}"; do
-        echo "Symlinking $PWD/startup_scripts/$file into $HOME/"
-        ln -s $PWD/startup_scripts/$file $HOME
-    done
+# Other Validations.
+# Validate we found the correct directory with home/ package
+if [[ ! -d "${STOW_DIR}/home" ]]; then
+    die "ERROR: Could not locate home/ directory for stow operations."
 fi
 
-# Ask for administrator password.
-echo -e "\nInstallation requires administrator authentication..."
+print_header "Authentication & Dependencies"
+print_newline
+
+# Ask for administrator password upfront (we will need to ask for this again explicitly once after homebrew operations are done).
+print_action "Requesting administrator authentication (1 of 2)..."
 sudo -v
 
-# Keep `sudo` alive i.e. update existing time stamp until `./install.sh` has
-# finished.
-while true; do
-    sudo -n true
-    sleep 60
-    kill -0 "$$" || exit
-done 2>/dev/null &
+# Start the sudo keepalive.
+sudo_keepalive
 
-# Make terminal authentication easier by using Touch ID instead of password, if Mac supports it.
-# TODO: Add support for Intel Macs with Touch ID.
-if [[ $(uname -m) == 'arm64' ]]; then
-    # Backup the original file.
-    sudo cp /etc/pam.d/sudo /etc/pam.d/sudo.backup
-    sudo sed -i "3i auth       sufficient     pam_tid.so" /etc/pam.d/sudo
+print_success "Administrator authentication confirmed"
+print_newline
+
+# Install essential dependencies before proceeding
+print_step 1 6 "Checking and installing essential dependencies"
+print_newline
+bootstrap_dependencies
+print_newline
+print_success "Essential dependencies are ready!"
+print_newline
+
+print_header "Software Installation"
+print_newline
+
+# Install software.
+print_step 2 6 "Installing Software"
+print_newline
+install_all_packages "${STOW_DIR}"
+BREW_PREFIX=$(brew --prefix)
+print_success "Software installation complete!"
+print_newline
+
+print_header "Configuration Management"
+print_newline
+
+# Ask for administrator password upfront (we will need to ask for this again explicitly once after homebrew operations are done).
+print_action "Requesting administrator authentication (2 of 2)..."
+sudo -v
+
+# Start the sudo keepalive.
+sudo_keepalive
+
+print_success "Administrator authentication confirmed"
+print_newline
+
+# Backup existing files before stow operations
+print_step 3 6 "Configuration management"
+print_newline
+
+BACKUP_DIR=$(backup_existing_files "${backup}" "${STOW_DIR}")
+
+# Stow will handle all dotfile symlinking.
+# The home/ directory structure mirrors the $HOME directory structure.
+# Do not fold the tree.
+print_action "Linking dotfiles into ${HOME}/ using stow..."
+stow -d "${STOW_DIR}" -t "${HOME}" --no-folding home --verbose=1
+print_success "Dotfiles linked successfully!"
+print_newline
+
+print_header "Plugin Installation"
+print_newline
+
+# Install all plugins now that config files are available
+print_step 4 6 "Plugin installation"
+print_newline
+
+install_all_plugins
+print_newline
+
+print_header "System Configuration"
+print_newline
+
+# Configure system and user settings
+print_step 5 6 "System configuration"
+print_newline
+
+print_action "Configuring system settings..."
+configure_system_settings "${email}" "${name}" "${STOW_DIR}" "${BREW_PREFIX}"
+print_success "System configuration completed"
+print_newline
+
+print_header "Installation Complete!"
+print_newline
+
+print_step 6 6 "Installation summary"
+print_newline
+
+print_success "Essential dependencies installed (Homebrew, Stow, Command Line Tools)"
+print_success "Core software and applications installed (Homebrew, Mac App Store)"
+print_success "Language environments installed (Go, Node, Python, Ruby, Rust)"
+if [[ ${backup} == 1 ]]; then
+    print_success "Existing dotfiles backed up (if any conflicts found)"
+else
+    print_success "Backup skipped as requested"
 fi
-
-# File to store any API keys in.
-touch ~/.api_keys
-
-# Configure git.
-git config --global user.email "$email"
-git config --global user.name "$name"
-git config --global core.editor "nvim"
-git config --global core.filemode false
-git config --global status.showuntrackedfiles all
-git config --global status.submodulessummary 1
-git config --global pull.rebase false
-git config --global init.defaultBranch main
-git config --global push.autoSetupRemote true
-
-# Configure `diff-so-fancy` with git.
-git config --global core.pager "diff-so-fancy | less --tabs=4 -RF"
-git config --global interactive.diffFilter "diff-so-fancy --patch"
-git config --global color.ui true
-
-git config --global color.diff-highlight.oldNormal "red bold"
-git config --global color.diff-highlight.oldHighlight "red bold 52"
-git config --global color.diff-highlight.newNormal "green bold"
-git config --global color.diff-highlight.newHighlight "green bold 22"
-
-git config --global color.diff.meta "11"
-git config --global color.diff.frag "magenta bold"
-git config --global color.diff.func "146 bold"
-git config --global color.diff.commit "yellow bold"
-git config --global color.diff.old "red bold"
-git config --global color.diff.new "green bold"
-git config --global color.diff.whitespace "red reverse"
-
-# Create SSH key pair.
-ssh-keygen -t ed25519 -C "$email"
-
-# Run installation scripts.
-echo -e "\nRunning installation scripts..."
-
-echo "Installing packages..."
-bash $PWD/scripts/packages.sh
-echo -e "Packages installed successfully!\n"
-
-# Configure Tmux colors.
-echo "Configuring Tmux colors..."
-tic -x $PWD/config/terminfo/xterm-256color-italic.terminfo
-tic -x $PWD/config/terminfo/tmux-256color.terminfo
-echo -e "Tmux colors configured successfully!\n"
-
-# Configure MacOS settings.
-echo "Configuring MacOS settings..."
-bash $PWD/scripts/macos.sh
-echo -e "MacOS settings configured successfully!\n"
+print_success "Dotfiles linked to home directory"
+print_success "Application plugins installed (Shell, Vim, Tmux, Yazi)"
+print_success "Touch ID configured for sudo authentication"
+print_success "Git configured with user credentials (${name} <${email}>)"
+print_success "SSH key pair generated (if not already present)"
+print_success "API keys storage file created"
+print_success "Terminal colors configured for Tmux"
+print_success "macOS system preferences applied"
+print_newline
+print_celebration "Your macOS environment is now ready!"
+print_newline
+echo "Next steps:"
+echo "  • Add your SSH public key to GitHub/GitLab"
+echo "  • Restart your terminal or run 'source ~/.zshrc'"
+echo "  • Review installed applications and configure as needed"
+echo "  • Use 'prefix + I' to install new tmux plugins (prefix key is Ctrl-a)"
+print_newline
+echo "SSH public key location: ${HOME}/.ssh/id_ed25519.pub"
+if [[ -n ${BACKUP_DIR} ]]; then
+    echo "Dotfiles backup location: ${BACKUP_DIR}"
+else
+    echo "Dotfiles backup location: No backup created"
+fi
+print_newline
+echo "======================================================================"

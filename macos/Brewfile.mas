@@ -1,0 +1,10 @@
+# vim: ft=ruby
+
+# Mac App Store apps.
+mas "Amphetamine", id: 937984704
+mas "Bitwarden", id: 1352778147 # Use Mac App Store Version for being able to use TouchID and Safari extension
+mas "Perplexity", id: 6714467650
+mas "PiPifier", id: 1160374471
+mas "Speedtest", id: 1153157709
+mas "Super Agent", id: 1568262835 # Automatically deals with cookie consent on Safari.
+mas "Xcode", id: 497799835

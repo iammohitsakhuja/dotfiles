@@ -1,0 +1,168 @@
+#!/usr/bin/env bash
+
+# Homebrew.
+BREW_PREFIX="$(brew --prefix)"
+export HOMEBREW_AUTO_UPDATE_SECS=86400 # 24 hours. Make it less annoying.
+export HOMEBREW_NO_ENV_HINTS=1         # Disable environment variable hints.
+
+# Use XDG directories for applications that support it.
+# Useful for applications like Neovim, lazygit, and tmux
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
+
+# Go related things.
+export GOENV_ROOT="${HOME}/.goenv"
+PATH="${GOENV_ROOT}/bin:${PATH}"
+
+# PATH Configuration: GNU Utilities Override
+#
+# Prioritize GNU/Linux utilities installed via Homebrew over macOS BSD versions.
+# Benefits: Linux compatibility, GNU features, better cross-platform script portability.
+#
+# Note: May cause behavior differences from standard macOS. For compatibility issues,
+# use explicit BSD versions from /usr/bin/ when needed.
+for d in "${BREW_PREFIX}"/opt/*/libexec/gnubin; do
+    [[ -d "${d}" ]] && PATH="${d}:${PATH}"
+done
+
+# Add other keg-only homebrew utilities to PATH that don't have `libexec/gnubin` directories.
+PATH="${BREW_PREFIX}/opt/curl/bin:${PATH}"       # Curl.
+PATH="${BREW_PREFIX}/opt/gnu-getopt/bin:${PATH}" # GNU getopt.
+PATH="${BREW_PREFIX}/opt/libressl/bin:${PATH}"   # LibreSSL.
+PATH="${BREW_PREFIX}/sbin:${PATH}"               # Other homebrew formulae.
+
+# Required by Claude Code.
+PATH="${PATH}:${HOME}/.local/bin"
+
+# Added by LM Studio CLI (lms)
+PATH="${PATH}:${HOME}/.lmstudio/bin"
+# End of LM Studio CLI section
+
+# Android development settings.
+export ANDROID_HOME=${HOME}/Library/Android/sdk
+PATH="${PATH}:${ANDROID_HOME}/emulator"
+PATH="${PATH}:${ANDROID_HOME}/tools"
+PATH="${PATH}:${ANDROID_HOME}/tools/bin"
+PATH="${PATH}:${ANDROID_HOME}/platform-tools"
+PATH="${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin"
+
+# Add system frameworks and developer tools to PATH.
+PATH="${PATH}:/System/Library/Frameworks:/Library/Developer"
+export PATH
+
+# Control Zsh history.
+export HISTSIZE=100000
+export SAVEHIST=${HISTSIZE}
+export HIST_STAMPS="%F %T"
+export HISTCONTROL=ignoreboth
+setopt EXTENDED_HISTORY
+
+# Make Neovim the default editor.
+export EDITOR="nvim"
+
+# Ensure that any other Terminal multiplexer (like Tmux) does not mess up the
+# coloring.
+export TERM="xterm-256color-italic"
+
+# Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
+export PYTHONIOENCODING="UTF-8"
+
+# You may need to manually set your Locale.
+export LC_ALL="en_US.UTF-8"
+
+# FZF Themes.
+FZF_CATPPUCCIN_LATTE_COLORS=" \
+--color=bg+:#CCD0DA,bg:#EFF1F5,spinner:#DC8A78,hl:#D20F39 \
+--color=fg:#4C4F69,header:#D20F39,info:#8839EF,pointer:#DC8A78 \
+--color=marker:#7287FD,fg+:#4C4F69,prompt:#8839EF,hl+:#D20F39 \
+--color=selected-bg:#BCC0CC \
+--color=border:#9CA0B0,label:#4C4F69"
+
+FZF_CATPPUCCIN_FRAPPE_COLORS=" \
+    --color=bg+:#414559,bg:#303446,spinner:#F2D5CF,hl:#E78284 \
+    --color=fg:#C6D0F5,header:#E78284,info:#CA9EE6,pointer:#F2D5CF \
+    --color=marker:#BABBF1,fg+:#C6D0F5,prompt:#CA9EE6,hl+:#E78284 \
+    --color=selected-bg:#51576D \
+    --color=border:#737994,label:#C6D0F5"
+
+FZF_CATPPUCCIN_MACCHIATO_COLORS=" \
+--color=bg+:#363A4F,bg:#24273A,spinner:#F4DBD6,hl:#ED8796 \
+--color=fg:#CAD3F5,header:#ED8796,info:#C6A0F6,pointer:#F4DBD6 \
+--color=marker:#B7BDF8,fg+:#CAD3F5,prompt:#C6A0F6,hl+:#ED8796 \
+--color=selected-bg:#494D64 \
+--color=border:#6E738D,label:#CAD3F5"
+
+FZF_CATPPUCCIN_MOCHA_COLORS=" \
+--color=bg+:#313244,bg:#1E1E2E,spinner:#F5E0DC,hl:#F38BA8 \
+--color=fg:#CDD6F4,header:#F38BA8,info:#CBA6F7,pointer:#F5E0DC \
+--color=marker:#B4BEFE,fg+:#CDD6F4,prompt:#CBA6F7,hl+:#F38BA8 \
+--color=selected-bg:#45475A \
+--color=border:#6C7086,label:#CDD6F4"
+
+# You might want to comment this line out if it produces extra output, which may cause problems with other utilities
+# that use FZF.
+export FZF_DEFAULT_OPTS="--preview \"bat --style=numbers --color=always --line-range :500 {}\" ${FZF_CATPPUCCIN_MOCHA_COLORS}"
+
+# Find hidden files with FZF.
+export FZF_DEFAULT_COMMAND='fd --hidden --exclude .git'
+export FZF_CTRL_T_COMMAND='fd --hidden --exclude .git'
+
+# Lazygit theme configuration using external theme files.
+# To switch themes, change the second file path to any theme from ~/.config/lazygit/themes/{flavor}/{accent}.yml
+export LG_CONFIG_FILE="${XDG_CONFIG_HOME}/lazygit/config.yml,${XDG_CONFIG_HOME}/lazygit/themes/mocha/peach.yml"
+
+# Update path for Manpages.
+#
+# Homebrew installs manpages in at least these two ways (that I know of):
+# 1. `$(brew --prefix <package_name>)/libexec/gnuman` for each package that **can conflict** with macOS' versions.
+# 2. `$(brew --prefix)/share/man` with all the rest - think of it like Homebrew global.
+#
+# We prioritize these manpages as we prioritize homebrew commands too.
+# View all manpages via `man -a <manpage>` and list them with `man -aw <manpage>`.
+for d in "${BREW_PREFIX}"/opt/*/libexec/gnuman; do
+    [[ -d "${d}" ]] && MANPATH="${d}:${MANPATH}"
+done
+
+# Now, include the main Homebrew manpath too
+export MANPATH="${BREW_PREFIX}/share/man:${MANPATH}"
+
+############################# Colors for Manpages #############################
+
+# Colors.
+default=$(tput sgr0)
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+purple=$(tput setaf 5)
+orange=$(tput setaf 9)
+
+# Less colors for man pages.
+export PAGER=less
+# Begin blinking.
+export LESS_TERMCAP_mb=${red}
+# Begin bold.
+export LESS_TERMCAP_md=${orange}
+# End mode.
+export LESS_TERMCAP_me=${default}
+# End standout-mode.
+export LESS_TERMCAP_se=${default}
+# Begin standout-mode - info box.
+export LESS_TERMCAP_so=${purple}
+# End underline.
+export LESS_TERMCAP_ue=${default}
+# Begin underline.
+export LESS_TERMCAP_us=${green}
+
+############################# Miscellaneous #############################
+
+# Disable Virtualenv's prompt.
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+# Disable security audit of folders that `oh-my-zsh` uses for completions.
+# In particular, they are:
+#   /usr/local/share/zsh
+#   /usr/local/share/zsh/site-functions
+# This command can help as well:
+#   compaudit | xargs chmod g-w,o-w
+# export ZSH_DISABLE_COMPFIX=true

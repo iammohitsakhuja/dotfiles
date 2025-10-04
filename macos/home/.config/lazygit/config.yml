@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
+
+gui:
+  nerdFontsVersion: "3"
+  showFileIcons: true
+  sidePanelWidth: 0.25
+  scrollHeight: 30 # Default is too less
+
+git:
+  # Better diff context
+  diffContextSize: 4
+
+  paging:
+    colorArg: always
+    # Set lazygit specific options for delta.
+    # If you want to customize the delta options for lazygit, you can do so here.
+    # For example, if you want to hide the file headers and hunk headers,
+    # you can use the following options:
+    #
+    #   pager: delta --paging=never --hunk-header-style=omit --file-header-style=omit
+    pager: delta --paging=never
