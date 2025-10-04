@@ -137,7 +137,6 @@ cask "zen"
 # Development tools.
 cask "android-studio"
 cask "docker-desktop"
-cask "iterm2"
 cask "mongodb-compass"
 cask "postman"
 cask "raycast" # Alternative to Spotlight and Alfred with focus on development features.
