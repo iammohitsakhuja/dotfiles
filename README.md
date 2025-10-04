@@ -1,27 +1,27 @@
-# Mohit's Dotfiles
+# 🖥️ Mohit's Dotfiles
 
 Modern macOS development environment with unified theming and professional tooling.
 
-## Features
+## 🎯 Features
 
-- **Neovim**: Lazy.nvim with LSP, formatters, linters, and AI integration
-- **Tmux**: Custom status bar with session persistence and network monitoring
-- **WezTerm**: WebGpu-powered terminal with ligature support
-- **AeroSpace**: Tiling window manager with workspace assignments
-- **Unified Theming**: Catppuccin across all CLI tools
-- **Modern CLI Tools**: eza, yazi, btop, fastfetch, starship, and more
-- **Development Tooling**: Pre-commit hooks, ShellCheck, formatters, LSP servers
-- **XDG Compliant**: Organized configuration structure
+- **🎨 Neovim**: Lazy.nvim with LSP, formatters, linters, and AI integration
+- **📊 Tmux**: Custom status bar with session persistence and network monitoring
+- **💻 WezTerm**: WebGpu-powered terminal with ligature support
+- **🪟 AeroSpace**: Tiling window manager with workspace assignments
+- **🌈 Unified Theming**: Catppuccin across all CLI tools
+- **🛠️ Modern CLI Tools**: eza, yazi, btop, fastfetch, starship, and more
+- **🔧 Development Tooling**: Pre-commit hooks, ShellCheck, formatters, LSP servers
+- **📁 XDG Compliant**: Organized configuration structure
 
-## Requirements
+## 📋 Requirements
 
 - Apple Silicon Mac (enforced by install script)
 - macOS 15+
 - Homebrew (installed automatically if missing)
 
-## Installation
+## 🚀 Installation
 
-**Warning:** Review the code before running. These are personal configurations tailored to my workflow.
+**⚠️ Warning:** Review the code before running. These are personal configurations tailored to my workflow.
 
 ```bash
 sudo chmod u+x macos/install.sh
@@ -42,7 +42,7 @@ The script will:
 - Configure macOS system defaults
 - Install dotfiles via GNU Stow
 
-## Restoring from Backup
+## 🔄 Restoring from Backup
 
 If installation fails or you want to revert to previous configs:
 
@@ -54,7 +54,7 @@ If installation fails or you want to revert to previous configs:
 
 **Note:** Restores configuration files only, not entire system state.
 
-## Managing Dotfile Links
+## 🔗 Managing Dotfile Links
 
 After adding new dotfiles or manually updating configs in `macos/home/`:
 
@@ -68,7 +68,7 @@ stow -D -d "/path/to/dotfiles/macos" -t "$HOME" --no-folding home --verbose 1
 
 Replace `/path/to/dotfiles` with your repository path.
 
-## Key Tools
+## 🧰 Key Tools
 
 | Category | Tool | Purpose |
 |----------|------|---------|
@@ -81,14 +81,14 @@ Replace `/path/to/dotfiles` with your repository path.
 | Multiplexer | Tmux | Session management |
 | System Monitor | btop | Resource monitoring |
 
-## Configuration
+## ⚙️ Configuration
 
 All configurations use XDG directories (`~/.config/`) and are managed via GNU Stow from `macos/home/`.
 
-## Development
+## 🧪 Development
 
 For safe testing without affecting your system, see [Development Environment Guide](docs/development-environment.md) for UTM-based VM setup.
 
-## Credits
+## 💝 Credits
 
 Inspired by dotfiles from the community. Themed with [Catppuccin](https://github.com/catppuccin/catppuccin).
