@@ -15,8 +15,6 @@ max_line_length = 120
 
 # Shell scripts (shfmt will use these settings)
 [*.{sh,bash,zsh}]
-indent_style = space
-indent_size = 4
 switch_case_indent = true
 
 # YAML files typically use 2 spaces
