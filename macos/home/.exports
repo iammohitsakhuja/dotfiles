@@ -64,7 +64,7 @@ export EDITOR="nvim"
 
 # Ensure that any other Terminal multiplexer (like Tmux) does not mess up the
 # coloring.
-export TERM="xterm-256color-italic"
+export TERM="xterm-256color"
 
 # Make Python use UTF-8 encoding for output to stdin, stdout, and stderr.
 export PYTHONIOENCODING="UTF-8"
