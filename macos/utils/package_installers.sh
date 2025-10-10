@@ -217,3 +217,24 @@ install_rust_packages() {
     print_success "Rust environment installation complete"
     print_newline
 }
+
+# Install Java tools and dependencies.
+install_java_tools() {
+    print_action "Installing Java tools and dependencies"
+
+    # Create directory for Java tools
+    local java_dir="${XDG_DATA_HOME:-${HOME}/.local/share}/java"
+    mkdir -p "${java_dir}"
+
+    # Download Lombok
+    print_detail "Downloading Lombok JAR..."
+    if curl -L https://projectlombok.org/downloads/lombok.jar -o "${java_dir}/lombok.jar"; then
+        print_detail "Lombok JAR installed successfully"
+    else
+        print_warning "Failed to download Lombok JAR"
+        return 1
+    fi
+
+    print_success "Java tools installation complete"
+    print_newline
+}

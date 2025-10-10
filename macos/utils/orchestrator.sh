@@ -58,6 +58,7 @@ install_all_packages() {
     install_python_packages
     install_ruby_gems
     install_rust_packages
+    install_java_tools
     print_success "Language Environment installation complete"
 }
 
