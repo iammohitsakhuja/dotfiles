@@ -200,7 +200,7 @@ cask "webpquicklook"
 
 # Languages and SDKs.
 cask "flutter"
-cask "temurin"
+cask "temurin@25"
 
 # Fonts.
 cask "font-cascadia-code" # Default terminal font
