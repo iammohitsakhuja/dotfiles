@@ -96,6 +96,11 @@ return {
         end,
     },
 
+    {
+        "AndreM222/copilot-lualine",
+        cond = vim.g.ai_mode == "copilot",
+    },
+
     -- Statusline
     {
         "nvim-lualine/lualine.nvim",

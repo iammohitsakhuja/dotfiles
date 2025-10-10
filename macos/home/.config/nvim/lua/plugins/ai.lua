@@ -3,7 +3,7 @@
 return {
     {
         "milanglacier/minuet-ai.nvim",
-        enabled = vim.g.ai_mode == "minimal",
+        cond = vim.g.ai_mode == "minimal",
         event = { "BufReadPost", "InsertEnter" },
         opts = {
             cmp = {
@@ -46,7 +46,7 @@ return {
         version = "*",
         cmd = "CopilotChat",
         build = "make tiktoken",
-        enabled = vim.g.ai_mode == "copilot",
+        cond = vim.g.ai_mode == "copilot",
         dependencies = {
             "nvim-lua/plenary.nvim",
         },
@@ -131,7 +131,7 @@ return {
         cmd = "Copilot",
         build = ":Copilot auth",
         event = { "BufReadPost", "InsertEnter" },
-        enabled = vim.g.ai_mode == "copilot",
+        cond = vim.g.ai_mode == "copilot",
         dependencies = {
             {
                 "copilotlsp-nvim/copilot-lsp",
