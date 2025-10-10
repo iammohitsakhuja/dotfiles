@@ -91,6 +91,9 @@ return {
                 override_vim_notify = true,
                 window = {
                     winblend = 0,
+                    avoid = {
+                        "NvimTree",
+                    },
                 },
             },
         },
