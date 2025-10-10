@@ -115,7 +115,6 @@ brew "lazydocker"
 brew "stern"
 
 # AI & machine learning.
-brew "ccusage" # Tool for checking Claude Code usage.
 brew "gollama" # TUI for managing Ollama models.
 brew "ollama"
 
