@@ -111,6 +111,11 @@ if type zoxide >> /dev/null; then
     eval "$(zoxide init zsh)"
 fi
 
+# Setup pnpm shell completions.
+if type pnpm >> /dev/null; then
+    eval "$(pnpm completion zsh)"
+fi
+
 # Enable Starship Prompt.
 # This should be placed as the last command in the initialization.
 eval "$(starship init zsh)"
