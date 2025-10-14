@@ -72,6 +72,12 @@ export PYTHONIOENCODING="UTF-8"
 # You may need to manually set your Locale.
 export LC_ALL="en_US.UTF-8"
 
+# Docker related exports.
+export LIMA_HOME="${XDG_CONFIG_HOME}/lima"
+export COLIMA_HOME="${XDG_CONFIG_HOME}/colima"
+export DOCKER_HOST="unix://${COLIMA_HOME}/default/docker.sock"
+export DOCKER_CONFIG="${XDG_CONFIG_HOME}/docker"
+
 # FZF Themes.
 FZF_CATPPUCCIN_LATTE_COLORS=" \
 --color=bg+:#CCD0DA,bg:#EFF1F5,spinner:#DC8A78,hl:#D20F39 \

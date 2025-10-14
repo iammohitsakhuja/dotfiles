@@ -107,6 +107,10 @@ brew "yaml-language-server"
 # Container, Kubernetes & cloud tools.
 brew "ctop" # Like `top` command, but for Docker.
 brew "dive" # Inspect Docker images in depth.
+brew "docker"
+brew "docker-buildx"
+brew "docker-completion"
+brew "docker-compose"
 brew "helm"
 brew "k9s"
 brew "kubernetes-cli"
@@ -135,7 +139,6 @@ cask "zen"
 
 # Development tools.
 cask "android-studio"
-cask "docker-desktop"
 cask "mongodb-compass"
 cask "postman"
 cask "raycast" # Alternative to Spotlight and Alfred with focus on development features.
