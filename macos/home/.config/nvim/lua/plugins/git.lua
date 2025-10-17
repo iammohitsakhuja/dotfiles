@@ -57,8 +57,8 @@ return {
                     { buffer = bufnr, desc = "Preview hunk inline" }
                 )
                 vim.keymap.set("n", "<leader>hb", function()
-                    gitsigns.blame_line({ full = true })
-                end, { buffer = bufnr, desc = "Blame line" })
+                    gitsigns.blame()
+                end, { buffer = bufnr, desc = "Blame buffer" })
                 vim.keymap.set(
                     "n",
                     "<leader>tb",

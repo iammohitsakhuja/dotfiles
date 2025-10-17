@@ -19,7 +19,7 @@ autocmd("TextYankPost", {
 -- Close certain windows with 'q'
 autocmd("FileType", {
     group = general,
-    pattern = { "help", "lspinfo", "man", "qf", "query", "notify" },
+    pattern = { "gitsigns-blame", "help", "lspinfo", "man", "qf", "query", "notify" },
     callback = function(event)
         vim.bo[event.buf].buflisted = false
         vim.keymap.set("n", "q", ":close<CR>", { buffer = event.buf, silent = true })
