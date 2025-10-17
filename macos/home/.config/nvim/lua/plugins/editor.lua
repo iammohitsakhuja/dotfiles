@@ -190,6 +190,13 @@ return {
         ---@type trouble.Config
         opts = {
             ---@type trouble.Window.opts
+            win = {
+                size = {
+                    height = 18,
+                    width = 50,
+                },
+            },
+            ---@type trouble.Window.opts
             preview = {
                 border = "none",
             },
