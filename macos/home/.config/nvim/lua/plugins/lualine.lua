@@ -50,14 +50,14 @@ return {
                     { "mode", fmt = trunc(80, 4, nil, true) },
                 },
                 lualine_b = {
-                    { "b:gitsigns_head", icon = "" },
+                    { "b:gitsigns_head", icon = "" },
                     {
                         "diff",
                         source = diff_source,
                         symbols = {
-                            added = " ",
-                            modified = " ",
-                            removed = " ",
+                            added = " ",
+                            modified = " ",
+                            removed = " ",
                         },
                     },
                     {
@@ -89,7 +89,7 @@ return {
                         function()
                             return require("auto-session.lib").current_session_name(true)
                         end,
-                        icon = "",
+                        icon = "",
                         fmt = trunc(100, 20),
                     },
                     "lsp_status",

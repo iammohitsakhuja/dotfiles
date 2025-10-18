@@ -22,8 +22,8 @@ return {
                 width = 0.4,
             },
             headers = {
-                user = "  " .. user .. " ",
-                assistant = "  Copilot ",
+                user = "  " .. user .. " ",
+                assistant = "  Copilot ",
             },
         }
     end,
