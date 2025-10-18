@@ -1,5 +1,8 @@
+-- Base config taken from `neovim/nvim-lspconfig`
+
 ---@type vim.lsp.Config
 return {
+    cmd = { "bash-language-server", "start" },
     settings = {
         bashIde = {
             -- Do not scan entire home or higher directories for files.
@@ -23,4 +26,6 @@ return {
             },
         },
     },
+    filetypes = { "bash", "sh" },
+    root_markers = { ".git" },
 }
