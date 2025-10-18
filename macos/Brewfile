@@ -92,18 +92,6 @@ brew "shfmt"
 brew "stylua"
 brew "yamlfmt"
 
-# LSP (Language Server Protocol) servers.
-brew "bash-language-server"
-brew "basedpyright"
-brew "gopls"
-brew "helm-ls"
-brew "jdtls"
-brew "lua-language-server"
-brew "marksman"
-brew "typescript-language-server"
-brew "vscode-langservers-extracted"
-brew "yaml-language-server"
-
 # Container, Kubernetes & cloud tools.
 brew "ctop" # Like `top` command, but for Docker.
 brew "dive" # Inspect Docker images in depth.

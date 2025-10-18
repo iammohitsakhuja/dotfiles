@@ -3,9 +3,6 @@
 return {
     "j-hui/fidget.nvim",
     event = "VeryLazy",
-    dependencies = {
-        "neovim/nvim-lspconfig",
-    },
     opts = {
         ---@module "fidget.notification"
         ---@type Config

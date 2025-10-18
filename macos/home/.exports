@@ -165,8 +165,6 @@ export LESS_TERMCAP_us=${green}
 # Disable Virtualenv's prompt.
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
-export JDTLS_JVM_ARGS="-javaagent:${XDG_DATA_HOME}/java/lombok.jar"
-
 # Disable security audit of folders that `oh-my-zsh` uses for completions.
 # In particular, they are:
 #   /usr/local/share/zsh

@@ -36,7 +36,8 @@ install_go_packages() {
     # Install Go packages
     if command -v go &>/dev/null; then
         print_detail "Installing Go packages..."
-        go install github.com/docker/docker-language-server/cmd/docker-language-server@latest
+        # Uncomment the following line, and add package names to install global packages.
+        # go install <package_name>
         print_detail "Go packages installed successfully"
     else
         print_warning "Go command not found! Skipping Go packages installation..."
@@ -76,7 +77,8 @@ install_node_packages() {
     # Install global NPM packages
     if command -v npm &>/dev/null; then
         print_detail "Installing global NPM packages..."
-        npm install -g intelephense
+        # Uncomment the following line, and add package names to install global packages.
+        # npm install -g <package_name>
         print_detail "NPM packages installed successfully"
     else
         print_warning "npm command not found! Skipping NPM packages installation..."
@@ -116,7 +118,7 @@ install_python_packages() {
     # Install Pip packages
     if command -v pip3 &>/dev/null; then
         print_detail "Installing Pip packages..."
-        pip3 install black gitlint neovim virtualenv
+        pip3 install neovim virtualenv
         print_detail "Pip packages installed successfully"
     else
         print_warning "Pip3 not found! Skipping Pip packages installation..."
@@ -197,7 +199,7 @@ install_rust_packages() {
     # Install rustup components
     if command -v rustup &>/dev/null; then
         print_detail "Installing rustup components..."
-        rustup component add rust-src rust-analyzer
+        rustup component add rust-src
         print_detail "Rustup components installed successfully"
     else
         print_warning "Rustup command not found! Skipping rustup components installation..."
@@ -207,7 +209,8 @@ install_rust_packages() {
     # Install Rust packages via Cargo
     if command -v cargo &>/dev/null; then
         print_detail "Installing Rust packages..."
-        cargo install protols
+        # Uncomment the following line, and add package names to install global packages.
+        # cargo install <package_name>
         print_detail "Rust packages installed successfully"
     else
         print_warning "Cargo command not found! Skipping Rust packages installation..."
