@@ -7,7 +7,7 @@ return {
         "onsails/lspkind.nvim",
         "xzbdmw/colorful-menu.nvim",
     },
-    version = "1.6.0",
+    version = "*",
     -- Important to initialize it before `InsertEnter` so that Neovim doesn't report incorrect capabilities to the LSP server.
     event = "VeryLazy",
     ---@module "blink.cmp"
