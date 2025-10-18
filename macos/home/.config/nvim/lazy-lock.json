@@ -77,7 +77,11 @@
     },
     "mason-lspconfig.nvim": {
         "branch": "main",
-        "commit": "6bdb14f230de0904229ec367b410fb817e59b072"
+        "commit": "2304ff65ecc8cb2afc2484de3e2ed9a407edf0b9"
+    },
+    "mason-nvim-dap.nvim": {
+        "branch": "main",
+        "commit": "c971971f881d1be90252d281f384054d9d53e745"
     },
     "mason.nvim": {
         "branch": "main",
@@ -99,6 +103,18 @@
         "branch": "master",
         "commit": "51cf7c995ed1eb6642aecf19067ee634fa1b6ba2"
     },
+    "nvim-dap": {
+        "branch": "master",
+        "commit": "6782b097af2417a4c3e33849b0a26ae2188bd7ea"
+    },
+    "nvim-dap-ui": {
+        "branch": "master",
+        "commit": "cf91d5e2d07c72903d052f5207511bf7ecdb7122"
+    },
+    "nvim-dap-virtual-text": {
+        "branch": "master",
+        "commit": "fbdb48c2ed45f4a8293d0d483f7730d24467ccb6"
+    },
     "nvim-jdtls": {
         "branch": "master",
         "commit": "380ac148f989e1291aac002dc959ecc68c5243d0"
@@ -110,6 +126,10 @@
     "nvim-lspconfig": {
         "branch": "master",
         "commit": "ac98db2f9f06a56498ec890a96928774eae412c3"
+    },
+    "nvim-nio": {
+        "branch": "master",
+        "commit": "21f5324bfac14e22ba26553caf69ec76ae8a7662"
     },
     "nvim-surround": {
         "branch": "main",
