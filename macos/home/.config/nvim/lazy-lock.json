@@ -61,7 +61,7 @@
     },
     "lazy.nvim": {
         "branch": "main",
-        "commit": "1ea3c4085785f460fb0e46d2fe1ee895f5f9e7c1"
+        "commit": "6c3bda4aca61a13a9c63f1c1d1b16b9d3be90d7a"
     },
     "lazydev.nvim": {
         "branch": "main",
@@ -97,7 +97,7 @@
     },
     "nvim-lspconfig": {
         "branch": "master",
-        "commit": "cc2f5f2fa28d240574808e78847978ed6ef20d2a"
+        "commit": "ac98db2f9f06a56498ec890a96928774eae412c3"
     },
     "nvim-surround": {
         "branch": "main",
