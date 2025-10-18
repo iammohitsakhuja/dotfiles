@@ -23,6 +23,10 @@ opt.inccommand = "split" -- Show preview of incremental commands in a separate p
 opt.splitbelow = true -- Split new windows below the current one
 opt.splitright = true -- Vertical split new windows to the right of the current one
 
+-- Highlight the line number on the cursor line.
+opt.cursorline = true
+opt.cursorlineopt = "number"
+
 -- Folding
 opt.foldcolumn = "1"
 opt.foldenable = true
@@ -49,6 +53,7 @@ opt.softtabstop = 4 -- Idk. Need this for consistent tab behavior I guess.
 opt.autoindent = true -- Keep auto-indentation. Default is also `true`. Added for brevity.
 opt.smartindent = true -- Allow smart-indentation for C-like programs that use `{`.
 opt.linebreak = true -- During wrapping, break lines at word boundaries rather than breaking in the middle of a word.
+opt.wrap = false
 
 -- Files and buffers
 opt.encoding = "utf-8"
