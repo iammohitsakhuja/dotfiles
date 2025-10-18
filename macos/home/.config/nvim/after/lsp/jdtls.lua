@@ -1,4 +1,5 @@
 -- Base config taken from `neovim/nvim-lspconfig`
+
 local function get_jdtls_cache_dir()
     return vim.fn.stdpath("cache") .. "/jdtls"
 end
@@ -46,7 +47,19 @@ if mason_registry_ok and mason_registry.is_installed("jdtls") then
     local InstallLocation = require("mason-core.installer.InstallLocation")
     local jdtls_path = InstallLocation.global():package("jdtls")
     local lombok_path = jdtls_path .. "/lombok.jar"
-    vim.uv.os_setenv("JDTLS_JVM_ARGS", "-javaagent:" .. lombok_path)
+
+    -- Get existing JDTLS_JVM_ARGS from environment.
+    local existing_args = os.getenv("JDTLS_JVM_ARGS") or ""
+
+    -- Build new args with max memory and Lombok agent.
+    local new_args = "-Xmx1g -javaagent:" .. lombok_path
+
+    -- Append existing args if they exist.
+    if existing_args ~= "" then
+        new_args = new_args .. " " .. existing_args
+    end
+
+    vim.uv.os_setenv("JDTLS_JVM_ARGS", new_args)
 end
 
 ---@type vim.lsp.Config

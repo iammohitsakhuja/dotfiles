@@ -5,6 +5,8 @@ return {
     dependencies = {
         "j-hui/fidget.nvim",
     },
+    ---@module "mason"
+    ---@type MasonSettings
     opts = {
         ui = {
             icons = {
