@@ -13,7 +13,15 @@ return {
         },
         virtualtext = {
             auto_trigger_ft = { "*" },
-            auto_trigger_ignore_ft = { "TelescopePrompt" },
+            auto_trigger_ignore_ft = {
+                "dapui_scopes",
+                "dapui_breakpoints",
+                "dapui_stacks",
+                "dapui_watches",
+                "dap-repl",
+                "dapui_console",
+                "TelescopePrompt",
+            },
             keymap = {
                 accept = "<M-;>",
                 prev = "<M-[>",
