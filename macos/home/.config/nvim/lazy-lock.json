@@ -13,7 +13,7 @@
     },
     "blink.cmp": {
         "branch": "main",
-        "commit": "bae4bae0eedd1fa55f34b685862e94a222d5c6f8"
+        "commit": "327fff91fe6af358e990be7be1ec8b78037d2138"
     },
     "bufferline.nvim": {
         "branch": "main",
@@ -73,7 +73,7 @@
     },
     "lualine.nvim": {
         "branch": "master",
-        "commit": "b8c23159c0161f4b89196f74ee3a6d02cdc3a955"
+        "commit": "3946f0122255bc377d14a59b27b609fb3ab25768"
     },
     "minuet-ai.nvim": {
         "branch": "main",
@@ -85,7 +85,7 @@
     },
     "nvim-autopairs": {
         "branch": "master",
-        "commit": "23320e75953ac82e559c610bec5a90d9c6dfa743"
+        "commit": "7a2c97cccd60abc559344042fefb1d5a85b3e33b"
     },
     "nvim-colorizer.lua": {
         "branch": "master",
@@ -97,7 +97,7 @@
     },
     "nvim-lspconfig": {
         "branch": "master",
-        "commit": "cc2f5f2fa28d240574808e78847978ed6ef20d2a"
+        "commit": "ac98db2f9f06a56498ec890a96928774eae412c3"
     },
     "nvim-surround": {
         "branch": "main",
@@ -109,7 +109,7 @@
     },
     "nvim-treesitter": {
         "branch": "main",
-        "commit": "3ab4f2d2d20be55874e2eb575145c6928d7d7d0e"
+        "commit": "846d51137b8cbc030ab94edf9dc33968ddcdb195"
     },
     "nvim-treesitter-context": {
         "branch": "master",
@@ -137,7 +137,7 @@
     },
     "render-markdown.nvim": {
         "branch": "main",
-        "commit": "d53856423be5ef3c267d26ee261b0981b372f718"
+        "commit": "475d3ad8cae486b0df6fc6050cf5b5ea1de42db8"
     },
     "statuscol.nvim": {
         "branch": "main",

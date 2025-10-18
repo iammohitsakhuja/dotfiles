@@ -1,0 +1,63 @@
+---@module "lazy"
+---@type LazySpec
+return {
+    "neovim/nvim-lspconfig",
+    event = "VeryLazy",
+    dependencies = {
+        "folke/lazydev.nvim",
+        "saghen/blink.cmp", -- Make sure `blink.cmp` is present before setting up more configs.
+    },
+    config = function()
+        -- Configure diagnostics
+        vim.diagnostic.config({
+            virtual_text = {
+                prefix = "●",
+                spacing = 2,
+            },
+            signs = {
+                -- Use empty strings to hide sign text, keeping only colored line numbers
+                text = {
+                    [vim.diagnostic.severity.ERROR] = "",
+                    [vim.diagnostic.severity.WARN] = "",
+                    [vim.diagnostic.severity.HINT] = "",
+                    [vim.diagnostic.severity.INFO] = "",
+                },
+                -- Color line numbers based on diagnostic severity
+                numhl = {
+                    [vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
+                    [vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
+                    [vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
+                    [vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
+                },
+            },
+            underline = true,
+            update_in_insert = false,
+            severity_sort = true,
+            float = {
+                focusable = false,
+                source = true,
+                header = "",
+                prefix = "",
+            },
+        })
+
+        -- Enable LSP servers
+        vim.lsp.enable("bashls")
+        vim.lsp.enable("basedpyright")
+        vim.lsp.enable("cssls")
+        vim.lsp.enable("dartls")
+        vim.lsp.enable("docker_language_server")
+        vim.lsp.enable("gopls")
+        vim.lsp.enable("helm_ls")
+        vim.lsp.enable("html")
+        vim.lsp.enable("intelephense")
+        vim.lsp.enable("jdtls")
+        vim.lsp.enable("jsonls")
+        vim.lsp.enable("lua_ls")
+        vim.lsp.enable("marksman")
+        vim.lsp.enable("protols")
+        vim.lsp.enable("rust_analyzer")
+        vim.lsp.enable("ts_ls")
+        vim.lsp.enable("yamlls")
+    end,
+}
