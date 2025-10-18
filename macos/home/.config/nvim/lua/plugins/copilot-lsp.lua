@@ -2,6 +2,7 @@
 ---@type LazySpec
 return {
     "copilotlsp-nvim/copilot-lsp",
+    cond = vim.g.ai_mode == "copilot",
     ---@module "copilot-lsp"
     ---@type copilotlsp.config
     opts = {
