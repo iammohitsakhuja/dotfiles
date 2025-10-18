@@ -55,7 +55,12 @@ return {
                     follow = true, -- Follow symlinks
                 },
             },
-            extensions = {}, -- Add any extension specific configuration here.
+            extensions = {
+                -- Add any extension specific configuration here.
+                ["ui-select"] = {
+                    require("telescope.themes").get_dropdown({}),
+                },
+            },
         })
 
         -- Load extensions after Telescope itself has been setup.
