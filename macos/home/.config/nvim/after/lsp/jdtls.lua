@@ -100,11 +100,25 @@ return {
             signatureHelp = {
                 enabled = true,
             },
+            referencesCodeLens = {
+                enabled = true,
+            },
+            implementationCodeLens = "all",
             contentProvider = {
                 preferred = "fernflower",
             },
             completion = {
                 enabled = true,
+                favoriteStaticMembers = {
+                    "org.junit.Assert.*",
+                    "org.junit.Assume.*",
+                    "org.junit.jupiter.api.Assertions.*",
+                    "org.junit.jupiter.api.Assumptions.*",
+                    "org.junit.jupiter.api.DynamicContainer.*",
+                    "org.junit.jupiter.api.DynamicTest.*",
+                    "org.mockito.Mockito.*",
+                    "org.mockito.ArgumentMatchers.*",
+                },
             },
             configuration = {
                 runtimes = {
@@ -112,6 +126,31 @@ return {
                         name = "JavaSE-25",
                         path = "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home",
                     },
+                },
+            },
+            maven = {
+                downloadSources = true,
+                updateSnapshots = false,
+            },
+            eclipse = {
+                downloadSources = true,
+            },
+            import = {
+                gradle = {
+                    enabled = true,
+                },
+                maven = {
+                    enabled = true,
+                },
+            },
+            cleanup = {
+                actionsOnSave = {
+                    "addOverride",
+                    "invertEquals",
+                    "lambdaExpression",
+                    "instanceofPatternMatch",
+                    "stringConcatToTextBlock",
+                    "switchExpression",
                 },
             },
             sources = {
@@ -123,9 +162,16 @@ return {
             symbols = {
                 includeSourceMethodDeclarations = true,
             },
+            inlayHints = {
+                parameterNames = {
+                    enabled = "literals",
+                },
+            },
             codeGeneration = {
+                generateComments = true,
+                insertionLocation = "beforeCursor",
                 hashCodeEquals = {
-                    useJava7Objects = false,
+                    useJava7Objects = true,
                     useInstanceOf = true,
                 },
                 useBlocks = true,

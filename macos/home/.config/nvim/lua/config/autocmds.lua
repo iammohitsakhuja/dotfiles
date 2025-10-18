@@ -93,6 +93,30 @@ autocmd("LspAttach", {
             vim.diagnostic.setqflist,
             vim.tbl_extend("force", opts, { desc = "Open diagnostics in quickfix list" })
         )
+
+        -- Enable code lens if supported by the client.
+        local client = vim.lsp.get_client_by_id(event.data.client_id)
+        if client and client.supports_method("textDocument/codeLens") then
+            -- Refresh code lens on buffer enter and after save.
+            vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+                buffer = event.buf,
+                callback = function()
+                    vim.lsp.codelens.refresh({ bufnr = event.buf })
+                end,
+            })
+
+            -- Initial code lens refresh.
+            vim.lsp.codelens.refresh({ bufnr = event.buf })
+        end
+
+        -- Enable inlay hints (disabled by default).
+        vim.lsp.inlay_hint.enable(false, { bufnr = event.buf })
+
+        -- Toggle inlay hints.
+        vim.keymap.set("n", "<leader>th", function()
+            local bufnr = vim.api.nvim_get_current_buf()
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
+        end, vim.tbl_extend("force", opts, { desc = "Toggle inlay hints" }))
     end,
 })
 
