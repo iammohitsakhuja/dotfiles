@@ -166,10 +166,10 @@ return {
                             fmt = trunc(100, 20),
                         },
                         "lsp_status",
-                        vim.g.ai_mode == "copilot" and "copilot" or {
+                        vim.g.ai_mode == "copilot" and "copilot" or vim.g.ai_mode == "minimal" and {
                             require("minuet.lualine"),
                             display_on_idle = true,
-                        },
+                        } or "",
                         "encoding",
                         "fileformat",
                         "filetype",
