@@ -44,6 +44,10 @@ return {
                 globalstatus = true, -- Have a single statusline instead of one per each split
                 component_separators = { left = "│", right = "│" },
                 section_separators = { left = "", right = "" },
+                ignore_focus = {
+                    "mason",
+                    "NvimTree", -- Prevent updating Lualine status when focus switches to `NvimTree`
+                },
             },
             sections = {
                 lualine_a = {
