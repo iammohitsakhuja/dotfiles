@@ -24,7 +24,7 @@ return {
             },
         })
 
-        -- Automatically open and close dap-ui when debugging sessions start and end.
+        -- Automatically open dap-ui when debugging sessions start.
         dap.listeners.before.attach["dapui_config"] = function()
             dapui.open()
         end
@@ -34,12 +34,9 @@ return {
         dap.listeners.after.event_initialized["dapui_config"] = function()
             dapui.open()
         end
-        dap.listeners.before.event_terminated["dapui_config"] = function()
-            dapui.close()
-        end
-        dap.listeners.before.event_exited["dapui_config"] = function()
-            dapui.close()
-        end
+        -- Note: We don't auto-close on event_terminated or event_exited to allow reviewing
+        -- test results, output, and final variable states after successful execution.
+        -- Users can manually close with <leader>dut or q in the DAP UI windows.
     end,
     keys = {
         {
