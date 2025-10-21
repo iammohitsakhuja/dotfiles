@@ -45,6 +45,8 @@ return {
         "NvimTreeFindFile",
         "NvimTreeOpen",
         "NvimTreeClose",
+        "NvimTreeRefresh",
+        "NvimTreeCollapseKeepBuffers",
     },
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
@@ -91,7 +93,10 @@ return {
         } or nil,
     },
     keys = {
-        -- Add keymap for toggling NvimTree
-        { "<C-o>", "<cmd>NvimTreeFindFileToggle<CR>", mode = "n", desc = "Toggle Nvim Tree" },
+        { "<leader>et", "<cmd>NvimTreeFindFileToggle<CR>", mode = "n", desc = "Toggle Explorer & Find File" },
+        { "<leader>ef", "<cmd>NvimTreeFocus<CR>", mode = "n", desc = "Move Focus to Explorer" },
+        { "<leader>er", "<cmd>NvimTreeRefresh<CR>", mode = "n", desc = "Refresh Explorer" },
+        { "<leader>e+", "<cmd>NvimTreeFindFile<CR>", mode = "n", desc = "Find File in Explorer" },
+        { "<leader>e-", "<cmd>NvimTreeCollapseKeepBuffers<CR>", mode = "n", desc = "Collapse Explorer" },
     },
 }

@@ -21,6 +21,7 @@ return {
             { "<leader>c", group = "Conform or Trouble" },
             { "<leader>d", group = "Debug" },
             { "<leader>du", group = "Debug UI" },
+            { "<leader>e", group = "Explorer (Nvim Tree)" },
             { "<leader>f", group = "Telescope" },
             { "<leader>h", group = "Git" },
             { "<leader>s", group = "Session or Treesitter Swap" },
