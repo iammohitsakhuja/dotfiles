@@ -86,3 +86,11 @@ vim.g.ai_mode = "minimal"
 
 -- Disable mappings created automatically by tmux navigator, as we use our own mappings.
 vim.g.tmux_navigator_no_mappings = 1
+
+-- Disable all providers for languages that we don't use. This speeds up startup time and reduces memory usage.
+-- Note: If you need to use a language, you can remove the corresponding line below.
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_python_provider = 0
+vim.g.loaded_python3_provider = 0
