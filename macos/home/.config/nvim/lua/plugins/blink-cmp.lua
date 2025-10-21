@@ -81,7 +81,7 @@ return {
             },
 
             menu = {
-                max_height = 12, -- Actual max no. of completion items is 2 less than this.
+                max_height = 14, -- Actual max no. of completion items is 2 less than this.
                 draw = {
                     gap = 2, -- Column gap
                     columns = {
