@@ -62,8 +62,51 @@ if mason_registry_ok and mason_registry.is_installed("jdtls") then
     vim.uv.os_setenv("JDTLS_JVM_ARGS", new_args)
 end
 
+local function add_mason_package_jars(bundles, package_name, jar_pattern)
+    if mason_registry_ok and mason_registry.is_installed(package_name) then
+        local InstallLocation = require("mason-core.installer.InstallLocation")
+        local package_path = InstallLocation.global():package(package_name)
+        local jars = vim.split(vim.fn.glob(package_path .. "/" .. jar_pattern), "\n")
+        vim.list_extend(bundles, jars)
+    end
+end
+
+local function get_jdtls_plugin_bundles()
+    local bundles = {}
+
+    -- Add java-debug bundles.
+    add_mason_package_jars(bundles, "java-debug-adapter", "extension/server/com.microsoft.java.debug.plugin-*.jar")
+
+    -- Add java-test bundles.
+    add_mason_package_jars(bundles, "java-test", "extension/server/*.jar")
+
+    return bundles
+end
+
 ---@type vim.lsp.Config
 return {
+    ---@param client vim.lsp.Client
+    ---@param bufnr number
+    on_attach = function(client, bufnr)
+        -- Register buffer-local test commands.
+        vim.api.nvim_buf_create_user_command(bufnr, "JdtTestClass", function()
+            require("jdtls").test_class()
+        end, {
+            desc = "Run/debug all tests in current class",
+        })
+
+        vim.api.nvim_buf_create_user_command(bufnr, "JdtTestNearest", function()
+            require("jdtls").test_nearest_method()
+        end, {
+            desc = "Run/debug test method under cursor",
+        })
+
+        vim.api.nvim_buf_create_user_command(bufnr, "JdtTestPick", function()
+            require("jdtls").pick_test()
+        end, {
+            desc = "Pick a test to run/debug",
+        })
+    end,
     ---@param dispatchers? vim.lsp.rpc.Dispatchers
     ---@param config vim.lsp.ClientConfig
     cmd = function(dispatchers, config)
@@ -90,7 +133,9 @@ return {
     filetypes = { "java" },
     root_markers = vim.fn.has("nvim-0.11.3") == 1 and { root_markers1, root_markers2 }
         or vim.list_extend(root_markers1, root_markers2),
-    init_options = {},
+    init_options = {
+        bundles = get_jdtls_plugin_bundles(),
+    },
     settings = {
         java = {
             autobuild = {
@@ -99,6 +144,9 @@ return {
             maxConcurrentBuilds = 8,
             signatureHelp = {
                 enabled = true,
+            },
+            references = {
+                includeDecompiledSources = true,
             },
             referencesCodeLens = {
                 enabled = true,
@@ -119,6 +167,13 @@ return {
                     "org.mockito.Mockito.*",
                     "org.mockito.ArgumentMatchers.*",
                 },
+                filteredTypes = {
+                    "com.sun.*",
+                    "io.micrometer.shaded.*",
+                    "java.awt.*",
+                    "jdk.*",
+                    "sun.*",
+                },
             },
             configuration = {
                 runtimes = {
@@ -127,6 +182,7 @@ return {
                         path = "/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home",
                     },
                 },
+                updateBuildConfiguration = "interactive",
             },
             maven = {
                 downloadSources = true,
@@ -170,6 +226,9 @@ return {
             codeGeneration = {
                 generateComments = true,
                 insertionLocation = "beforeCursor",
+                toString = {
+                    template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
+                },
                 hashCodeEquals = {
                     useJava7Objects = true,
                     useInstanceOf = true,

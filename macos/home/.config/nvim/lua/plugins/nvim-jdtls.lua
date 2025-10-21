@@ -8,5 +8,8 @@ return {
     dependencies = {
         "neovim/nvim-lspconfig",
         "mason-org/mason-lspconfig.nvim",
+        -- This is required for `nvim-jdtls` to automatically setup the `java` debug adapter with `nvim-dap`,
+        -- if the latter is available. Hence, we ensure that it's loaded before `nvim-jdtls`.
+        "nvim-dap",
     },
 }
