@@ -12,6 +12,13 @@ return {
         suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "~/Desktop", "/" },
         pre_save_cmds = {
             "NvimTreeClose",
+            -- Close DAP UI before saving session to avoid restoration issues.
+            function()
+                local ok, dapui = pcall(require, "dapui")
+                if ok then
+                    dapui.close()
+                end
+            end,
         },
     },
     keys = {
