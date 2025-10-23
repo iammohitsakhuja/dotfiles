@@ -100,7 +100,7 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "caps_lock"
+                                        "key_code": "right_option"
                                     }
                                 ],
                                 "type": "basic"

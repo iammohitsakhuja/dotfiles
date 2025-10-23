@@ -16,10 +16,10 @@ keymap("n", "<leader>bD", ":bdelete!<CR>", opts)
 keymap("n", "<leader>nh", ":nohl<CR>", opts)
 
 -- Move lines up/down
-keymap("n", "<C-j>", ":m .+1<CR>==", opts)
-keymap("n", "<C-k>", ":m .-2<CR>==", opts)
-keymap("v", "<C-j>", ":m '>+1<CR>gv=gv", opts)
-keymap("v", "<C-k>", ":m '<-2<CR>gv=gv", opts)
+keymap("n", "<A-j>", ":m .+1<CR>==", opts)
+keymap("n", "<A-k>", ":m .-2<CR>==", opts)
+keymap("v", "<A-j>", ":m '>+1<CR>gv=gv", opts)
+keymap("v", "<A-k>", ":m '<-2<CR>gv=gv", opts)
 
 -- Start of line
 keymap("n", "0", "^", opts)

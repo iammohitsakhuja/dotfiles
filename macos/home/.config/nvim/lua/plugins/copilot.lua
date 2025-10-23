@@ -26,9 +26,10 @@ return {
             debounce = 250, -- Increase debounce to reduce annoyance of suggestions.
             keymap = {
                 accept = "<M-;>",
+                accept_line = "<M-l>",
                 prev = "<M-[>",
                 next = "<M-]>",
-                dismiss = "<C-]>",
+                dismiss = "<M-e>",
             },
         },
 

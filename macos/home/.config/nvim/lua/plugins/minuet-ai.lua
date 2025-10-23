@@ -24,9 +24,10 @@ return {
             },
             keymap = {
                 accept = "<M-;>",
+                accept_line = "<M-l>",
                 prev = "<M-[>",
                 next = "<M-]>",
-                dismiss = "<C-]>",
+                dismiss = "<M-e>",
             },
             show_on_completion_menu = false,
         },
