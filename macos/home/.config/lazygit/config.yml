@@ -8,7 +8,7 @@ gui:
 
 git:
   # Better diff context
-  diffContextSize: 4
+  diffContextSize: 8
 
   pagers:
     # Set lazygit specific options for delta.
