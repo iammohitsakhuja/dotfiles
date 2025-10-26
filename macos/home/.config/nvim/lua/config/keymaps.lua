@@ -9,8 +9,12 @@ keymap("n", "<leader>w", ":write<CR>", opts)
 keymap("n", "<leader>W", ":write!<CR>", opts)
 
 -- Close buffers
-keymap("n", "<leader>bd", ":bdelete<CR>", opts)
-keymap("n", "<leader>bD", ":bdelete!<CR>", opts)
+keymap("n", "<leader>bd", function()
+    MiniBufremove.delete(0)
+end, opts)
+keymap("n", "<leader>bD", function()
+    MiniBufremove.delete(0, true)
+end, opts)
 
 -- Clear search highlighting
 keymap("n", "<leader>nh", ":nohl<CR>", opts)
