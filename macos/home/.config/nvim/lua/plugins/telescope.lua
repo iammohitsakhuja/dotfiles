@@ -52,6 +52,11 @@ return {
                     find_command = { "fd", "--type", "f", "--hidden", "--exclude", ".git" },
                     follow = true, -- Follow symlinks
                 },
+                lsp_workspace_symbols = {
+                    path_display = { "smart" },
+                    fname_width = 35, -- Increase filename column width.
+                    symbol_width = 30, -- Increase symbol column width.
+                },
             },
             extensions = {
                 -- Add any extension specific configuration here.
@@ -78,7 +83,8 @@ return {
         { "<leader>fr", "<cmd>Telescope registers<cr>", desc = "Telescope list vim registers" },
         { "<leader>fk", "<cmd>Telescope keymaps<cr>", desc = "Telescope list keymaps" },
         { "<leader>flr", "<cmd>Telescope lsp_references<cr>", desc = "Telescope list LSP references" },
-        { "<leader>fli", "<cmd>Telescope lsp_implementations<cr>", desc = "Telescope goto LSP implementation" },
-        { "<leader>fld", "<cmd>Telescope lsp_definitions<cr>", desc = "Telescope goto LSP defintion" },
+        { "<leader>fli", "<cmd>Telescope lsp_implementations<cr>", desc = "Telescope goto LSP implementations" },
+        { "<leader>fld", "<cmd>Telescope lsp_definitions<cr>", desc = "Telescope goto LSP definitions" },
+        { "<leader>flw", "<cmd>Telescope lsp_workspace_symbols<cr>", desc = "Telescope LSP workspace symbols" },
     },
 }
