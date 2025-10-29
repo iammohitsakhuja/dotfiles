@@ -51,4 +51,10 @@ config.audible_bell = "Disabled"
 config.initial_cols = 150 -- Useful when not using a TWM
 config.initial_rows = 45
 
+-- Keymappings.
+config.keys = {
+    -- Useful for TUIs, such as Claude Code.
+    { key = "Enter", mods = "SHIFT", action = wezterm.action({ SendString = "\x1b\r" }) },
+}
+
 return config
