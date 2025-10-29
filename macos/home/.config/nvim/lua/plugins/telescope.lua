@@ -57,6 +57,9 @@ return {
                     fname_width = 35, -- Increase filename column width.
                     symbol_width = 30, -- Increase symbol column width.
                 },
+                commands = {
+                    theme = "dropdown",
+                },
             },
             extensions = {
                 -- Add any extension specific configuration here.
