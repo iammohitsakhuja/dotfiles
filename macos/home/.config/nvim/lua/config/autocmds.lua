@@ -97,8 +97,8 @@ autocmd("LspAttach", {
         -- Enable code lens if supported by the client.
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         if client and client.supports_method("textDocument/codeLens") then
-            -- Refresh code lens on buffer enter and after save.
-            vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
+            -- Refresh code lens only after save to avoid performance issues on large codebases.
+            vim.api.nvim_create_autocmd("BufWritePost", {
                 buffer = event.buf,
                 callback = function()
                     vim.lsp.codelens.refresh({ bufnr = event.buf })
@@ -107,6 +107,11 @@ autocmd("LspAttach", {
 
             -- Initial code lens refresh.
             vim.lsp.codelens.refresh({ bufnr = event.buf })
+
+            -- Manual code lens refresh keymap.
+            vim.keymap.set("n", "<leader>lcr", function()
+                vim.lsp.codelens.refresh({ bufnr = event.buf })
+            end, vim.tbl_extend("force", opts, { desc = "LSP Codelens Refresh" }))
         end
 
         -- Enable inlay hints (disabled by default).
