@@ -80,6 +80,10 @@ local function get_jdtls_plugin_bundles()
     -- Add java-test bundles.
     add_mason_package_jars(bundles, "java-test", "extension/server/*.jar")
 
+    -- Add Spring Boot Tools bundles via spring-boot.nvim plugin.
+    -- This plugin manages the Spring Boot Language Server and JDTLS extensions.
+    vim.list_extend(bundles, require("spring_boot").java_extensions())
+
     return bundles
 end
 

@@ -171,6 +171,10 @@
         "branch": "main",
         "commit": "475d3ad8cae486b0df6fc6050cf5b5ea1de42db8"
     },
+    "spring-boot.nvim": {
+        "branch": "main",
+        "commit": "dff5fc9ff38dc60514caf95d57b0dbcd4da9028a"
+    },
     "statuscol.nvim": {
         "branch": "main",
         "commit": "c46172d0911aa5d49ba5f39f4351d1bb7aa289cc"
