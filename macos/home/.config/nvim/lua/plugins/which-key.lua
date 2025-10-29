@@ -27,6 +27,8 @@ return {
             { "<leader>fS", group = "Telescope Spring" },
             { "<leader>h", group = "Git" },
             { "<leader>J", group = "Java" },
+            { "<leader>l", group = "LSP" },
+            { "<leader>lc", group = "LSP Code Lens" },
             { "<leader>s", group = "Session or Treesitter Swap" },
             { "<leader>t", group = "Toggle" },
             { "<leader>T", group = "Test" },
