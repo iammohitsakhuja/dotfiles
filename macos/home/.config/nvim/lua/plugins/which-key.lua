@@ -23,6 +23,8 @@ return {
             { "<leader>du", group = "Debug UI" },
             { "<leader>e", group = "Explorer (Nvim Tree)" },
             { "<leader>f", group = "Telescope" },
+            { "<leader>fl", group = "Telescope LSP" },
+            { "<leader>fS", group = "Telescope Spring" },
             { "<leader>h", group = "Git" },
             { "<leader>J", group = "Java" },
             { "<leader>s", group = "Session or Treesitter Swap" },
