@@ -3,5 +3,10 @@
     "cleanupPeriodDays": 365,
     "env": {
         "DISABLE_AUTOUPDATER": "1"
+    },
+    "statusLine": {
+        "command": "npx -y ccstatusline@latest",
+        "padding": 0,
+        "type": "command"
     }
 }

@@ -1,0 +1,93 @@
+{
+    "colorLevel": 3,
+    "compactThreshold": 60,
+    "flexMode": "full-minus-40",
+    "globalBold": false,
+    "inheritSeparatorColors": false,
+    "lines": [
+        [
+            {
+                "color": "hex:74C7EC",
+                "id": "6bdc708d-4199-4ae6-b6dc-aba6f833013d",
+                "rawValue": false,
+                "type": "model"
+            },
+            {
+                "color": "hex:9399B2",
+                "id": "d3209ccc-157e-4c3c-983a-8109e54feb04",
+                "type": "separator"
+            },
+            {
+                "color": "hex:CBA6F7",
+                "id": "f9866946-01f8-4e3a-9171-a004f2574a77",
+                "rawValue": false,
+                "type": "git-branch"
+            },
+            {
+                "id": "1e746f42-fc7c-4500-95c5-7aa145fc58e3",
+                "type": "flex-separator"
+            },
+            {
+                "color": "hex:BAC2DE",
+                "id": "f0acc6e3-640a-4b60-805a-9ba3819d0996",
+                "rawValue": true,
+                "type": "context-length"
+            },
+            {
+                "color": "hex:9399B2",
+                "id": "8982c2ed-4a06-4798-87ff-5aae2ea9eca4",
+                "type": "separator"
+            },
+            {
+                "color": "hex:89DCEB",
+                "id": "965ddc30-3cf1-4816-8598-b7c309dffd17",
+                "metadata": {
+                    "inverse": "true"
+                },
+                "rawValue": true,
+                "type": "context-percentage"
+            },
+            {
+                "color": "hex:9399B2",
+                "id": "f3bffc30-0b6f-4128-bb65-ecf60a3f3468",
+                "type": "separator"
+            },
+            {
+                "bold": false,
+                "color": "hex:FAB387",
+                "id": "218a6ffd-5650-4811-9c4c-517b5aef624d",
+                "metadata": {
+                    "display": "time"
+                },
+                "rawValue": true,
+                "type": "block-timer"
+            },
+            {
+                "color": "hex:9399B2",
+                "id": "d3a9f234-3615-40cb-a91e-3271f7b148a1",
+                "type": "separator"
+            },
+            {
+                "color": "hex:A6E3A1",
+                "id": "7a1dea43-ad3e-4dc2-9dfd-e6f9dcd12cf1",
+                "rawValue": true,
+                "type": "session-cost"
+            }
+        ],
+        [],
+        []
+    ],
+    "powerline": {
+        "autoAlign": false,
+        "enabled": false,
+        "endCaps": [],
+        "separatorInvertBackground": [
+            false
+        ],
+        "separators": [
+            "\ue0b0"
+        ],
+        "startCaps": []
+    },
+    "version": 3
+}
