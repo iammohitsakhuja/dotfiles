@@ -60,6 +60,10 @@ return {
             width = 50,
             side = "right",
         },
+        update_focused_file = {
+            enable = true,
+            update_root = false,
+        },
         renderer = {
             group_empty = true,
             highlight_git = "all",
