@@ -3,7 +3,6 @@
 return {
     "nvim-mini/mini.bufremove",
     name = "mini.bufremove",
-    version = false,
     keys = {
         {
             "<leader>bd",

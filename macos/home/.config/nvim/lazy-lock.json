@@ -87,6 +87,10 @@
         "branch": "main",
         "commit": "ad7146aa61dcaeb54fa900144d768f040090bff0"
     },
+    "mini.bufremove": {
+        "branch": "main",
+        "commit": "10857aa39160c127694151828914df3131ba83b6"
+    },
     "minuet-ai.nvim": {
         "branch": "main",
         "commit": "3fb81e155c4c0c86416427cf1e63d608a6303dca"
