@@ -178,6 +178,8 @@ return {
                     "jdk.*",
                     "sun.*",
                 },
+                -- Don't limit the no. of max results being provided by completion.
+                maxResuls = 0,
             },
             configuration = {
                 runtimes = {

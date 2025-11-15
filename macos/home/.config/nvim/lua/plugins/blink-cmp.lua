@@ -160,6 +160,7 @@ return {
             },
 
             list = {
+                max_items = 300,
                 selection = {
                     preselect = true,
                     auto_insert = false,
