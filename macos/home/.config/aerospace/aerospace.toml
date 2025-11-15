@@ -270,6 +270,10 @@ if.app-id = "com.jetbrains.intellij"
 run = "move-node-to-workspace D"
 
 [[on-window-detected]]
+if.app-id = "com.jetbrains.intellij.ce"
+run = "move-node-to-workspace D"
+
+[[on-window-detected]]
 if.app-id = "dev.zed.Zed"
 run = "move-node-to-workspace D"
 
