@@ -8,10 +8,6 @@ keymap("i", "jk", "<ESC>", opts)
 keymap("n", "<leader>w", ":write<CR>", opts)
 keymap("n", "<leader>W", ":write!<CR>", opts)
 
--- Close buffers
-keymap("n", "<leader>bd", ":bdelete<CR>", opts)
-keymap("n", "<leader>bD", ":bdelete!<CR>", opts)
-
 -- Clear search highlighting
 keymap("n", "<leader>nh", ":nohl<CR>", opts)
 
