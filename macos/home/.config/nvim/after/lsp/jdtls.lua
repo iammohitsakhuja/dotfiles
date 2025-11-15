@@ -145,7 +145,7 @@ return {
             autobuild = {
                 enabled = false,
             },
-            maxConcurrentBuilds = 8,
+            maxConcurrentBuilds = 2,
             signatureHelp = {
                 enabled = true,
             },
@@ -155,7 +155,10 @@ return {
             referencesCodeLens = {
                 enabled = true,
             },
-            implementationCodeLens = "all",
+            implementationCodeLens = "types",
+            format = {
+                enabled = false,
+            },
             contentProvider = {
                 preferred = "fernflower",
             },
@@ -204,6 +207,9 @@ return {
                 maven = {
                     enabled = true,
                 },
+            },
+            saveActions = {
+                cleanup = true,
             },
             cleanup = {
                 actionsOnSave = {
