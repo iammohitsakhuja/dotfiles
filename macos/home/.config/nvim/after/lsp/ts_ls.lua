@@ -1,5 +1,25 @@
 -- Base config taken from `neovim/nvim-lspconfig`
 
+local languageSettings = {
+    referencesCodeLens = {
+        enabled = true,
+        showOnAllFunctions = true,
+    },
+    implementationsCodeLens = {
+        enabled = true,
+    },
+    inlayHints = {
+        includeInlayParameterNameHints = "literals",
+        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayVariableTypeHints = true,
+        includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+    },
+}
+
 ---@type vim.lsp.Config
 return {
     init_options = { hostInfo = "neovim" },
@@ -66,6 +86,10 @@ return {
 
             vim.cmd("botright copen")
         end,
+    },
+    settings = {
+        typescript = languageSettings,
+        javascript = languageSettings,
     },
     on_attach = function(client, bufnr)
         -- ts_ls provides `source.*` code actions that apply to the whole file. These only appear in
