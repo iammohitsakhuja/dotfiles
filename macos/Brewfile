@@ -93,6 +93,7 @@ brew "stylua"
 brew "yamlfmt"
 
 # Container, Kubernetes & cloud tools.
+brew "colima"
 brew "ctop" # Like `top` command, but for Docker.
 brew "dive" # Inspect Docker images in depth.
 brew "docker"
